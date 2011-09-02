@@ -1,0 +1,181 @@
+/AnyDBM_File.pm/1.1.1.1/Sat Feb  5 17:23:12 2005//
+/AnyDBM_File.t/1.1.1.1/Sat Feb  5 17:23:12 2005//
+/AutoLoader.pm/1.1.1.2/Sat Dec 13 22:18:52 2008//
+/AutoLoader.t/1.1.1.2/Sat Dec 13 22:18:52 2008//
+/AutoSplit.pm/1.1.1.1/Sat Feb  5 17:23:12 2005//
+/AutoSplit.t/1.1.1.2/Fri Jun 30 22:40:48 2006//
+/Benchmark.pm/1.1.1.2/Fri Jun 30 22:40:49 2006//
+/Benchmark.t/1.1.1.2/Fri Jun 30 22:40:49 2006//
+/CGI.pm/1.1.1.2/Fri Jun 30 22:40:50 2006//
+/CPAN.pm/1.1.1.2/Fri Jun 30 22:40:53 2006//
+/Carp.pm/1.1.1.2/Fri Jun 30 22:40:55 2006//
+/Carp.t/1.1.1.2/Fri Jun 30 22:40:55 2006//
+/Config.t/1.1.1.2/Fri Jun 30 22:40:55 2006//
+/Cwd.pm/1.1.1.2/Fri Jun 30 22:40:55 2006//
+/DB.pm/1.1.1.2/Fri Jun 30 22:40:56 2006//
+/DB.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/DBM_Filter.pm/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Digest.pm/1.1.1.2/Fri Jun 30 22:40:56 2006//
+/DirHandle.pm/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/DirHandle.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Dumpvalue.pm/1.1.1.2/Fri Jun 30 22:40:57 2006//
+/Dumpvalue.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/English.pm/1.1.1.2/Fri Jun 30 22:40:58 2006//
+/English.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Env.pm/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Exporter.pm/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Exporter.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Fatal.pm/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Fatal.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/FileCache.pm/1.1.1.2/Fri Jun 30 22:40:59 2006//
+/FileHandle.pm/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/FileHandle.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/FindBin.pm/1.1.1.2/Fri Jun 30 22:40:59 2006//
+/FindBin.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Internals.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Memoize.pm/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/NEXT.pm/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/PerlIO.pm/1.1.1.2/Fri Jun 30 22:41:00 2006//
+/SelectSaver.pm/1.1.1.2/Fri Jun 30 22:41:00 2006//
+/SelectSaver.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/SelfLoader.pm/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/SelfLoader.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Shell.pm/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Shell.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Switch.pm/1.1.1.2/Fri Jun 30 22:41:01 2006//
+/Symbol.pm/1.1.1.2/Fri Jun 30 22:41:02 2006//
+/Symbol.t/1.1.1.1/Sat Feb  5 17:23:13 2005//
+/Test.pm/1.1.1.1/Sat Feb  5 17:23:16 2005//
+/Thread.pm/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/UNIVERSAL.pm/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/abbrev.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/assert.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/attributes.pm/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/autouse.pm/1.1.1.2/Fri Jun 30 22:41:03 2006//
+/autouse.t/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/base.pm/1.1.1.2/Fri Jun 30 22:41:04 2006//
+/bigfloat.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/bigfloatpl.t/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/bigint.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/bigint.pm/1.1.1.2/Fri Jun 30 22:41:04 2006//
+/bigintpl.t/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/bignum.pm/1.1.1.2/Fri Jun 30 22:41:05 2006//
+/bigrat.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/bigrat.pm/1.1.1.2/Fri Jun 30 22:41:05 2006//
+/blib.pm/1.1.1.2/Fri Jun 30 22:41:06 2006//
+/blib.t/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/bytes.pm/1.1.1.2/Fri Jun 30 22:41:06 2006//
+/bytes.t/1.1.1.2/Fri Jun 30 22:41:06 2006//
+/bytes_heavy.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/cacheout.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/charnames.pm/1.1.1.2/Fri Jun 30 22:41:07 2006//
+/charnames.t/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/complete.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/constant.pm/1.1.1.2/Fri Jun 30 22:41:07 2006//
+/constant.t/1.1.1.2/Fri Jun 30 22:41:08 2006//
+/ctime.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/dbm_filter_util.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/diagnostics.pm/1.1.1.2/Fri Jun 30 22:41:08 2006//
+/diagnostics.t/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/dotsh.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/dumpvar.pl/1.1.1.2/Fri Jun 30 22:41:09 2006//
+/dumpvar.t/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/exceptions.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/fastcwd.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/fields.pm/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/filetest.pm/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/filetest.t/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/find.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/finddepth.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/flush.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/getcwd.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/getopt.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/getopts.pl/1.1.1.2/Fri Jun 30 22:41:11 2006//
+/h2ph.t/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/h2xs.t/1.1.1.2/Fri Jun 30 22:41:11 2006//
+/hostname.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/if.pm/1.1.1.2/Fri Jun 30 22:41:11 2006//
+/if.t/1.1.1.2/Fri Jun 30 22:41:12 2006//
+/importenv.pl/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/integer.pm/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/integer.t/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/less.pm/1.1.1.1/Sat Feb  5 17:23:17 2005//
+/less.t/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/lib.t/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/lib_pm.PL/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/locale.pm/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/locale.t/1.1.1.2/Fri Jun 30 22:41:13 2006//
+/look.pl/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/newgetopt.pl/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/open.pm/1.1.1.2/Fri Jun 30 22:41:14 2006//
+/open.t/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/open2.pl/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/open3.pl/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/overload.pm/1.1.1.2/Fri Jun 30 22:41:14 2006//
+/overload.t/1.1.1.2/Fri Jun 30 22:41:15 2006//
+/perl5db.pl/1.1.1.2/Fri Jun 30 22:41:16 2006//
+/ph.t/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/pwd.pl/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/shellwords.pl/1.1.1.2/Fri Jun 30 22:41:19 2006//
+/sigtrap.pm/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/sigtrap.t/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/sort.pm/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/sort.t/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/stat.pl/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/strict.pm/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/strict.t/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/subs.pm/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/subs.t/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/syslog.pl/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/tainted.pl/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/termcap.pl/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/timelocal.pl/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/utf8.pm/1.1.1.2/Fri Jun 30 22:41:20 2006//
+/utf8.t/1.1.1.2/Fri Jun 30 22:41:21 2006//
+/utf8_heavy.pl/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/validate.pl/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/vars.pm/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/vars.t/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/vmsish.pm/1.1.1.2/Fri Jun 30 22:41:22 2006//
+/vmsish.t/1.1.1.1/Sat Feb  5 17:23:18 2005//
+/warnings.pm/1.1.1.2/Fri Jun 30 22:41:22 2006//
+/warnings.t/1.1.1.2/Fri Jun 30 22:41:22 2006//
+D/Attribute////
+D/CGI////
+D/CPAN////
+D/Carp////
+D/Class////
+D/DBM_Filter////
+D/Devel////
+D/Digest////
+D/Env////
+D/Exporter////
+D/ExtUtils////
+D/File////
+D/FileCache////
+D/Filter////
+D/Getopt////
+D/Hash////
+D/I18N////
+D/IPC////
+D/Locale////
+D/Math////
+D/Memoize////
+D/NEXT////
+D/Net////
+D/PerlIO////
+D/Pod////
+D/Search////
+D/Switch////
+D/Term////
+D/Test////
+D/Text////
+D/Thread////
+D/Tie////
+D/Time////
+D/Unicode////
+D/User////
+D/base////
+D/bignum////
+D/unicore////
+D/warnings////

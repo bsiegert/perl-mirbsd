@@ -1,0 +1,32 @@
+/Makefile.ce/1.1.1.2/Fri Jun 30 22:48:08 2006//
+/README.perlce/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/cecopy-lib.pl/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/comp.pl/1.1.1.2/Fri Jun 30 22:48:09 2006//
+/compile-all.bat/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/compile.bat/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/config.ce/1.1.1.2/Fri Jun 30 22:48:09 2006//
+/config_H.ce/1.1.1.2/Fri Jun 30 22:48:10 2006//
+/config_h.PL/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/config_sh.PL/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/dl_win32.xs/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/makedist.pl/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/makeico.pl/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/perl.rc/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/perlhost.h/1.1.1.2/Fri Jun 30 22:48:11 2006//
+/perllib.c/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/perlmain.c/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/registry.bat/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/runperl.c/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/splittree.pl/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/vdir.h/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/vmem.h/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/win32.h/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/win32io.c/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/win32iop.h/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/win32thread.c/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/win32thread.h/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/wince.c/1.1.1.2/Fri Jun 30 22:48:14 2006//
+/wince.h/1.1.1.1/Sat Feb  5 17:24:14 2005//
+/wincesck.c/1.1.1.1/Sat Feb  5 17:24:14 2005//
+D/bin////
+D/include////

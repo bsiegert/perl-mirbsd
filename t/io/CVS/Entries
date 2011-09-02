@@ -1,0 +1,20 @@
+/argv.t/1.1.1.2/Fri Jun 30 22:45:30 2006//
+/binmode.t/1.1.1.2/Fri Jun 30 22:45:29 2006//
+/crlf.t/1.1.1.2/Fri Jun 30 22:45:30 2006//
+/crlf_through.t/1.1.1.1/Fri Jun 30 22:45:30 2006//
+/dup.t/1.1.1.2/Fri Jun 30 22:45:30 2006//
+/fflush.t/1.1.1.1/Sat Feb  5 17:23:58 2005//
+/fs.t/1.1.1.2/Fri Jun 30 22:45:30 2006//
+/inplace.t/1.1.1.1/Sat Feb  5 17:23:58 2005//
+/iprefix.t/1.1.1.1/Sat Feb  5 17:23:58 2005//
+/layers.t/1.1.1.2/Fri Jun 30 22:45:30 2006//
+/nargv.t/1.1.1.1/Sat Feb  5 17:23:58 2005//
+/open.t/1.1.1.2/Fri Jun 30 22:45:31 2006//
+/openpid.t/1.1.1.2/Fri Jun 30 22:45:31 2006//
+/pipe.t/1.1.1.2/Fri Jun 30 22:45:31 2006//
+/print.t/1.1.1.2/Fri Jun 30 22:45:31 2006//
+/read.t/1.1.1.1/Sat Feb  5 17:23:58 2005//
+/tell.t/1.1.1.2/Fri Jun 30 22:45:32 2006//
+/through.t/1.1.1.1/Fri Jun 30 22:45:32 2006//
+/utf8.t/1.1.1.2/Fri Jun 30 22:45:32 2006//
+D

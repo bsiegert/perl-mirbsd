@@ -1,0 +1,40 @@
+/FindExt.pm/1.1.1.2/Fri Jun 30 22:47:48 2006//
+/Makefile/1.1.1.2/Fri Jun 30 22:47:48 2006//
+/buildext.pl/1.1.1.2/Fri Jun 30 22:47:49 2006//
+/config.bc/1.1.1.2/Fri Jun 30 22:47:49 2006//
+/config.gc/1.1.1.2/Fri Jun 30 22:47:49 2006//
+/config.vc/1.1.1.2/Fri Jun 30 22:47:49 2006//
+/config.vc64/1.1.1.2/Fri Jun 30 22:47:50 2006//
+/config_H.bc/1.1.1.2/Fri Jun 30 22:47:50 2006//
+/config_H.gc/1.1.1.2/Fri Jun 30 22:47:53 2006//
+/config_H.vc/1.1.1.2/Fri Jun 30 22:47:55 2006//
+/config_H.vc64/1.1.1.2/Fri Jun 30 22:47:57 2006//
+/config_h.PL/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/config_sh.PL/1.1.1.2/Fri Jun 30 22:47:59 2006//
+/distclean.bat/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/dl_win32.xs/1.1.1.2/Fri Jun 30 22:47:59 2006//
+/fcrypt.c/1.1.1.2/Fri Jun 30 22:48:00 2006//
+/genmk95.pl/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/makefile.mk/1.1.1.2/Fri Jun 30 22:48:00 2006//
+/makeico.pl/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/mdelete.bat/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/perlexe.rc/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/perlglob.c/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/perlhost.h/1.1.1.2/Fri Jun 30 22:48:01 2006//
+/perllib.c/1.1.1.2/Fri Jun 30 22:48:02 2006//
+/pod.mak/1.1.1.2/Fri Jun 30 22:48:02 2006//
+/runperl.c/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/splittree.pl/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/sync_ext.pl/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/vdir.h/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/vmem.h/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/win32.c/1.1.1.2/Fri Jun 30 22:48:03 2006//
+/win32.h/1.1.1.2/Fri Jun 30 22:48:04 2006//
+/win32io.c/1.1.1.2/Fri Jun 30 22:48:05 2006//
+/win32iop.h/1.1.1.2/Fri Jun 30 22:48:05 2006//
+/win32sck.c/1.1.1.2/Fri Jun 30 22:48:05 2006//
+/win32thread.c/1.1.1.1/Sat Feb  5 17:24:13 2005//
+/win32thread.h/1.1.1.1/Sat Feb  5 17:24:13 2005//
+D/bin////
+D/ext////
+D/include////
