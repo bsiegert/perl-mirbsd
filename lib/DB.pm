@@ -41,7 +41,7 @@ BEGIN {
   $DB::subname = '';    # currently executing sub (fullly qualified name)
   $DB::lineno = '';     # current line number
 
-  $DB::VERSION = $DB::VERSION = '1.01';
+  $DB::VERSION = $DB::VERSION = '1.03';
 
   # initialize private globals to avoid warnings
 
@@ -92,15 +92,6 @@ sub DB {
 
   $usrctxt = "package $DB::package;";		# this won't let them modify, alas
   local(*DB::dbline) = "::_<$DB::filename";
-
-  # we need to check for pseudofiles on Mac OS (these are files
-  # not attached to a filename, but instead stored in Dev:Pseudo)
-  # since this is done late, $DB::filename will be "wrong" after
-  # skippkg
-  if ($^O eq 'MacOS' && $#DB::dbline < 0) {
-    $DB::filename = 'Dev:Pseudo';
-    *DB::dbline = "::_<$DB::filename";
-  }
 
   my ($stop, $action);
   if (($stop,$action) = split(/\0/,$DB::dbline{$DB::lineno})) {
@@ -555,8 +546,7 @@ __END__
 
 =head1 NAME
 
-DB - programmatic interface to the Perl debugging API (draft, subject to
-change)
+DB - programmatic interface to the Perl debugging API
 
 =head1 SYNOPSIS
 

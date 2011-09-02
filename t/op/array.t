@@ -2,12 +2,12 @@
 
 BEGIN {
     chdir 't' if -d 't';
-    @INC = '.', '../lib';
+    @INC = ('.', '../lib');
 }
 
 require 'test.pl';
 
-plan (91);
+plan (130);
 
 #
 # @foo, @bar, and @ary are also used from tie-stdarray after tie-ing them
@@ -20,6 +20,9 @@ $tmp = $ary[$#ary]; --$#ary;
 is($tmp, 5);
 is($#ary, 3);
 is(join('',@ary), '1234');
+
+{
+    no warnings 'deprecated';
 
 $[ = 1;
 @ary = (1,2,3,4,5);
@@ -70,6 +73,8 @@ $bar[2] = '2';
 $r = join(',', $#bar, @bar);
 is($r, "2,0,,2");
 
+}
+
 $foo = 'now is the time';
 ok(scalar (($F1,$F2,$Etc) = ($foo =~ /^(\S+)\s+(\S+)\s*(.*)/)));
 is($F1, 'now');
@@ -119,7 +124,10 @@ $foo = ('a','b','c','d','e','f')[1];
 is($foo, 'b');
 
 @foo = ( 'foo', 'bar', 'burbl');
-push(foo, 'blah');
+{
+    no warnings 'deprecated';
+    push(foo, 'blah');
+}
 is($#foo, 3);
 
 # various AASSIGN_COMMON checks (see newASSIGNOP() in op.c)
@@ -176,7 +184,6 @@ is("@bar", "foo bar");						# 43
 
 # try the same with my
 {
-
     my @bee = @bee;
     is("@bee", "foo bar burbl blah");				# 54
     {
@@ -200,6 +207,29 @@ is("@bar", "foo bar");						# 43
 	is("@bee", "bar burbl blah");				# 62
     }
     is("@bee", "foo bar burbl blah");				# 63
+}
+
+# try the same with our (except that previous values aren't restored)
+{
+    our @bee = @bee;
+    is("@bee", "foo bar burbl blah");
+    {
+	our (undef,@bee) = @bee;
+	is("@bee", "bar burbl blah");
+	{
+	    our @bee = ('XXX',@bee,'YYY');
+	    is("@bee", "XXX bar burbl blah YYY");
+	    {
+		our @bee = our @bee = qw(foo bar burbl blah);
+		is("@bee", "foo bar burbl blah");
+		{
+		    our (@bim) = our(@bee) = qw(foo bar);
+		    is("@bee", "foo bar");
+		    is("@bim", "foo bar");
+		}
+	    }
+	}
+    }
 }
 
 # make sure reification behaves
@@ -230,6 +260,7 @@ is ($foo[1], "a");
 
 
 sub tary {
+  no warnings 'deprecated';
   local $[ = 10;
   my $five = 5;
   is ($tary[5], $tary[$five]);
@@ -245,7 +276,7 @@ tary();
 my $got = runperl (
 	prog => q{
 		    sub X::DESTROY { @a = () }
-		    @a = (bless {}, 'X');
+		    @a = (bless {}, q{X});
 		    @a = ();
 		},
 	stderr => 1
@@ -294,3 +325,146 @@ sub test_arylen {
     test_arylen ($a);
     test_arylen (do {my @a; \$#a});
 }
+
+{
+    use vars '@array';
+
+    my $outer = \$#array;
+    is ($$outer, -1);
+    is (scalar @array, 0);
+
+    $$outer = 3;
+    is ($$outer, 3);
+    is (scalar @array, 4);
+
+    my $ref = \@array;
+
+    my $inner;
+    {
+	local @array;
+	$inner = \$#array;
+
+	is ($$inner, -1);
+	is (scalar @array, 0);
+	$$outer = 6;
+
+	is (scalar @$ref, 7);
+
+	is ($$inner, -1);
+	is (scalar @array, 0);
+
+	$$inner = 42;
+    }
+
+    is (scalar @array, 7);
+    is ($$outer, 6);
+
+    is ($$inner, undef, "orphaned $#foo is always undef");
+
+    is (scalar @array, 7);
+    is ($$outer, 6);
+
+    $$inner = 1;
+
+    is (scalar @array, 7);
+    is ($$outer, 6);
+
+    $$inner = 503; # Bang!
+
+    is (scalar @array, 7);
+    is ($$outer, 6);
+}
+
+{
+    # Bug #36211
+    use vars '@array';
+    for (1,2) {
+	{
+	    local @a;
+	    is ($#a, -1);
+	    @a=(1..4)
+	}
+    }
+}
+
+{
+    # Bug #37350
+    my @array = (1..4);
+    $#{@array} = 7;
+    is ($#{4}, 7);
+
+    my $x;
+    $#{$x} = 3;
+    is(scalar @$x, 4);
+
+    push @{@array}, 23;
+    is ($4[8], 23);
+}
+{
+    # Bug #37350 -- once more with a global
+    use vars '@array';
+    @array = (1..4);
+    $#{@array} = 7;
+    is ($#{4}, 7);
+
+    my $x;
+    $#{$x} = 3;
+    is(scalar @$x, 4);
+
+    push @{@array}, 23;
+    is ($4[8], 23);
+}
+
+# more tests for AASSIGN_COMMON
+
+{
+    our($x,$y,$z) = (1..3);
+    our($y,$z) = ($x,$y);
+    is("$x $y $z", "1 1 2");
+}
+{
+    our($x,$y,$z) = (1..3);
+    (our $y, our $z) = ($x,$y);
+    is("$x $y $z", "1 1 2");
+}
+
+# [perl #70171]
+{
+ my $x = get_x(); my %x = %$x; sub get_x { %x=(1..4); return \%x };
+ is(
+   join(" ", map +($_,$x{$_}), sort keys %x), "1 2 3 4",
+  'bug 70171 (self-assignment via my %x = %$x)'
+ );
+ my $y = get_y(); my @y = @$y; sub get_y { @y=(1..4); return \@y };
+ is(
+  "@y", "1 2 3 4",
+  'bug 70171 (self-assignment via my @x = @$x)'
+ );
+}
+
+# [perl #70171], [perl #82110]
+{
+    my ($i, $ra, $rh);
+  again:
+    my @a = @$ra; # common assignment on 2nd attempt
+    my %h = %$rh; # common assignment on 2nd attempt
+    @a = qw(1 2 3 4);
+    %h = qw(a 1 b 2 c 3 d 4);
+    $ra = \@a;
+    $rh = \%h;
+    goto again unless $i++;
+
+    is("@a", "1 2 3 4",
+	'bug 70171 (self-assignment via my @x = @$x) - goto variant'
+    );
+    is(
+	join(" ", map +($_,$h{$_}), sort keys %h), "a 1 b 2 c 3 d 4",
+	'bug 70171 (self-assignment via my %x = %$x) - goto variant'
+    );
+}
+
+
+*trit = *scile;  $trit[0];
+ok(1, 'aelem_fast on a nonexistent array does not crash');
+
+"We're included by lib/Tie/Array/std.t so we need to return something true";

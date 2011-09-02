@@ -8,54 +8,13 @@
 
 chdir 't' if -d 't';
 @INC = '../lib';
-$Is_VMS = $^O eq 'VMS';
-$Is_MSWin32 = $^O eq 'MSWin32';
-$Is_NetWare = $^O eq 'NetWare';
-$Is_MacOS = $^O eq 'MacOS';
-$ENV{PERL5LIB} = "../lib" unless $Is_VMS;
+require './test.pl';
 
 $|=1;
 
-undef $/;
-@prgs = split "\n########\n", <DATA>;
-print "1..", scalar @prgs, "\n";
+run_multiple_progs('', \*DATA);
 
-$tmpfile = "runltmp000";
-1 while -f ++$tmpfile;
-END { if ($tmpfile) { 1 while unlink $tmpfile; } }
-
-for (@prgs){
-    my $switch = "";
-    if (s/^\s*(-\w+)//){
-       $switch = $1;
-    }
-    my($prog,$expected) = split(/\nEXPECT\n/, $_);
-    open TEST, ">$tmpfile";
-    print TEST "$prog\n";
-    close TEST or die "Could not close: $!";
-    my $results = $Is_VMS ?
-                      `MCR $^X "-I[-.lib]" $switch $tmpfile 2>&1` :
-		  $Is_MSWin32 ?  
-		      `.\\perl -I../lib $switch $tmpfile 2>&1` :
-		  $Is_NetWare ?  
-		      `perl -I../lib $switch $tmpfile 2>&1` :
-		  $Is_MacOS ?
-		      `$^X -I::lib -MMac::err=unix $switch $tmpfile` :
-		  `./perl $switch $tmpfile 2>&1`;
-    my $status = $?;
-    $results =~ s/\n+$//;
-    # allow expected output to be written as if $prog is on STDIN
-    $results =~ s/runltmp\d+/-/g;
-    $results =~ s/\n%[A-Z]+-[SIWEF]-.*$// if $Is_VMS;  # clip off DCL status msg
-    $expected =~ s/\n+$//;
-    if ($results ne $expected) {
-       print STDERR "PROG: $switch\n$prog\n";
-       print STDERR "EXPECTED:\n$expected\n";
-       print STDERR "GOT:\n$results\n";
-       print "not ";
-    }
-    print "ok ", ++$i, "\n";
-}
+done_testing();
 
 __END__
 @a = (1, 2, 3);

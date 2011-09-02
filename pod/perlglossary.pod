@@ -114,7 +114,7 @@ The American Standard Code for Information Interchange (a 7-bit
 character set adequate only for poorly representing English text).
 Often used loosely to describe the lowest 128 values of the various
 ISO-8859-X character sets, a bunch of mutually incompatible 8-bit
-codes best described as half ASCII.  See also L</Unicode>.
+codes sometimes described as half ASCII.  See also L</Unicode>.
 
 =item assertion
 
@@ -234,12 +234,14 @@ some of its high-level ideas.
 =item backreference
 
 A substring L<captured|/capturing> by a subpattern within
-unadorned parentheses in a L</regex>.  Backslashed decimal numbers
-(C<\1>, C<\2>, etc.)  later in the same pattern refer back to the
-corresponding subpattern in the current match.  Outside the pattern,
+unadorned parentheses in a L</regex>, also referred to as a capture group.  The
+sequences (C<\g1>, C<\g2>, etc.)  later in the same pattern refer back to
+the corresponding subpattern in the current match.  Outside the pattern,
 the numbered variables (C<$1>, C<$2>, etc.) continue to refer to these
 same values, as long as the pattern was the last successful match of
-the current dynamic scope.
+the current dynamic scope.  C<\g{-1}> can be used to refer to a group by
+relative rather than absolute position; and groups can be also be named, and
+referred to later by name rather than number.  See L<perlre/"Capture groups">.
 
 =item backtracking
 
@@ -458,10 +460,16 @@ handler when some event of interest transpires.
 
 Reduced to a standard form to facilitate comparison.
 
+=item capture buffer, capture group
+
+These two terms are synonymous:
+a L<captured substring|/capturing> by a regex subpattern.
+
 =item capturing
 
 The use of parentheses around a L</subpattern> in a L</regular
-expression> to store the matched L</substring> as a L</backreference>.
+expression> to store the matched L</substring> as a L</backreference>
+or L<capture group|/capture buffer, capture group>.
 (Captured strings are also returned as a list in L</list context>.)
 
 =item character
@@ -499,7 +507,7 @@ the class (its L<objects|/object>).  See also L</inheritance>.
 
 =item class method
 
-A L</method> whose L</invocant> is a L</package> name, not an
+A L</method> whose L</invocand> is a L</package> name, not an
 L</object> reference.  A method associated with the class as a whole.
 
 =item client
@@ -536,6 +544,17 @@ it to a reference to a subroutine.  See also L</CV>.
 A system that writes code for you in a low-level language, such as
 code to implement the backend of a compiler.  See L</program
 generator>.
+
+=item code point
+
+The position of a character in a character set encoding.  The character
+C<NULL> is almost certainly at the zeroth position in all character
+sets, so its code point is 0.  The code point for the C<SPACE>
+character in the ASCII character set is 0x20, or 32 decimal; in EBCDIC
+it is 0x40, or 64 decimal.  The L<ord|perlfunc/ord> function returns
+the code point of a character.
+
+"code position" and "ordinal" mean the same thing as "code point".
 
 =item code subpattern
 
@@ -793,6 +812,17 @@ textual object, not to be confused with a L</separator> or
 L</terminator>.  "To delimit" really just means "to surround" or "to
 enclose" (like these parentheses are doing).
 
+=item deprecated modules and features
+
+Deprecated modules and features are those which were part of a stable
+release, but later found to be subtly flawed, and which should be avoided.
+They are subject to removal and/or bug-incompatible reimplementation in
+the next major release (but they will be preserved through maintenance
+releases).  Deprecation warnings are issued under B<-w> or C<use
+diagnostics>, and notices are found in L<perldelta>s, as well as various
+other PODs. Coding practices that misuse features, such as C<my $foo if
+0>, can also be deprecated.
+
 =item dereference
 
 A fancy computer science term meaning "to follow a L</reference> to
@@ -861,6 +891,17 @@ most specific definition for the method.
 A standard, bundled release of a system of software.  The default
 usage implies source code is included.  If that is not the case, it
 will be called a "binary-only" distribution.
+
+=item (to be) dropped modules
+
+When Perl 5 was first released (see L<perlhist>), several modules were
+included, which have now fallen out of common use.  It has been suggested
+that these modules should be removed, since the distribution became rather
+large, and the common criterion for new module additions is now limited to
+modules that help to build, test, and extend perl itself.  Furthermore,
+the CPAN (which didn't exist at the time of Perl 5.0) can become the new
+home of dropped modules. Dropping modules is currently not an option, but
+further developments may clear the last barriers.
 
 =item dweomer
 
@@ -1429,11 +1470,14 @@ Perl, C<print STDOUT "$foo\n";> can be understood as "verb
 indirect-object object" where L</STDOUT> is the recipient of the
 L<print|perlfunc/print> action, and C<"$foo"> is the object being
 printed.  Similarly, when invoking a L</method>, you might place the
-invocant between the method and its arguments:
+invocand between the method and its arguments:
 
   $gollum = new Pathetic::Creature "Smeagol";
   give $gollum "Fisssssh!";
   give $gollum "Precious!";
+
+In modern Perl, calling methods this way is often considered bad practice and
+to be avoided.
 
 =item indirect object slot
 
@@ -1504,11 +1548,11 @@ of compiler that takes a program and turns it into a more executable
 form (L<syntax trees|/syntax tree>) within the I<perl> process itself,
 which the Perl L</run time> system then interprets.
 
-=item invocant
+=item invocand
 
 The agent on whose behalf a L</method> is invoked.  In a L</class>
-method, the invocant is a package name.  In an L</instance> method,
-the invocant is an object reference.
+method, the invocand is a package name.  In an L</instance> method,
+the invocand is an object reference.
 
 =item invocation
 
@@ -1570,7 +1614,7 @@ hold, not to be confused with an L</NV>.
 
 "Just Another Perl Hacker," a clever but cryptic bit of Perl code that
 when executed, evaluates to that string.  Often used to illustrate a
-particular Perl feature, and something of an ungoing Obfuscated Perl
+particular Perl feature, and something of an ongoing Obfuscated Perl
 Contest seen in Usenix signatures.
 
 =back
@@ -2080,6 +2124,10 @@ L</pragma>.
 =item options
 
 See either L<switches|/switch> or L</regular expression modifier>.
+
+=item ordinal
+
+Another name for L</code point>
 
 =item overloading
 
@@ -2937,9 +2985,8 @@ L</argument> must be the last switch in a cluster.
 A program technique that lets you evaluate an L</expression> and then,
 based on the value of the expression, do a multiway branch to the
 appropriate piece of code for that value.  Also called a "case
-structure", named after the similar Pascal construct.  Most switch
-statements in Perl are spelled C<for>.  See L<perlsyn/Basic BLOCKs and
-Switch Statements>.
+structure", named after the similar Pascal construct.  See
+L<perlsyn/"Switch statements">.
 
 =item symbol
 
@@ -3107,7 +3154,7 @@ to build special tools.  Perl is sort of a machine shop.
 To turn one string representation into another by mapping each
 character of the source string to its corresponding character in the
 result string.  See
-L<perlop/trE<sol>SEARCHLISTE<sol>REPLACEMENTLISTE<sol>cds>.
+L<perlop/trE<sol>SEARCHLISTE<sol>REPLACEMENTLISTE<sol>cdsr>.
 
 =item trigger
 
@@ -3198,7 +3245,7 @@ change their meanings.)
 =item Unicode
 
 A character set comprising all the major character sets of the world,
-more or less.  See L<http://www.unicode.org>.
+more or less.  See L<perlunicode> and L<http://www.unicode.org>.
 
 =item Unix
 

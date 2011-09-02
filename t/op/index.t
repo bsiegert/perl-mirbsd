@@ -3,11 +3,15 @@
 BEGIN {
     chdir 't' if -d 't';
     @INC = '../lib';
+    require './test.pl';
 }
 
 use strict;
-require './test.pl';
-plan( tests => 58 );
+plan( tests => 120 );
+
+run_tests() unless caller;
+
+sub run_tests {
 
 my $foo = 'Now is the time for all good men to come to the aid of their country.';
 
@@ -86,8 +90,10 @@ is(rindex($a, "foo",    ), 0);
 }
 
 {
-    my $search = "foo \xc9 bar";
-    my $text = "a\xa3\xa3a $search    $search quux";
+    my $search;
+    my $text;
+    $search = latin1_to_native("foo \xc9 bar");
+    $text = latin1_to_native("a\xa3\xa3a $search    $search quux");
 
     my $text_utf8 = $text;
     utf8::upgrade($text_utf8);
@@ -120,4 +126,102 @@ is(rindex($a, "foo",    ), 0);
     is (rindex($text_octets, $search), -1);
     is (index($text, $search_octets), -1);
     is (rindex($text, $search_octets), -1);
+}
+
+foreach my $utf8 ('', ', utf-8') {
+    foreach my $arraybase (0, 1, -1, -2) {
+	my $expect_pos = 2 + $arraybase;
+
+	my $prog = "no warnings 'deprecated';\n";
+	$prog .= "\$[ = $arraybase; \$big = \"N\\xabN\\xab\"; ";
+	$prog .= '$big .= chr 256; chop $big; ' if $utf8;
+	$prog .= 'print rindex $big, "N", 2 + $[';
+
+	fresh_perl_is($prog, $expect_pos, {}, "\$[ = $arraybase$utf8");
+    }
+}
+
+SKIP: {
+    skip "UTF-EBCDIC is limited to 0x7fffffff", 3 if ord("A") == 193;
+
+    my $a = "\x{80000000}";
+    my $s = $a.'defxyz';
+    is(index($s, 'def'), 1, "0x80000000 is a single character");
+
+    my $b = "\x{fffffffd}";
+    my $t = $b.'pqrxyz';
+    is(index($t, 'pqr'), 1, "0xfffffffd is a single character");
+
+    local ${^UTF8CACHE} = -1;
+    is(index($t, 'xyz'), 4, "0xfffffffd and utf8cache");
+}
+
+
+# Tests for NUL characters.
+{
+    my @tests = (
+        ["",            -1, -1, -1],
+        ["foo",         -1, -1, -1],
+        ["\0",           0, -1, -1],
+        ["\0\0",         0,  0, -1],
+        ["\0\0\0",       0,  0,  0],
+        ["foo\0",        3, -1, -1],
+        ["foo\0foo\0\0", 3,  7, -1],
+    );
+    foreach my $l (1 .. 3) {
+        my $q = "\0" x $l;
+        my $i = 0;
+        foreach my $test (@tests) {
+            $i ++;
+            my $str = $$test [0];
+            my $res = $$test [$l];
+
+            {
+                is (index ($str, $q), $res, "Find NUL character(s)");
+            }
+
+            #
+            # Bug #53746 shows a difference between variables and literals,
+            # so test literals as well.
+            #
+            my $test_str = qq {is (index ("$str", "$q"), $res, } .
+                           qq {"Find NUL character(s)")};
+               $test_str =~ s/\0/\\0/g;
+
+            eval $test_str;
+            die $@ if $@;
+        }
+    }
+}
+
+{
+    # RT#75898
+    is(eval { utf8::upgrade($_ = " "); index $_, " ", 72 }, -1,
+       'UTF-8 cache handles offset beyond the end of the string');
+    $_ = "\x{100}BC";
+    is(index($_, "C", 4), -1,
+       'UTF-8 cache handles offset beyond the end of the string');
+}
+
+# RT #89218
+use constant {PVBM => 'galumphing', PVBM2 => 'bang'};
+
+sub index_it {
+    is(index('galumphing', PVBM), 0,
+       "index isn't confused by format compilation");
+}
+ 
+index_it();
+is($^A, '', '$^A is empty');
+formline PVBM;
+is($^A, 'galumphing', "formline isn't confused by index compilation");
+index_it();
+
+$^A = '';
+# must not do index here before formline.
+is($^A, '', '$^A is empty');
+formline PVBM2;
+is($^A, 'bang', "formline isn't confused by index compilation");
+is(index('bang', PVBM2), 0, "index isn't confused by format compilation");
+
 }

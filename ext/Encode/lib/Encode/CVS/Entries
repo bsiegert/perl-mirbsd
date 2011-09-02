@@ -1,11 +1,11 @@
-/Alias.pm/1.2/Mon Aug 10 16:19:15 2009//
-/CJKConstants.pm/1.1.1.1/Sat Feb  5 17:22:44 2005//
-/Config.pm/1.1.1.2/Fri Jun 30 22:37:52 2006//
-/Encoder.pm/1.1.1.1/Sat Feb  5 17:22:44 2005//
-/Encoding.pm/1.1.1.1/Sat Feb  5 17:22:44 2005//
-/Guess.pm/1.1.1.1/Sat Feb  5 17:22:44 2005//
-/PerlIO.pod/1.1.1.2/Fri Jun 30 22:37:52 2006//
-/Supported.pod/1.1.1.2/Fri Jun 30 22:37:53 2006//
+/Alias.pm/-1.2///
+/CJKConstants.pm/-1.1.1.1///
+/Config.pm/-1.1.1.2///
+/Encoder.pm/-1.1.1.1///
+/Encoding.pm/-1.1.1.1///
+/Guess.pm/-1.1.1.1///
+/PerlIO.pod/-1.1.1.2///
+/Supported.pod/-1.1.1.2///
 D/CN////
 D/JP////
 D/KR////

@@ -7,15 +7,12 @@
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
- * $Date: 2003/12/03 03:02:28 $
- * $Source: /cvs/src/gnu/usr.bin/perl/ext/DynaLoader/dl_dld.xs,v $
- * $Revision: 1.7 $
+ * $Date: 1994/03/07 00:21:43 $
+ * $Source: /home/rsanders/src/perl5alpha6/RCS/dld_dl.c,v $
+ * $Revision: 1.4 $
  * $State: Exp $
  *
- * $Log: dl_dld.xs,v $
- * Revision 1.7  2003/12/03 03:02:28  millert
- * Resolve conflicts for perl 5.8.2, remove old files, and add OpenBSD-specific scaffolding
- *
+ * $Log: dld_dl.c,v $
  * Removed implicit link against libc.  1994/09/14 William Setzer.
  *
  * Integrated other DynaLoader changes. 1994/06/08 Tim Bunce.
@@ -172,14 +169,14 @@ void
 dl_install_xsub(perl_name, symref, filename="$Package")
     char *	perl_name
     void *	symref 
-    char *	filename
+    const char *	filename
     CODE:
     DLDEBUG(2,PerlIO_printf(Perl_debug_log, "dl_install_xsub(name=%s, symref=%x)\n",
 	    perl_name, symref));
-    ST(0) = sv_2mortal(newRV((SV*)newXS(perl_name,
-					(void(*)(pTHX_ CV *))symref,
-					filename)));
-
+    ST(0) = sv_2mortal(newRV((SV*)newXS_flags(perl_name,
+					      (void(*)(pTHX_ CV *))symref,
+					      filename, NULL,
+					      XS_DYNAMIC_FILENAME)));
 
 char *
 dl_error()
@@ -189,5 +186,22 @@ dl_error()
     RETVAL = dl_last_error ;
     OUTPUT:
     RETVAL
+
+#if defined(USE_ITHREADS)
+
+void
+CLONE(...)
+    CODE:
+    MY_CXT_CLONE;
+
+    /* MY_CXT_CLONE just does a memcpy on the whole structure, so to avoid
+     * using Perl variables that belong to another thread, we create our 
+     * own for this thread.
+     */
+    MY_CXT.x_dl_last_error = newSVpvn("", 0);
+    dl_resolve_using   = get_av("DynaLoader::dl_resolve_using", GV_ADDMULTI);
+    dl_require_symbols = get_av("DynaLoader::dl_require_symbols", GV_ADDMULTI);
+
+#endif
 
 # end.

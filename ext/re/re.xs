@@ -6,73 +6,99 @@
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
+#include "re_comp.h"
+
 
 START_EXTERN_C
 
-extern regexp*	my_regcomp (pTHX_ char* exp, char* xend, PMOP* pm);
-extern I32	my_regexec (pTHX_ regexp* prog, char* stringarg, char* strend,
+extern REGEXP*	my_re_compile (pTHX_ SV * const pattern, const U32 pm_flags);
+extern I32	my_regexec (pTHX_ REGEXP * const prog, char* stringarg, char* strend,
 			    char* strbeg, I32 minend, SV* screamer,
 			    void* data, U32 flags);
-extern void	my_regfree (pTHX_ struct regexp* r);
-extern char*	my_re_intuit_start (pTHX_ regexp *prog, SV *sv, char *strpos,
-				    char *strend, U32 flags,
+
+extern char*	my_re_intuit_start (pTHX_ REGEXP * const prog, SV *sv, char *strpos,
+				    char *strend, const U32 flags,
 				    struct re_scream_pos_data_s *data);
-extern SV*	my_re_intuit_string (pTHX_ regexp *prog);
+extern SV*	my_re_intuit_string (pTHX_ REGEXP * const prog);
+
+extern void	my_regfree (pTHX_ REGEXP * const r);
+
+extern void	my_reg_numbered_buff_fetch(pTHX_ REGEXP * const rx, const I32 paren,
+					   SV * const usesv);
+extern void	my_reg_numbered_buff_store(pTHX_ REGEXP * const rx, const I32 paren,
+					   SV const * const value);
+extern I32	my_reg_numbered_buff_length(pTHX_ REGEXP * const rx,
+					    const SV * const sv, const I32 paren);
+
+extern SV*	my_reg_named_buff(pTHX_ REGEXP * const, SV * const, SV * const,
+                              const U32);
+extern SV*	my_reg_named_buff_iter(pTHX_ REGEXP * const rx,
+                                   const SV * const lastkey, const U32 flags);
+
+extern SV*      my_reg_qr_package(pTHX_ REGEXP * const rx);
+#if defined(USE_ITHREADS)
+extern void*	my_regdupe (pTHX_ REGEXP * const r, CLONE_PARAMS *param);
+#endif
+
+EXTERN_C const struct regexp_engine my_reg_engine;
 
 END_EXTERN_C
 
-#define MY_CXT_KEY "re::_guts" XS_VERSION
-
-typedef struct {
-    int		x_oldflag;		/* debug flag */
-} my_cxt_t;
-
-START_MY_CXT
-
-#define oldflag		(MY_CXT.x_oldflag)
-
-static void
-uninstall(pTHX)
-{
-    dMY_CXT;
-    PL_regexecp = Perl_regexec_flags;
-    PL_regcompp = Perl_pregcomp;
-    PL_regint_start = Perl_re_intuit_start;
-    PL_regint_string = Perl_re_intuit_string;
-    PL_regfree = Perl_pregfree;
-
-    if (!oldflag)
-	PL_debug &= ~DEBUG_r_FLAG;
-}
-
-static void
-install(pTHX)
-{
-    dMY_CXT;
-    PL_colorset = 0;			/* Allow reinspection of ENV. */
-    PL_regexecp = &my_regexec;
-    PL_regcompp = &my_regcomp;
-    PL_regint_start = &my_re_intuit_start;
-    PL_regint_string = &my_re_intuit_string;
-    PL_regfree = &my_regfree;
-    oldflag = PL_debug & DEBUG_r_FLAG;
-    PL_debug |= DEBUG_r_FLAG;
-}
+const struct regexp_engine my_reg_engine = { 
+        my_re_compile, 
+        my_regexec, 
+        my_re_intuit_start, 
+        my_re_intuit_string, 
+        my_regfree, 
+        my_reg_numbered_buff_fetch,
+        my_reg_numbered_buff_store,
+        my_reg_numbered_buff_length,
+        my_reg_named_buff,
+        my_reg_named_buff_iter,
+        my_reg_qr_package,
+#if defined(USE_ITHREADS)
+        my_regdupe 
+#endif
+};
 
 MODULE = re	PACKAGE = re
 
-BOOT:
-{
-   MY_CXT_INIT;
-}
-
-
 void
 install()
-  CODE:
-    install(aTHX);
+    PPCODE:
+        PL_colorset = 0;	/* Allow reinspection of ENV. */
+        /* PL_debug |= DEBUG_r_FLAG; */
+	XPUSHs(sv_2mortal(newSViv(PTR2IV(&my_reg_engine))));
 
 void
-uninstall()
-  CODE:
-    uninstall(aTHX);
+regmust(sv)
+    SV * sv
+PROTOTYPE: $
+PREINIT:
+    REGEXP *re;
+PPCODE:
+{
+    if ((re = SvRX(sv)) /* assign deliberate */
+       /* only for re engines we know about */
+       && (RX_ENGINE(re) == &my_reg_engine
+           || RX_ENGINE(re) == &PL_core_reg_engine))
+    {
+        SV *an = &PL_sv_no;
+        SV *fl = &PL_sv_no;
+        if (RX_ANCHORED_SUBSTR(re)) {
+            an = sv_2mortal(newSVsv(RX_ANCHORED_SUBSTR(re)));
+        } else if (RX_ANCHORED_UTF8(re)) {
+            an = sv_2mortal(newSVsv(RX_ANCHORED_UTF8(re)));
+        }
+        if (RX_FLOAT_SUBSTR(re)) {
+            fl = sv_2mortal(newSVsv(RX_FLOAT_SUBSTR(re)));
+        } else if (RX_FLOAT_UTF8(re)) {
+            fl = sv_2mortal(newSVsv(RX_FLOAT_UTF8(re)));
+        }
+        XPUSHs(an);
+        XPUSHs(fl);
+        XSRETURN(2);
+    }
+    XSRETURN_UNDEF;
+}
+

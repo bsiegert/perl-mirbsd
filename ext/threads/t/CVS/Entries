@@ -1,11 +1,11 @@
-/basic.t/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/end.t/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/join.t/1.1.1.2/Fri Jun 30 22:39:59 2006//
-/libc.t/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/list.t/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/problems.t/1.1.1.2/Fri Jun 30 22:40:00 2006//
-/stress_cv.t/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/stress_re.t/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/stress_string.t/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/thread.t/1.1.1.2/Fri Jun 30 22:40:01 2006//
+/basic.t/-1.1.1.1///
+/end.t/-1.1.1.1///
+/join.t/-1.1.1.2///
+/libc.t/-1.1.1.1///
+/list.t/-1.1.1.1///
+/problems.t/-1.1.1.2///
+/stress_cv.t/-1.1.1.1///
+/stress_re.t/-1.1.1.1///
+/stress_string.t/-1.1.1.1///
+/thread.t/-1.1.1.2///
 D

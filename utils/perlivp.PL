@@ -33,12 +33,11 @@ $Config{'startperl'}
         if \$running_under_some_shell;
 !GROK!THIS!
 
+print OUT "\n# perlivp $^V\n";
+
 # In the following, perl variables are not expanded during extraction.
 
 print OUT <<'!NO!SUBS!';
-
-# perlivp V 0.02
-
 
 sub usage {
     warn "@_\n" if @_;
@@ -120,7 +119,7 @@ print "## Checking Perl version via variable `\$]'.\n" if $opt{'p'};
 !NO!SUBS!
 
 print OUT <<"!GROK!THIS!";
-my \$ivp_VERSION = $];
+my \$ivp_VERSION = "$]";
 
 !GROK!THIS!
 print OUT <<'!NO!SUBS!';
@@ -143,10 +142,6 @@ my $INC_total = 0;
 my $INC_there = 0;
 foreach (@INC) {
     next if $_ eq '.'; # skip -d test here
-    if ($^O eq 'MacOS') {
-        next if $_ eq ':'; # skip -d test here
-        next if $_ eq 'Dev:Pseudo:'; # why is this in @INC?
-    }
     if (-d $_) {
         print "## Perl \@INC directory `$_' exists.\n" if $opt{'v'};
         $INC_there++;
@@ -209,7 +204,15 @@ if (defined($Config{'extensions'})) {
             next if ($_ eq 'threads');
             next if ($_ eq 'threads/shared');
         }
-        next if ($_ eq 'Devel/DProf'); 
+        # that's a distribution name, not a module name
+        next if $_ eq 'IO/Compress';
+        next if $_ eq 'Devel/DProf';
+        next if $_ eq 'libnet';
+        next if $_ eq 'Locale/Codes';
+        next if $_ eq 'podlators';
+        # test modules
+        next if $_ eq 'XS/APItest';
+        next if $_ eq 'XS/Typemap';
            # VMS$ perl  -e "eval ""require \""Devel/DProf.pm\"";"" print $@"
            # \NT> perl  -e "eval \"require 'Devel/DProf.pm'\"; print $@"
            # DProf: run perl with -d to use DProf.
@@ -228,7 +231,7 @@ if (defined($Config{'extensions'})) {
 
     # A silly name for a module (that hopefully won't ever exist).
     # Note that this test serves more as a check of the validity of the
-    # actuall required module tests above.
+    # actual required module tests above.
     my $unnecessary = 'bLuRfle';
 
     if (!grep(/$unnecessary/, @extensions)) {
@@ -283,6 +286,12 @@ for (@modules) {
     $version = undef;
     @missing = ();
     @missing = $installed -> validate($_);
+
+    # .bs files are optional
+    @missing = grep { ! /\.bs$/ } @missing;
+    # man files are often compressed
+    @missing = grep { ! ( -s "$_.gz" || -s "$_.bz2" ) } @missing;
+
     if ($#missing >= 0) {
         print "# file",+($#missing == 0) ? '' : 's'," missing from installation:\n";
         print '# ',join(' ',@missing),"\n";

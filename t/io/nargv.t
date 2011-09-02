@@ -1,5 +1,11 @@
 #!./perl
 
+BEGIN {
+    chdir 't' if -d 't';
+    @INC = '../lib';
+    require "./test.pl";
+}
+
 print "1..5\n";
 
 my $j = 1;
@@ -44,6 +50,7 @@ sub show {
 }
 
 sub other {
+    no warnings 'once';
     print STDOUT "# Calling other\n";
     local *ARGV;
     local *ARGVOUT;
@@ -55,9 +62,13 @@ sub other {
     }
 }
 
+my @files;
 sub mkfiles {
-    my @files = map { "scratch$_" } @_;
-    return wantarray ? @files : $files[-1];
+    foreach (@_) {
+	$files[$_] ||= tempfile();
+    }
+    my @results = @files[@_];
+    return wantarray ? @results : @results[-1];
 }
 
-END { unlink map { ($_, "$_.bak") } mkfiles(1..5) }
+END { unlink_all map { ($_, "$_.bak") } mkfiles(1..5) }

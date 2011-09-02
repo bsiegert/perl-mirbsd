@@ -1,7 +1,7 @@
 /*    numeric.c
  *
- *    Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999,
- *    2000, 2001, 2002, 2003, 2004, 2005, 2006, by Larry Wall and others
+ *    Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
+ *    2002, 2003, 2004, 2005, 2006, 2007, 2008 by Larry Wall and others
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
@@ -9,8 +9,10 @@
  */
 
 /*
- * "That only makes eleven (plus one mislaid) and not fourteen, unless
- * wizards count differently to other people."
+ * "That only makes eleven (plus one mislaid) and not fourteen,
+ *  unless wizards count differently to other people."  --Beorn
+ *
+ *     [p.115 of _The Hobbit_: "Queer Lodgings"]
  */
 
 /*
@@ -30,6 +32,7 @@ values, including such things as replacements for the OS's atof() function
 U32
 Perl_cast_ulong(pTHX_ NV f)
 {
+    PERL_UNUSED_CONTEXT;
   if (f < 0.0)
     return f < I32_MIN ? (U32) I32_MIN : (U32)(I32) f;
   if (f < U32_MAX_P1) {
@@ -48,6 +51,7 @@ Perl_cast_ulong(pTHX_ NV f)
 I32
 Perl_cast_i32(pTHX_ NV f)
 {
+    PERL_UNUSED_CONTEXT;
   if (f < I32_MAX_P1)
     return f < I32_MIN ? I32_MIN : (I32) f;
   if (f < U32_MAX_P1) {
@@ -66,6 +70,7 @@ Perl_cast_i32(pTHX_ NV f)
 IV
 Perl_cast_iv(pTHX_ NV f)
 {
+    PERL_UNUSED_CONTEXT;
   if (f < IV_MAX_P1)
     return f < IV_MIN ? IV_MIN : (IV) f;
   if (f < UV_MAX_P1) {
@@ -85,6 +90,7 @@ Perl_cast_iv(pTHX_ NV f)
 UV
 Perl_cast_uv(pTHX_ NV f)
 {
+    PERL_UNUSED_CONTEXT;
   if (f < 0.0)
     return f < IV_MIN ? (UV) IV_MIN : (UV)(IV) f;
   if (f < UV_MAX_P1) {
@@ -99,22 +105,6 @@ Perl_cast_uv(pTHX_ NV f)
   }
   return f > 0 ? UV_MAX : 0 /* NaN */;
 }
-
-#if defined(HUGE_VAL) || (defined(USE_LONG_DOUBLE) && defined(HUGE_VALL))
-/*
- * This hack is to force load of "huge" support from libm.a
- * So it is in perl for (say) POSIX to use.
- * Needed for SunOS with Sun's 'acc' for example.
- */
-NV
-Perl_huge(void)
-{
-#   if defined(USE_LONG_DOUBLE) && defined(HUGE_VALL)
-    return HUGE_VALL;
-#   endif
-    return HUGE_VAL;
-}
-#endif
 
 /*
 =for apidoc grok_bin
@@ -144,27 +134,30 @@ number may use '_' characters to separate digits.
  */
 
 UV
-Perl_grok_bin(pTHX_ char *start, STRLEN *len_p, I32 *flags, NV *result) {
+Perl_grok_bin(pTHX_ const char *start, STRLEN *len_p, I32 *flags, NV *result)
+{
     const char *s = start;
     STRLEN len = *len_p;
     UV value = 0;
     NV value_nv = 0;
 
     const UV max_div_2 = UV_MAX / 2;
-    const bool allow_underscores = (bool)(*flags & PERL_SCAN_ALLOW_UNDERSCORES);
+    const bool allow_underscores = cBOOL(*flags & PERL_SCAN_ALLOW_UNDERSCORES);
     bool overflowed = FALSE;
     char bit;
+
+    PERL_ARGS_ASSERT_GROK_BIN;
 
     if (!(*flags & PERL_SCAN_DISALLOW_PREFIX)) {
         /* strip off leading b or 0b.
            for compatibility silently suffer "b" and "0b" as valid binary
            numbers. */
         if (len >= 1) {
-            if (s[0] == 'b') {
+            if (s[0] == 'b' || s[0] == 'B') {
                 s++;
                 len--;
             }
-            else if (len >= 2 && s[0] == '0' && s[1] == 'b') {
+            else if (len >= 2 && s[0] == '0' && (s[1] == 'b' || s[1] == 'B')) {
                 s+=2;
                 len-=2;
             }
@@ -183,9 +176,8 @@ Perl_grok_bin(pTHX_ char *start, STRLEN *len_p, I32 *flags, NV *result) {
                     continue;
                 }
                 /* Bah. We're just overflowed.  */
-                if (ckWARN_d(WARN_OVERFLOW))
-                    Perl_warner(aTHX_ packWARN(WARN_OVERFLOW),
-                                "Integer overflow in binary number");
+		Perl_ck_warner_d(aTHX_ packWARN(WARN_OVERFLOW),
+				 "Integer overflow in binary number");
                 overflowed = TRUE;
                 value_nv = (NV) value;
             }
@@ -206,9 +198,9 @@ Perl_grok_bin(pTHX_ char *start, STRLEN *len_p, I32 *flags, NV *result) {
 		++s;
                 goto redo;
 	    }
-        if (!(*flags & PERL_SCAN_SILENT_ILLDIGIT) && ckWARN(WARN_DIGIT))
-            Perl_warner(aTHX_ packWARN(WARN_DIGIT),
-                        "Illegal binary digit '%c' ignored", *s);
+        if (!(*flags & PERL_SCAN_SILENT_ILLDIGIT))
+            Perl_ck_warner(aTHX_ packWARN(WARN_DIGIT),
+			   "Illegal binary digit '%c' ignored", *s);
         break;
     }
     
@@ -217,9 +209,8 @@ Perl_grok_bin(pTHX_ char *start, STRLEN *len_p, I32 *flags, NV *result) {
 	|| (!overflowed && value > 0xffffffff  )
 #endif
 	) {
-	if (ckWARN(WARN_PORTABLE))
-	    Perl_warner(aTHX_ packWARN(WARN_PORTABLE),
-			"Binary number > 0b11111111111111111111111111111111 non-portable");
+	Perl_ck_warner(aTHX_ packWARN(WARN_PORTABLE),
+		       "Binary number > 0b11111111111111111111111111111111 non-portable");
     }
     *len_p = s - start;
     if (!overflowed) {
@@ -260,26 +251,29 @@ number may use '_' characters to separate digits.
  */
 
 UV
-Perl_grok_hex(pTHX_ char *start, STRLEN *len_p, I32 *flags, NV *result) {
+Perl_grok_hex(pTHX_ const char *start, STRLEN *len_p, I32 *flags, NV *result)
+{
+    dVAR;
     const char *s = start;
     STRLEN len = *len_p;
     UV value = 0;
     NV value_nv = 0;
-
     const UV max_div_16 = UV_MAX / 16;
-    const bool allow_underscores = (bool)(*flags & PERL_SCAN_ALLOW_UNDERSCORES);
+    const bool allow_underscores = cBOOL(*flags & PERL_SCAN_ALLOW_UNDERSCORES);
     bool overflowed = FALSE;
+
+    PERL_ARGS_ASSERT_GROK_HEX;
 
     if (!(*flags & PERL_SCAN_DISALLOW_PREFIX)) {
         /* strip off leading x or 0x.
            for compatibility silently suffer "x" and "0x" as valid hex numbers.
         */
         if (len >= 1) {
-            if (s[0] == 'x') {
+            if (s[0] == 'x' || s[0] == 'X') {
                 s++;
                 len--;
             }
-            else if (len >= 2 && s[0] == '0' && s[1] == 'x') {
+            else if (len >= 2 && s[0] == '0' && (s[1] == 'x' || s[1] == 'X')) {
                 s+=2;
                 len-=2;
             }
@@ -299,9 +293,8 @@ Perl_grok_hex(pTHX_ char *start, STRLEN *len_p, I32 *flags, NV *result) {
                     continue;
                 }
                 /* Bah. We're just overflowed.  */
-                if (ckWARN_d(WARN_OVERFLOW))
-                    Perl_warner(aTHX_ packWARN(WARN_OVERFLOW),
-                                "Integer overflow in hexadecimal number");
+		Perl_ck_warner_d(aTHX_ packWARN(WARN_OVERFLOW),
+				 "Integer overflow in hexadecimal number");
                 overflowed = TRUE;
                 value_nv = (NV) value;
             }
@@ -322,8 +315,8 @@ Perl_grok_hex(pTHX_ char *start, STRLEN *len_p, I32 *flags, NV *result) {
 		++s;
                 goto redo;
 	    }
-        if (!(*flags & PERL_SCAN_SILENT_ILLDIGIT) && ckWARN(WARN_DIGIT))
-            Perl_warner(aTHX_ packWARN(WARN_DIGIT),
+        if (!(*flags & PERL_SCAN_SILENT_ILLDIGIT))
+            Perl_ck_warner(aTHX_ packWARN(WARN_DIGIT),
                         "Illegal hexadecimal digit '%c' ignored", *s);
         break;
     }
@@ -333,9 +326,8 @@ Perl_grok_hex(pTHX_ char *start, STRLEN *len_p, I32 *flags, NV *result) {
 	|| (!overflowed && value > 0xffffffff  )
 #endif
 	) {
-	if (ckWARN(WARN_PORTABLE))
-	    Perl_warner(aTHX_ packWARN(WARN_PORTABLE),
-			"Hexadecimal number > 0xffffffff non-portable");
+	Perl_ck_warner(aTHX_ packWARN(WARN_PORTABLE),
+		       "Hexadecimal number > 0xffffffff non-portable");
     }
     *len_p = s - start;
     if (!overflowed) {
@@ -357,7 +349,7 @@ On entry I<start> and I<*len> give the string to scan, I<*flags> gives
 conversion flags, and I<result> should be NULL or a pointer to an NV.
 The scan stops at the end of the string, or the first invalid character.
 Unless C<PERL_SCAN_SILENT_ILLDIGIT> is set in I<*flags>, encountering an
-invalid character will also trigger a warning.
+8 or 9 will also trigger a warning.
 On return I<*len> is set to the length of the scanned string,
 and I<*flags> gives output flags.
 
@@ -374,15 +366,17 @@ number may use '_' characters to separate digits.
  */
 
 UV
-Perl_grok_oct(pTHX_ char *start, STRLEN *len_p, I32 *flags, NV *result) {
+Perl_grok_oct(pTHX_ const char *start, STRLEN *len_p, I32 *flags, NV *result)
+{
     const char *s = start;
     STRLEN len = *len_p;
     UV value = 0;
     NV value_nv = 0;
-
     const UV max_div_8 = UV_MAX / 8;
-    const bool allow_underscores = (bool)(*flags & PERL_SCAN_ALLOW_UNDERSCORES);
+    const bool allow_underscores = cBOOL(*flags & PERL_SCAN_ALLOW_UNDERSCORES);
     bool overflowed = FALSE;
+
+    PERL_ARGS_ASSERT_GROK_OCT;
 
     for (; len-- && *s; s++) {
          /* gcc 2.95 optimiser not smart enough to figure that this subtraction
@@ -399,9 +393,8 @@ Perl_grok_oct(pTHX_ char *start, STRLEN *len_p, I32 *flags, NV *result) {
                     continue;
                 }
                 /* Bah. We're just overflowed.  */
-                if (ckWARN_d(WARN_OVERFLOW))
-                    Perl_warner(aTHX_ packWARN(WARN_OVERFLOW),
-                                "Integer overflow in octal number");
+		Perl_ck_warner_d(aTHX_ packWARN(WARN_OVERFLOW),
+			       "Integer overflow in octal number");
                 overflowed = TRUE;
                 value_nv = (NV) value;
             }
@@ -426,9 +419,9 @@ Perl_grok_oct(pTHX_ char *start, STRLEN *len_p, I32 *flags, NV *result) {
          * as soon as non-octal characters are seen, complain only if
          * someone seems to want to use the digits eight and nine). */
         if (digit == 8 || digit == 9) {
-            if (!(*flags & PERL_SCAN_SILENT_ILLDIGIT) && ckWARN(WARN_DIGIT))
-                Perl_warner(aTHX_ packWARN(WARN_DIGIT),
-                            "Illegal octal digit '%c' ignored", *s);
+            if (!(*flags & PERL_SCAN_SILENT_ILLDIGIT))
+                Perl_ck_warner(aTHX_ packWARN(WARN_DIGIT),
+			       "Illegal octal digit '%c' ignored", *s);
         }
         break;
     }
@@ -438,9 +431,8 @@ Perl_grok_oct(pTHX_ char *start, STRLEN *len_p, I32 *flags, NV *result) {
 	|| (!overflowed && value > 0xffffffff  )
 #endif
 	) {
-	if (ckWARN(WARN_PORTABLE))
-	    Perl_warner(aTHX_ packWARN(WARN_PORTABLE),
-			"Octal number > 037777777777 non-portable");
+	Perl_ck_warner(aTHX_ packWARN(WARN_PORTABLE),
+		       "Octal number > 037777777777 non-portable");
     }
     *len_p = s - start;
     if (!overflowed) {
@@ -470,33 +462,39 @@ For backwards compatibility. Use C<grok_oct> instead.
  */
 
 NV
-Perl_scan_bin(pTHX_ char *start, STRLEN len, STRLEN *retlen)
+Perl_scan_bin(pTHX_ const char *start, STRLEN len, STRLEN *retlen)
 {
     NV rnv;
     I32 flags = *retlen ? PERL_SCAN_ALLOW_UNDERSCORES : 0;
     const UV ruv = grok_bin (start, &len, &flags, &rnv);
 
+    PERL_ARGS_ASSERT_SCAN_BIN;
+
     *retlen = len;
     return (flags & PERL_SCAN_GREATER_THAN_UV_MAX) ? rnv : (NV)ruv;
 }
 
 NV
-Perl_scan_oct(pTHX_ char *start, STRLEN len, STRLEN *retlen)
+Perl_scan_oct(pTHX_ const char *start, STRLEN len, STRLEN *retlen)
 {
     NV rnv;
     I32 flags = *retlen ? PERL_SCAN_ALLOW_UNDERSCORES : 0;
     const UV ruv = grok_oct (start, &len, &flags, &rnv);
 
+    PERL_ARGS_ASSERT_SCAN_OCT;
+
     *retlen = len;
     return (flags & PERL_SCAN_GREATER_THAN_UV_MAX) ? rnv : (NV)ruv;
 }
 
 NV
-Perl_scan_hex(pTHX_ char *start, STRLEN len, STRLEN *retlen)
+Perl_scan_hex(pTHX_ const char *start, STRLEN len, STRLEN *retlen)
 {
     NV rnv;
     I32 flags = *retlen ? PERL_SCAN_ALLOW_UNDERSCORES : 0;
     const UV ruv = grok_hex (start, &len, &flags, &rnv);
+
+    PERL_ARGS_ASSERT_SCAN_HEX;
 
     *retlen = len;
     return (flags & PERL_SCAN_GREATER_THAN_UV_MAX) ? rnv : (NV)ruv;
@@ -513,9 +511,13 @@ bool
 Perl_grok_numeric_radix(pTHX_ const char **sp, const char *send)
 {
 #ifdef USE_LOCALE_NUMERIC
+    dVAR;
+
+    PERL_ARGS_ASSERT_GROK_NUMERIC_RADIX;
+
     if (PL_numeric_radix_sv && IN_LOCALE) { 
         STRLEN len;
-        const char* radix = SvPV(PL_numeric_radix_sv, len);
+        const char * const radix = SvPV(PL_numeric_radix_sv, len);
         if (*sp + len <= send && memEQ(*sp, radix, len)) {
             *sp += len;
             return TRUE; 
@@ -524,6 +526,9 @@ Perl_grok_numeric_radix(pTHX_ const char **sp, const char *send)
     /* always try "." if numeric radix didn't match because
      * we may have data from different locales mixed */
 #endif
+
+    PERL_ARGS_ASSERT_GROK_NUMERIC_RADIX;
+
     if (*sp < send && **sp == '.') {
         ++*sp;
         return TRUE;
@@ -558,12 +563,14 @@ int
 Perl_grok_number(pTHX_ const char *pv, STRLEN len, UV *valuep)
 {
   const char *s = pv;
-  const char *send = pv + len;
+  const char * const send = pv + len;
   const UV max_div_10 = UV_MAX / 10;
   const char max_mod_10 = UV_MAX % 10;
   int numtype = 0;
   int sawinf = 0;
   int sawnan = 0;
+
+  PERL_ARGS_ASSERT_GROK_NUMBER;
 
   while (s < send && isSPACE(*s))
     s++;
@@ -780,7 +787,7 @@ S_mulexp10(NV value, I32 exponent)
 
 #if ((defined(VMS) && !defined(__IEEE_FP)) || defined(_UNICOS)) && defined(NV_MAX_10_EXP)
     STMT_START {
-	NV exp_v = log10(value);
+	const NV exp_v = log10(value);
 	if (exponent >= NV_MAX_10_EXP || exponent + exp_v >= NV_MAX_10_EXP)
 	    return NV_MAX;
 	if (exponent < 0) {
@@ -818,6 +825,10 @@ Perl_my_atof(pTHX_ const char* s)
 {
     NV x = 0.0;
 #ifdef USE_LOCALE_NUMERIC
+    dVAR;
+
+    PERL_ARGS_ASSERT_MY_ATOF;
+
     if (PL_numeric_local && IN_LOCALE) {
 	NV y;
 
@@ -857,6 +868,8 @@ Perl_my_atof2(pTHX_ const char* orig, NV* value)
     I32 old_digit = 0;
     I32 sig_digits = 0; /* noof significant digits seen so far */
 
+    PERL_ARGS_ASSERT_MY_ATOF2;
+
 /* There is no point in processing more significant digits
  * than the NV can hold. Note that NV_DIG is a lower-bound value,
  * while we need an upper-bound value. We add 2 to account for this;
@@ -874,7 +887,14 @@ Perl_my_atof2(pTHX_ const char* orig, NV* value)
  * both the first and last digit, since neither can hold all values from
  * 0..9; but for calculating the value we must examine those two digits.
  */
-#define MAX_SIG_DIGITS (NV_DIG+2)
+#ifdef MAX_SIG_DIG_PLUS
+    /* It is not necessarily the case that adding 2 to NV_DIG gets all the
+       possible digits in a NV, especially if NVs are not IEEE compliant
+       (e.g., long doubles on IRIX) - Allen <allens@cpan.org> */
+# define MAX_SIG_DIGITS (NV_DIG+MAX_SIG_DIG_PLUS)
+#else
+# define MAX_SIG_DIGITS (NV_DIG+2)
+#endif
 
 /* the max number we can accumulate in a UV, and still safely do 10*N+9 */
 #define MAX_ACCUMULATE ( (UV) ((UV_MAX - 9)/10))
@@ -962,10 +982,9 @@ Perl_my_atof2(pTHX_ const char* orig, NV* value)
 	else if (!seen_dp && GROK_NUMERIC_RADIX(&s, send)) {
 	    seen_dp = 1;
 	    if (sig_digits > MAX_SIG_DIGITS) {
-		++s;
-		while (isDIGIT(*s)) {
+		do {
 		    ++s;
-		}
+		} while (isDIGIT(*s));
 		break;
 	    }
 	}
@@ -1029,6 +1048,38 @@ long double
 Perl_my_frexpl(long double x, int *e) {
 	*e = x == 0.0L ? 0 : ilogbl(x) + 1;
 	return (scalbnl(x, -*e));
+}
+#endif
+
+/*
+=for apidoc Perl_signbit
+
+Return a non-zero integer if the sign bit on an NV is set, and 0 if
+it is not.  
+
+If Configure detects this system has a signbit() that will work with
+our NVs, then we just use it via the #define in perl.h.  Otherwise,
+fall back on this implementation.  As a first pass, this gets everything
+right except -0.0.  Alas, catching -0.0 is the main use for this function,
+so this is not too helpful yet.  Still, at least we have the scaffolding
+in place to support other systems, should that prove useful.
+
+
+Configure notes:  This function is called 'Perl_signbit' instead of a
+plain 'signbit' because it is easy to imagine a system having a signbit()
+function or macro that doesn't happen to work with our particular choice
+of NVs.  We shouldn't just re-#define signbit as Perl_signbit and expect
+the standard system headers to be happy.  Also, this is a no-context
+function (no pTHX_) because Perl_signbit() is usually re-#defined in
+perl.h as a simple macro call to the system's signbit().
+Users should just always call Perl_signbit().
+
+=cut
+*/
+#if !defined(HAS_SIGNBIT)
+int
+Perl_signbit(NV x) {
+    return (x < 0.0) ? 1 : 0;
 }
 #endif
 

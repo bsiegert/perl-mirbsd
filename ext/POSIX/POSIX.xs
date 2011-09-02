@@ -51,7 +51,7 @@
 #include <unistd.h>
 #endif
 
-/* XXX This comment is just to make I_TERMIO and I_SGTTY visible to 
+/* XXX This comment is just to make I_TERMIO and I_SGTTY visible to
    metaconfig for future extension writers.  We don't use them in POSIX.
    (This is really sneaky :-)  --AD
 */
@@ -69,9 +69,6 @@
 #include <time.h>
 #ifdef I_UNISTD
 #include <unistd.h>
-#endif
-#ifdef MACOS_TRADITIONAL
-#undef fdopen
 #endif
 #include <fcntl.h>
 
@@ -196,31 +193,182 @@ char *tzname[] = { "" , "" };
 #else
 
 #  ifndef HAS_MKFIFO
-#    if defined(OS2) || defined(MACOS_TRADITIONAL)
+#    if defined(OS2)
 #      define mkfifo(a,b) not_here("mkfifo")
-#    else	/* !( defined OS2 ) */ 
+#    else	/* !( defined OS2 ) */
 #      ifndef mkfifo
 #        define mkfifo(path, mode) (mknod((path), (mode) | S_IFIFO, 0))
 #      endif
 #    endif
 #  endif /* !HAS_MKFIFO */
 
-#  ifdef MACOS_TRADITIONAL
-#    define ttyname(a) (char*)not_here("ttyname")
-#    define tzset() not_here("tzset")
-#  else
+#  ifdef I_GRP
 #    include <grp.h>
-#    include <sys/times.h>
-#    ifdef HAS_UNAME
-#      include <sys/utsname.h>
-#    endif
-#    include <sys/wait.h>
 #  endif
+#  include <sys/times.h>
+#  ifdef HAS_UNAME
+#    include <sys/utsname.h>
+#  endif
+#  include <sys/wait.h>
 #  ifdef I_UTIME
 #    include <utime.h>
 #  endif
 #endif /* WIN32 || NETWARE */
 #endif /* __VMS */
+
+#ifdef WIN32
+   /* Perl on Windows assigns WSAGetLastError() return values to errno
+    * (in win32/win32sck.c).  Therefore we need to map these values
+    * back to standard symbolic names, but only for those names having
+    * no existing value or an existing value >= 100. (VC++ 2010 defines
+    * a group of names with values >= 100 in its errno.h which we *do*
+    * need to redefine.) The Errno.pm module does a similar mapping.
+    */
+#  ifdef EWOULDBLOCK
+#    undef EWOULDBLOCK
+#  endif
+#  define EWOULDBLOCK WSAEWOULDBLOCK
+#  ifdef EINPROGRESS
+#    undef EINPROGRESS
+#  endif
+#  define EINPROGRESS WSAEINPROGRESS
+#  ifdef EALREADY
+#    undef EALREADY
+#  endif
+#  define EALREADY WSAEALREADY
+#  ifdef ENOTSOCK
+#    undef ENOTSOCK
+#  endif
+#  define ENOTSOCK WSAENOTSOCK
+#  ifdef EDESTADDRREQ
+#    undef EDESTADDRREQ
+#  endif
+#  define EDESTADDRREQ WSAEDESTADDRREQ
+#  ifdef EMSGSIZE
+#    undef EMSGSIZE
+#  endif
+#  define EMSGSIZE WSAEMSGSIZE
+#  ifdef EPROTOTYPE
+#    undef EPROTOTYPE
+#  endif
+#  define EPROTOTYPE WSAEPROTOTYPE
+#  ifdef ENOPROTOOPT
+#    undef ENOPROTOOPT
+#  endif
+#  define ENOPROTOOPT WSAENOPROTOOPT
+#  ifdef EPROTONOSUPPORT
+#    undef EPROTONOSUPPORT
+#  endif
+#  define EPROTONOSUPPORT WSAEPROTONOSUPPORT
+#  ifdef ESOCKTNOSUPPORT
+#    undef ESOCKTNOSUPPORT
+#  endif
+#  define ESOCKTNOSUPPORT WSAESOCKTNOSUPPORT
+#  ifdef EOPNOTSUPP
+#    undef EOPNOTSUPP
+#  endif
+#  define EOPNOTSUPP WSAEOPNOTSUPP
+#  ifdef EPFNOSUPPORT
+#    undef EPFNOSUPPORT
+#  endif
+#  define EPFNOSUPPORT WSAEPFNOSUPPORT
+#  ifdef EAFNOSUPPORT
+#    undef EAFNOSUPPORT
+#  endif
+#  define EAFNOSUPPORT WSAEAFNOSUPPORT
+#  ifdef EADDRINUSE
+#    undef EADDRINUSE
+#  endif
+#  define EADDRINUSE WSAEADDRINUSE
+#  ifdef EADDRNOTAVAIL
+#    undef EADDRNOTAVAIL
+#  endif
+#  define EADDRNOTAVAIL WSAEADDRNOTAVAIL
+#  ifdef ENETDOWN
+#    undef ENETDOWN
+#  endif
+#  define ENETDOWN WSAENETDOWN
+#  ifdef ENETUNREACH
+#    undef ENETUNREACH
+#  endif
+#  define ENETUNREACH WSAENETUNREACH
+#  ifdef ENETRESET
+#    undef ENETRESET
+#  endif
+#  define ENETRESET WSAENETRESET
+#  ifdef ECONNABORTED
+#    undef ECONNABORTED
+#  endif
+#  define ECONNABORTED WSAECONNABORTED
+#  ifdef ECONNRESET
+#    undef ECONNRESET
+#  endif
+#  define ECONNRESET WSAECONNRESET
+#  ifdef ENOBUFS
+#    undef ENOBUFS
+#  endif
+#  define ENOBUFS WSAENOBUFS
+#  ifdef EISCONN
+#    undef EISCONN
+#  endif
+#  define EISCONN WSAEISCONN
+#  ifdef ENOTCONN
+#    undef ENOTCONN
+#  endif
+#  define ENOTCONN WSAENOTCONN
+#  ifdef ESHUTDOWN
+#    undef ESHUTDOWN
+#  endif
+#  define ESHUTDOWN WSAESHUTDOWN
+#  ifdef ETOOMANYREFS
+#    undef ETOOMANYREFS
+#  endif
+#  define ETOOMANYREFS WSAETOOMANYREFS
+#  ifdef ETIMEDOUT
+#    undef ETIMEDOUT
+#  endif
+#  define ETIMEDOUT WSAETIMEDOUT
+#  ifdef ECONNREFUSED
+#    undef ECONNREFUSED
+#  endif
+#  define ECONNREFUSED WSAECONNREFUSED
+#  ifdef ELOOP
+#    undef ELOOP
+#  endif
+#  define ELOOP WSAELOOP
+#  ifdef EHOSTDOWN
+#    undef EHOSTDOWN
+#  endif
+#  define EHOSTDOWN WSAEHOSTDOWN
+#  ifdef EHOSTUNREACH
+#    undef EHOSTUNREACH
+#  endif
+#  define EHOSTUNREACH WSAEHOSTUNREACH
+#  ifdef EPROCLIM
+#    undef EPROCLIM
+#  endif
+#  define EPROCLIM WSAEPROCLIM
+#  ifdef EUSERS
+#    undef EUSERS
+#  endif
+#  define EUSERS WSAEUSERS
+#  ifdef EDQUOT
+#    undef EDQUOT
+#  endif
+#  define EDQUOT WSAEDQUOT
+#  ifdef ESTALE
+#    undef ESTALE
+#  endif
+#  define ESTALE WSAESTALE
+#  ifdef EREMOTE
+#    undef EREMOTE
+#  endif
+#  define EREMOTE WSAEREMOTE
+#  ifdef EDISCON
+#    undef EDISCON
+#  endif
+#  define EDISCON WSAEDISCON
+#endif
 
 typedef int SysRet;
 typedef long SysRetLong;
@@ -247,23 +395,19 @@ typedef struct termios* POSIX__Termios;
 #endif
 
 /* Possibly needed prototypes */
-char *cuserid (char *);
 #ifndef WIN32
 double strtod (const char *, char **);
 long strtol (const char *, char **, int);
 unsigned long strtoul (const char *, char **, int);
 #endif
 
-#ifndef HAS_CUSERID
-#define cuserid(a) (char *) not_here("cuserid")
-#endif
 #ifndef HAS_DIFFTIME
 #ifndef difftime
 #define difftime(a,b) not_here("difftime")
 #endif
 #endif
 #ifndef HAS_FPATHCONF
-#define fpathconf(f,n) 	(SysRetLong) not_here("fpathconf")
+#define fpathconf(f,n)	(SysRetLong) not_here("fpathconf")
 #endif
 #ifndef HAS_MKTIME
 #define mktime(a) not_here("mktime")
@@ -272,10 +416,10 @@ unsigned long strtoul (const char *, char **, int);
 #define nice(a) not_here("nice")
 #endif
 #ifndef HAS_PATHCONF
-#define pathconf(f,n) 	(SysRetLong) not_here("pathconf")
+#define pathconf(f,n)	(SysRetLong) not_here("pathconf")
 #endif
 #ifndef HAS_SYSCONF
-#define sysconf(n) 	(SysRetLong) not_here("sysconf")
+#define sysconf(n)	(SysRetLong) not_here("sysconf")
 #endif
 #ifndef HAS_READLINK
 #define readlink(a,b,c) not_here("readlink")
@@ -377,192 +521,30 @@ unsigned long strtoul (const char *, char **, int);
  * to follow the traditional.  However, to make the POSIX
  * wait W*() macros to work in BeOS, we need to unbend the
  * reality back in place. --jhi */
-#ifdef __BEOS__
+/* In actual fact the code below is to blame here. Perl has an internal
+ * representation of the exit status ($?), which it re-composes from the
+ * OS's representation using the W*() POSIX macros. The code below
+ * incorrectly uses the W*() macros on the internal representation,
+ * which fails for OSs that have a different representation (namely BeOS
+ * and Haiku). WMUNGE() is a hack that converts the internal
+ * representation into the OS specific one, so that the W*() macros work
+ * as expected. The better solution would be not to use the W*() macros
+ * in the first place, though. -- Ingo Weinhold
+ */
+#if defined(__BEOS__) || defined(__HAIKU__)
 #    define WMUNGE(x) (((x) & 0xFF00) >> 8 | ((x) & 0x00FF) << 8)
 #else
 #    define WMUNGE(x) (x)
 #endif
 
 static int
-not_here(char *s)
+not_here(const char *s)
 {
     croak("POSIX::%s not implemented on this architecture", s);
     return -1;
 }
 
 #include "const-c.inc"
-
-/* These were implemented in the old "constant" subroutine. They are actually
-   macros that take an integer argument and return an integer result.  */
-static int
-int_macro_int (const char *name, STRLEN len, IV *arg_result) {
-  /* Initially switch on the length of the name.  */
-  /* This code has been edited from a "constant" function generated by:
-
-use ExtUtils::Constant qw (constant_types C_constant XS_constant);
-
-my $types = {map {($_, 1)} qw(IV)};
-my @names = (qw(S_ISBLK S_ISCHR S_ISDIR S_ISFIFO S_ISREG WEXITSTATUS WIFEXITED
-	       WIFSIGNALED WIFSTOPPED WSTOPSIG WTERMSIG));
-
-print constant_types(); # macro defs
-foreach (C_constant ("POSIX", 'int_macro_int', 'IV', $types, undef, 5, @names) ) {
-    print $_, "\n"; # C constant subs
-}
-print "#### XS Section:\n";
-print XS_constant ("POSIX", $types);
-   */
-
-  switch (len) {
-  case 7:
-    /* Names all of length 7.  */
-    /* S_ISBLK S_ISCHR S_ISDIR S_ISREG */
-    /* Offset 5 gives the best switch position.  */
-    switch (name[5]) {
-    case 'E':
-      if (memEQ(name, "S_ISREG", 7)) {
-      /*                    ^       */
-#ifdef S_ISREG
-        *arg_result = S_ISREG(*arg_result);
-        return PERL_constant_ISIV;
-#else
-        return PERL_constant_NOTDEF;
-#endif
-      }
-      break;
-    case 'H':
-      if (memEQ(name, "S_ISCHR", 7)) {
-      /*                    ^       */
-#ifdef S_ISCHR
-        *arg_result = S_ISCHR(*arg_result);
-        return PERL_constant_ISIV;
-#else
-        return PERL_constant_NOTDEF;
-#endif
-      }
-      break;
-    case 'I':
-      if (memEQ(name, "S_ISDIR", 7)) {
-      /*                    ^       */
-#ifdef S_ISDIR
-        *arg_result = S_ISDIR(*arg_result);
-        return PERL_constant_ISIV;
-#else
-        return PERL_constant_NOTDEF;
-#endif
-      }
-      break;
-    case 'L':
-      if (memEQ(name, "S_ISBLK", 7)) {
-      /*                    ^       */
-#ifdef S_ISBLK
-        *arg_result = S_ISBLK(*arg_result);
-        return PERL_constant_ISIV;
-#else
-        return PERL_constant_NOTDEF;
-#endif
-      }
-      break;
-    }
-    break;
-  case 8:
-    /* Names all of length 8.  */
-    /* S_ISFIFO WSTOPSIG WTERMSIG */
-    /* Offset 3 gives the best switch position.  */
-    switch (name[3]) {
-    case 'O':
-      if (memEQ(name, "WSTOPSIG", 8)) {
-      /*                  ^          */
-#ifdef WSTOPSIG
-        int i = *arg_result;
-        *arg_result = WSTOPSIG(WMUNGE(i));
-        return PERL_constant_ISIV;
-#else
-        return PERL_constant_NOTDEF;
-#endif
-      }
-      break;
-    case 'R':
-      if (memEQ(name, "WTERMSIG", 8)) {
-      /*                  ^          */
-#ifdef WTERMSIG
-        int i = *arg_result;
-        *arg_result = WTERMSIG(WMUNGE(i));
-        return PERL_constant_ISIV;
-#else
-        return PERL_constant_NOTDEF;
-#endif
-      }
-      break;
-    case 'S':
-      if (memEQ(name, "S_ISFIFO", 8)) {
-      /*                  ^          */
-#ifdef S_ISFIFO
-        *arg_result = S_ISFIFO(*arg_result);
-        return PERL_constant_ISIV;
-#else
-        return PERL_constant_NOTDEF;
-#endif
-      }
-      break;
-    }
-    break;
-  case 9:
-    if (memEQ(name, "WIFEXITED", 9)) {
-#ifdef WIFEXITED
-      int i = *arg_result;
-      *arg_result = WIFEXITED(WMUNGE(i));
-      return PERL_constant_ISIV;
-#else
-      return PERL_constant_NOTDEF;
-#endif
-    }
-    break;
-  case 10:
-    if (memEQ(name, "WIFSTOPPED", 10)) {
-#ifdef WIFSTOPPED
-      int i = *arg_result;
-      *arg_result = WIFSTOPPED(WMUNGE(i));
-      return PERL_constant_ISIV;
-#else
-      return PERL_constant_NOTDEF;
-#endif
-    }
-    break;
-  case 11:
-    /* Names all of length 11.  */
-    /* WEXITSTATUS WIFSIGNALED */
-    /* Offset 1 gives the best switch position.  */
-    switch (name[1]) {
-    case 'E':
-      if (memEQ(name, "WEXITSTATUS", 11)) {
-      /*                ^                */
-#ifdef WEXITSTATUS
-	int i = *arg_result;
-        *arg_result = WEXITSTATUS(WMUNGE(i));
-        return PERL_constant_ISIV;
-#else
-        return PERL_constant_NOTDEF;
-#endif
-      }
-      break;
-    case 'I':
-      if (memEQ(name, "WIFSIGNALED", 11)) {
-      /*                ^                */
-#ifdef WIFSIGNALED
-	int i = *arg_result;
-        *arg_result = WIFSIGNALED(WMUNGE(i));
-        return PERL_constant_ISIV;
-#else
-        return PERL_constant_NOTDEF;
-#endif
-      }
-      break;
-    }
-    break;
-  }
-  return PERL_constant_NOTFOUND;
-}
 
 static void
 restore_sigmask(pTHX_ SV *osset_sv)
@@ -576,11 +558,121 @@ restore_sigmask(pTHX_ SV *osset_sv)
      (void)sigprocmask(SIG_SETMASK, ossetp, (sigset_t *)0);
 }
 
+#ifdef WIN32
+
+/*
+ * (1) The CRT maintains its own copy of the environment, separate from
+ * the Win32API copy.
+ *
+ * (2) CRT getenv() retrieves from this copy. CRT putenv() updates this
+ * copy, and then calls SetEnvironmentVariableA() to update the Win32API
+ * copy.
+ *
+ * (3) win32_getenv() and win32_putenv() call GetEnvironmentVariableA() and
+ * SetEnvironmentVariableA() directly, bypassing the CRT copy of the
+ * environment.
+ *
+ * (4) The CRT strftime() "%Z" implementation calls __tzset(). That
+ * calls CRT tzset(), but only the first time it is called, and in turn
+ * that uses CRT getenv("TZ") to retrieve the timezone info from the CRT
+ * local copy of the environment and hence gets the original setting as
+ * perl never updates the CRT copy when assigning to $ENV{TZ}.
+ *
+ * Therefore, we need to retrieve the value of $ENV{TZ} and call CRT
+ * putenv() to update the CRT copy of the environment (if it is different)
+ * whenever we're about to call tzset().
+ *
+ * In addition to all that, when perl is built with PERL_IMPLICIT_SYS
+ * defined:
+ *
+ * (a) Each interpreter has its own copy of the environment inside the
+ * perlhost structure. That allows applications that host multiple
+ * independent Perl interpreters to isolate environment changes from
+ * each other. (This is similar to how the perlhost mechanism keeps a
+ * separate working directory for each Perl interpreter, so that calling
+ * chdir() will not affect other interpreters.)
+ *
+ * (b) Only the first Perl interpreter instantiated within a process will
+ * "write through" environment changes to the process environment.
+ *
+ * (c) Even the primary Perl interpreter won't update the CRT copy of the
+ * the environment, only the Win32API copy (it calls win32_putenv()).
+ *
+ * As with CPerlHost::Getenv() and CPerlHost::Putenv() themselves, it makes
+ * sense to only update the process environment when inside the main
+ * interpreter, but we don't have access to CPerlHost's m_bTopLevel member
+ * from here so we'll just have to check PL_curinterp instead.
+ *
+ * Therefore, we can simply #undef getenv() and putenv() so that those names
+ * always refer to the CRT functions, and explicitly call win32_getenv() to
+ * access perl's %ENV.
+ *
+ * We also #undef malloc() and free() to be sure we are using the CRT
+ * functions otherwise under PERL_IMPLICIT_SYS they are redefined to calls
+ * into VMem::Malloc() and VMem::Free() and all allocations will be freed
+ * when the Perl interpreter is being destroyed so we'd end up with a pointer
+ * into deallocated memory in environ[] if a program embedding a Perl
+ * interpreter continues to operate even after the main Perl interpreter has
+ * been destroyed.
+ *
+ * Note that we don't free() the malloc()ed memory unless and until we call
+ * malloc() again ourselves because the CRT putenv() function simply puts its
+ * pointer argument into the environ[] array (it doesn't make a copy of it)
+ * so this memory must otherwise be leaked.
+ */
+
+#undef getenv
+#undef putenv
+#undef malloc
+#undef free
+
+static void
+fix_win32_tzenv(void)
+{
+    static char* oldenv = NULL;
+    char* newenv;
+    const char* perl_tz_env = win32_getenv("TZ");
+    const char* crt_tz_env = getenv("TZ");
+    if (perl_tz_env == NULL)
+        perl_tz_env = "";
+    if (crt_tz_env == NULL)
+        crt_tz_env = "";
+    if (strcmp(perl_tz_env, crt_tz_env) != 0) {
+        newenv = (char*)malloc((strlen(perl_tz_env) + 4) * sizeof(char));
+        if (newenv != NULL) {
+            sprintf(newenv, "TZ=%s", perl_tz_env);
+            putenv(newenv);
+            if (oldenv != NULL)
+                free(oldenv);
+            oldenv = newenv;
+        }
+    }
+}
+
+#endif
+
+/*
+ * my_tzset - wrapper to tzset() with a fix to make it work (better) on Win32.
+ * This code is duplicated in the Time-Piece module, so any changes made here
+ * should be made there too.
+ */
+static void
+my_tzset(pTHX)
+{
+#ifdef WIN32
+#if defined(USE_ITHREADS) && defined(PERL_IMPLICIT_SYS)
+    if (PL_curinterp == aTHX)
+#endif
+        fix_win32_tzenv();
+#endif
+    tzset();
+}
+
 MODULE = SigSet		PACKAGE = POSIX::SigSet		PREFIX = sig
 
 POSIX::SigSet
 new(packname = "POSIX::SigSet", ...)
-    char *		packname
+    const char *	packname
     CODE:
 	{
 	    int i;
@@ -621,12 +713,11 @@ sigismember(sigset, sig)
 	POSIX::SigSet	sigset
 	int		sig
 
-
 MODULE = Termios	PACKAGE = POSIX::Termios	PREFIX = cf
 
 POSIX::Termios
 new(packname = "POSIX::Termios", ...)
-    char *		packname
+    const char *	packname
     CODE:
 	{
 #ifdef I_TERMIOS
@@ -731,7 +822,7 @@ getlflag(termios_ref)
 cc_t
 getcc(termios_ref, ccix)
 	POSIX::Termios	termios_ref
-	int		ccix
+	unsigned int	ccix
     CODE:
 #ifdef I_TERMIOS /* References a termios structure member so ifdef it out. */
 	if (ccix >= NCCS)
@@ -801,7 +892,7 @@ setlflag(termios_ref, lflag)
 void
 setcc(termios_ref, ccix, cc)
 	POSIX::Termios	termios_ref
-	int		ccix
+	unsigned int	ccix
 	cc_t		cc
     CODE:
 #ifdef I_TERMIOS /* References a termios structure member so ifdef it out. */
@@ -817,47 +908,69 @@ MODULE = POSIX		PACKAGE = POSIX
 
 INCLUDE: const-xs.inc
 
-void
-int_macro_int(sv, iv)
-    PREINIT:
-	dXSTARG;
-	STRLEN		len;
-        int		type;
-    INPUT:
-	SV *		sv;
-        const char *	s = SvPV(sv, len);
-	IV		iv;
-    PPCODE:
-        /* Change this to int_macro_int(s, len, &iv, &nv);
-           if you need to return both NVs and IVs */
-	type = int_macro_int(s, len, &iv);
-      /* Return 1 or 2 items. First is error message, or undef if no error.
-           Second, if present, is found value */
-        switch (type) {
-        case PERL_constant_NOTFOUND:
-          sv = sv_2mortal(newSVpvf("%s is not a valid POSIX macro", s));
-          EXTEND(SP, 1);
-          PUSHs(&PL_sv_undef);
-          PUSHs(sv);
-          break;
-        case PERL_constant_NOTDEF:
-          sv = sv_2mortal(newSVpvf(
-	    "Your vendor has not defined POSIX macro %s, used", s));
-          EXTEND(SP, 1);
-          PUSHs(&PL_sv_undef);
-          PUSHs(sv);
-          break;
-        case PERL_constant_ISIV:
-          PUSHi(iv);
-          break;
-        default:
-          sv = sv_2mortal(newSVpvf(
-	    "Unexpected return type %d while processing POSIX macro %s, used",
-               type, s));
-          EXTEND(SP, 1);
-          PUSHs(&PL_sv_undef);
-          PUSHs(sv);
-        }
+int
+WEXITSTATUS(status)
+	int status
+    ALIAS:
+	POSIX::WIFEXITED = 1
+	POSIX::WIFSIGNALED = 2
+	POSIX::WIFSTOPPED = 3
+	POSIX::WSTOPSIG = 4
+	POSIX::WTERMSIG = 5
+    CODE:
+#if !defined(WEXITSTATUS) || !defined(WIFEXITED) || !defined(WIFSIGNALED) \
+      || !defined(WIFSTOPPED) || !defined(WSTOPSIG) || !defined(WTERMSIG)
+        RETVAL = 0; /* Silence compilers that notice this, but don't realise
+		       that not_here() can't return.  */
+#endif
+	switch(ix) {
+	case 0:
+#ifdef WEXITSTATUS
+	    RETVAL = WEXITSTATUS(WMUNGE(status));
+#else
+	    not_here("WEXITSTATUS");
+#endif
+	    break;
+	case 1:
+#ifdef WIFEXITED
+	    RETVAL = WIFEXITED(WMUNGE(status));
+#else
+	    not_here("WIFEXITED");
+#endif
+	    break;
+	case 2:
+#ifdef WIFSIGNALED
+	    RETVAL = WIFSIGNALED(WMUNGE(status));
+#else
+	    not_here("WIFSIGNALED");
+#endif
+	    break;
+	case 3:
+#ifdef WIFSTOPPED
+	    RETVAL = WIFSTOPPED(WMUNGE(status));
+#else
+	    not_here("WIFSTOPPED");
+#endif
+	    break;
+	case 4:
+#ifdef WSTOPSIG
+	    RETVAL = WSTOPSIG(WMUNGE(status));
+#else
+	    not_here("WSTOPSIG");
+#endif
+	    break;
+	case 5:
+#ifdef WTERMSIG
+	    RETVAL = WTERMSIG(WMUNGE(status));
+#else
+	    not_here("WTERMSIG");
+#endif
+	    break;
+	default:
+	    Perl_croak(aTHX_ "Illegal alias %d for POSIX::W*", (int)ix);
+	}
+    OUTPUT:
+	RETVAL
 
 int
 isalnum(charstring)
@@ -1036,65 +1149,65 @@ localeconv()
 	if ((lcbuf = localeconv())) {
 	    /* the strings */
 	    if (lcbuf->decimal_point && *lcbuf->decimal_point)
-		hv_store(RETVAL, "decimal_point", 13,
+		(void) hv_store(RETVAL, "decimal_point", 13,
 		    newSVpv(lcbuf->decimal_point, 0), 0);
 	    if (lcbuf->thousands_sep && *lcbuf->thousands_sep)
-		hv_store(RETVAL, "thousands_sep", 13,
+		(void) hv_store(RETVAL, "thousands_sep", 13,
 		    newSVpv(lcbuf->thousands_sep, 0), 0);
 #ifndef NO_LOCALECONV_GROUPING
 	    if (lcbuf->grouping && *lcbuf->grouping)
-		hv_store(RETVAL, "grouping", 8,
+		(void) hv_store(RETVAL, "grouping", 8,
 		    newSVpv(lcbuf->grouping, 0), 0);
 #endif
 	    if (lcbuf->int_curr_symbol && *lcbuf->int_curr_symbol)
-		hv_store(RETVAL, "int_curr_symbol", 15,
+		(void) hv_store(RETVAL, "int_curr_symbol", 15,
 		    newSVpv(lcbuf->int_curr_symbol, 0), 0);
 	    if (lcbuf->currency_symbol && *lcbuf->currency_symbol)
-		hv_store(RETVAL, "currency_symbol", 15,
+		(void) hv_store(RETVAL, "currency_symbol", 15,
 		    newSVpv(lcbuf->currency_symbol, 0), 0);
 	    if (lcbuf->mon_decimal_point && *lcbuf->mon_decimal_point)
-		hv_store(RETVAL, "mon_decimal_point", 17,
+		(void) hv_store(RETVAL, "mon_decimal_point", 17,
 		    newSVpv(lcbuf->mon_decimal_point, 0), 0);
 #ifndef NO_LOCALECONV_MON_THOUSANDS_SEP
 	    if (lcbuf->mon_thousands_sep && *lcbuf->mon_thousands_sep)
-		hv_store(RETVAL, "mon_thousands_sep", 17,
+		(void) hv_store(RETVAL, "mon_thousands_sep", 17,
 		    newSVpv(lcbuf->mon_thousands_sep, 0), 0);
-#endif                    
+#endif
 #ifndef NO_LOCALECONV_MON_GROUPING
 	    if (lcbuf->mon_grouping && *lcbuf->mon_grouping)
-		hv_store(RETVAL, "mon_grouping", 12,
+		(void) hv_store(RETVAL, "mon_grouping", 12,
 		    newSVpv(lcbuf->mon_grouping, 0), 0);
 #endif
 	    if (lcbuf->positive_sign && *lcbuf->positive_sign)
-		hv_store(RETVAL, "positive_sign", 13,
+		(void) hv_store(RETVAL, "positive_sign", 13,
 		    newSVpv(lcbuf->positive_sign, 0), 0);
 	    if (lcbuf->negative_sign && *lcbuf->negative_sign)
-		hv_store(RETVAL, "negative_sign", 13,
+		(void) hv_store(RETVAL, "negative_sign", 13,
 		    newSVpv(lcbuf->negative_sign, 0), 0);
 	    /* the integers */
 	    if (lcbuf->int_frac_digits != CHAR_MAX)
-		hv_store(RETVAL, "int_frac_digits", 15,
+		(void) hv_store(RETVAL, "int_frac_digits", 15,
 		    newSViv(lcbuf->int_frac_digits), 0);
 	    if (lcbuf->frac_digits != CHAR_MAX)
-		hv_store(RETVAL, "frac_digits", 11,
+		(void) hv_store(RETVAL, "frac_digits", 11,
 		    newSViv(lcbuf->frac_digits), 0);
 	    if (lcbuf->p_cs_precedes != CHAR_MAX)
-		hv_store(RETVAL, "p_cs_precedes", 13,
+		(void) hv_store(RETVAL, "p_cs_precedes", 13,
 		    newSViv(lcbuf->p_cs_precedes), 0);
 	    if (lcbuf->p_sep_by_space != CHAR_MAX)
-		hv_store(RETVAL, "p_sep_by_space", 14,
+		(void) hv_store(RETVAL, "p_sep_by_space", 14,
 		    newSViv(lcbuf->p_sep_by_space), 0);
 	    if (lcbuf->n_cs_precedes != CHAR_MAX)
-		hv_store(RETVAL, "n_cs_precedes", 13,
+		(void) hv_store(RETVAL, "n_cs_precedes", 13,
 		    newSViv(lcbuf->n_cs_precedes), 0);
 	    if (lcbuf->n_sep_by_space != CHAR_MAX)
-		hv_store(RETVAL, "n_sep_by_space", 14,
+		(void) hv_store(RETVAL, "n_sep_by_space", 14,
 		    newSViv(lcbuf->n_sep_by_space), 0);
 	    if (lcbuf->p_sign_posn != CHAR_MAX)
-		hv_store(RETVAL, "p_sign_posn", 11,
+		(void) hv_store(RETVAL, "p_sign_posn", 11,
 		    newSViv(lcbuf->p_sign_posn), 0);
 	    if (lcbuf->n_sign_posn != CHAR_MAX)
-		hv_store(RETVAL, "n_sign_posn", 11,
+		(void) hv_store(RETVAL, "n_sign_posn", 11,
 		    newSViv(lcbuf->n_sign_posn), 0);
 	}
 #else
@@ -1107,9 +1220,14 @@ char *
 setlocale(category, locale = 0)
 	int		category
 	char *		locale
+    PREINIT:
+	char *		retval;
     CODE:
-	RETVAL = setlocale(category, locale);
-	if (RETVAL) {
+	retval = setlocale(category, locale);
+	if (retval) {
+	    /* Save retval since subsequent setlocale() calls
+	     * may overwrite it. */
+	    RETVAL = savepv(retval);
 #ifdef USE_LOCALE_CTYPE
 	    if (category == LC_CTYPE
 #ifdef LC_ALL
@@ -1162,9 +1280,13 @@ setlocale(category, locale = 0)
 	    }
 #endif /* USE_LOCALE_NUMERIC */
 	}
+	else
+	    RETVAL = NULL;
     OUTPUT:
 	RETVAL
-
+    CLEANUP:
+        if (RETVAL)
+	    Safefree(RETVAL);
 
 NV
 acos(x)
@@ -1247,8 +1369,9 @@ sigaction(sig, optaction, oldaction = 0)
 # interface look beautiful, which is hard.
 
 	{
+	    dVAR;
 	    POSIX__SigAction action;
-	    GV *siggv = gv_fetchpv("SIG", TRUE, SVt_PVHV);
+	    GV *siggv = gv_fetchpvs("SIG", GV_ADD, SVt_PVHV);
 	    struct sigaction act;
 	    struct sigaction oact;
 	    sigset_t sset;
@@ -1257,12 +1380,17 @@ sigaction(sig, optaction, oldaction = 0)
 	    POSIX__SigSet sigset;
 	    SV** svp;
 	    SV** sigsvp;
+
+            if (sig < 0) {
+                croak("Negative signals are not allowed");
+            }
+
 	    if (sig == 0 && SvPOK(ST(0))) {
 	        const char *s = SvPVX_const(ST(0));
-		int i = whichsig((char *)s);
+		int i = whichsig(s);
 
 	        if (i < 0 && memEQ(s, "SIG", 3))
-		    i = whichsig((char *)s + 3);
+		    i = whichsig(s + 3);
 	        if (i < 0) {
 	            if (ckWARN(WARN_SIGNAL))
 		        Perl_warner(aTHX_ packWARN(WARN_SIGNAL),
@@ -1272,6 +1400,13 @@ sigaction(sig, optaction, oldaction = 0)
 	        else
 		    sig = i;
             }
+#ifdef NSIG
+	    if (sig > NSIG) { /* NSIG - 1 is still okay. */
+	        Perl_warner(aTHX_ packWARN(WARN_SIGNAL),
+                            "No such signal: %d", sig);
+	        XSRETURN_UNDEF;
+	    }
+#endif
 	    sigsvp = hv_fetch(GvHVn(siggv),
 			      PL_sig_name[sig],
 			      strlen(PL_sig_name[sig]),
@@ -1299,7 +1434,7 @@ sigaction(sig, optaction, oldaction = 0)
                XSRETURN_UNDEF;
 	    ENTER;
 	    /* Restore signal mask no matter how we exit this block. */
-	    osset_sv = newSVpv((char *)(&osset), sizeof(sigset_t));
+	    osset_sv = newSVpvn((char *)(&osset), sizeof(sigset_t));
 	    SAVEFREESV( osset_sv );
 	    SAVEDESTRUCTOR_X(restore_sigmask, osset_sv);
 
@@ -1307,20 +1442,22 @@ sigaction(sig, optaction, oldaction = 0)
 
 	    /* Remember old disposition if desired. */
 	    if (oldaction) {
-		svp = hv_fetch(oldaction, "HANDLER", 7, TRUE);
+		svp = hv_fetchs(oldaction, "HANDLER", TRUE);
 		if(!svp)
 		    croak("Can't supply an oldaction without a HANDLER");
 		if(SvTRUE(*sigsvp)) { /* TBD: what if "0"? */
 			sv_setsv(*svp, *sigsvp);
 		}
 		else {
-			sv_setpv(*svp, "DEFAULT");
+			sv_setpvs(*svp, "DEFAULT");
 		}
 		RETVAL = sigaction(sig, (struct sigaction *)0, & oact);
-		if(RETVAL == -1)
+		if(RETVAL == -1) {
+                   LEAVE;
                    XSRETURN_UNDEF;
+                }
 		/* Get back the mask. */
-		svp = hv_fetch(oldaction, "MASK", 4, TRUE);
+		svp = hv_fetchs(oldaction, "MASK", TRUE);
 		if (sv_isa(*svp, "POSIX::SigSet")) {
 		    IV tmp = SvIV((SV*)SvRV(*svp));
 		    sigset = INT2PTR(sigset_t*, tmp);
@@ -1332,11 +1469,11 @@ sigaction(sig, optaction, oldaction = 0)
 		*sigset = oact.sa_mask;
 
 		/* Get back the flags. */
-		svp = hv_fetch(oldaction, "FLAGS", 5, TRUE);
+		svp = hv_fetchs(oldaction, "FLAGS", TRUE);
 		sv_setiv(*svp, oact.sa_flags);
 
 		/* Get back whether the old handler used safe signals. */
-		svp = hv_fetch(oldaction, "SAFE", 4, TRUE);
+		svp = hv_fetchs(oldaction, "SAFE", TRUE);
 		sv_setiv(*svp,
 		/* compare incompatible pointers by casting to integer */
 		    PTR2nat(oact.sa_handler) == PTR2nat(PL_csighandlerp));
@@ -1346,17 +1483,17 @@ sigaction(sig, optaction, oldaction = 0)
 		/* Safe signals use "csighandler", which vectors through the
 		   PL_sighandlerp pointer when it's safe to do so.
 		   (BTW, "csighandler" is very different from "sighandler".) */
-		svp = hv_fetch(action, "SAFE", 4, FALSE);
+		svp = hv_fetchs(action, "SAFE", FALSE);
 		act.sa_handler =
 			DPTR2FPTR(
-			    void (*)(),
+			    void (*)(int),
 			    (*svp && SvTRUE(*svp))
 				? PL_csighandlerp : PL_sighandlerp
 			);
 
 		/* Vector new Perl handler through %SIG.
 		   (The core signal handlers read %SIG to dispatch.) */
-		svp = hv_fetch(action, "HANDLER", 7, FALSE);
+		svp = hv_fetchs(action, "HANDLER", FALSE);
 		if (!svp)
 		    croak("Can't supply an action without a HANDLER");
 		sv_setsv(*sigsvp, *svp);
@@ -1365,7 +1502,7 @@ sigaction(sig, optaction, oldaction = 0)
 		   right settings, including appropriate interpretation
 		   of DEFAULT and IGNORE.  However, why are we doing
 		   this when we're about to do it again just below?  XXX */
-		mg_set(*sigsvp);
+		SvSETMAGIC(*sigsvp);
 
 		/* And here again we duplicate -- DEFAULT/IGNORE checking. */
 		if(SvPOK(*svp)) {
@@ -1379,7 +1516,7 @@ sigaction(sig, optaction, oldaction = 0)
 		}
 
 		/* Set up any desired mask. */
-		svp = hv_fetch(action, "MASK", 4, FALSE);
+		svp = hv_fetchs(action, "MASK", FALSE);
 		if (svp && sv_isa(*svp, "POSIX::SigSet")) {
 		    IV tmp = SvIV((SV*)SvRV(*svp));
 		    sigset = INT2PTR(sigset_t*, tmp);
@@ -1389,7 +1526,7 @@ sigaction(sig, optaction, oldaction = 0)
 		    sigemptyset(& act.sa_mask);
 
 		/* Set up any desired flags. */
-		svp = hv_fetch(action, "FLAGS", 5, FALSE);
+		svp = hv_fetchs(action, "FLAGS", FALSE);
 		act.sa_flags = svp ? SvIV(*svp) : 0;
 
 		/* Don't worry about cleaning up *sigsvp if this fails,
@@ -1398,8 +1535,10 @@ sigaction(sig, optaction, oldaction = 0)
 		 * essentially meaningless anyway.
 		 */
 		RETVAL = sigaction(sig, & act, (struct sigaction *)0);
-		if(RETVAL == -1)
+		if(RETVAL == -1) {
+                    LEAVE;
 		    XSRETURN_UNDEF;
+                }
 	    }
 
 	    LEAVE;
@@ -1476,7 +1615,7 @@ nice(incr)
 	errno = 0;
 	if ((incr = nice(incr)) != -1 || errno == 0) {
 	    if (incr == 0)
-		XPUSHs(sv_2mortal(newSVpvn("0 but true", 10)));
+		XPUSHs(newSVpvs_flags("0 but true", SVs_TEMP));
 	    else
 		XPUSHs(sv_2mortal(newSViv(incr)));
 	}
@@ -1531,11 +1670,11 @@ uname()
 	struct utsname buf;
 	if (uname(&buf) >= 0) {
 	    EXTEND(SP, 5);
-	    PUSHs(sv_2mortal(newSVpv(buf.sysname, 0)));
-	    PUSHs(sv_2mortal(newSVpv(buf.nodename, 0)));
-	    PUSHs(sv_2mortal(newSVpv(buf.release, 0)));
-	    PUSHs(sv_2mortal(newSVpv(buf.version, 0)));
-	    PUSHs(sv_2mortal(newSVpv(buf.machine, 0)));
+	    PUSHs(newSVpvn_flags(buf.sysname, strlen(buf.sysname), SVs_TEMP));
+	    PUSHs(newSVpvn_flags(buf.nodename, strlen(buf.nodename), SVs_TEMP));
+	    PUSHs(newSVpvn_flags(buf.release, strlen(buf.release), SVs_TEMP));
+	    PUSHs(newSVpvn_flags(buf.version, strlen(buf.version), SVs_TEMP));
+	    PUSHs(newSVpvn_flags(buf.machine, strlen(buf.machine), SVs_TEMP));
 	}
 #else
 	uname((char *) 0); /* A stub to call not_here(). */
@@ -1639,7 +1778,7 @@ strtol(str, base = 0)
 
 void
 strtoul(str, base = 0)
-	char *		str
+	const char *	str
 	int		base
     PREINIT:
 	unsigned long num;
@@ -1669,7 +1808,7 @@ strxfrm(src)
           STRLEN dstlen;
           char *p = SvPV(src,srclen);
           srclen++;
-          ST(0) = sv_2mortal(NEWSV(800,srclen*4+1));
+          ST(0) = sv_2mortal(newSV(srclen*4+1));
           dstlen = strxfrm(SvPVX(ST(0)), p, (size_t)srclen);
           if (dstlen > srclen) {
               dstlen++;
@@ -1713,7 +1852,7 @@ tcsendbreak(fd, duration)
 	int		duration
 
 char *
-asctime(sec, min, hour, mday, mon, year, wday = 0, yday = 0, isdst = 0)
+asctime(sec, min, hour, mday, mon, year, wday = 0, yday = 0, isdst = -1)
 	int		sec
 	int		min
 	int		hour
@@ -1767,7 +1906,7 @@ difftime(time1, time2)
 	Time_t		time2
 
 SysRetLong
-mktime(sec, min, hour, mday, mon, year, wday = 0, yday = 0, isdst = 0)
+mktime(sec, min, hour, mday, mon, year, wday = 0, yday = 0, isdst = -1)
 	int		sec
 	int		min
 	int		hour
@@ -1790,7 +1929,7 @@ mktime(sec, min, hour, mday, mon, year, wday = 0, yday = 0, isdst = 0)
 	    mytm.tm_wday = wday;
 	    mytm.tm_yday = yday;
 	    mytm.tm_isdst = isdst;
-	    RETVAL = mktime(&mytm);
+	    RETVAL = (SysRetLong) mktime(&mytm);
 	}
     OUTPUT:
 	RETVAL
@@ -1800,7 +1939,7 @@ mktime(sec, min, hour, mday, mon, year, wday = 0, yday = 0, isdst = 0)
 #     ST(0) = sv_2mortal(newSVpv(...))
 void
 strftime(fmt, sec, min, hour, mday, mon, year, wday = -1, yday = -1, isdst = -1)
-	char *		fmt
+	SV *		fmt
 	int		sec
 	int		min
 	int		hour
@@ -1812,22 +1951,28 @@ strftime(fmt, sec, min, hour, mday, mon, year, wday = -1, yday = -1, isdst = -1)
 	int		isdst
     CODE:
 	{
-	    char *buf = my_strftime(fmt, sec, min, hour, mday, mon, year, wday, yday, isdst);
+	    char *buf = my_strftime(SvPV_nolen(fmt), sec, min, hour, mday, mon, year, wday, yday, isdst);
 	    if (buf) {
-		ST(0) = sv_2mortal(newSVpv(buf, 0));
-		Safefree(buf);
+		SV *const sv = sv_newmortal();
+		sv_usepvn_flags(sv, buf, strlen(buf), SV_HAS_TRAILING_NUL);
+		if (SvUTF8(fmt)) {
+		    SvUTF8_on(sv);
+		}
+		ST(0) = sv;
 	    }
 	}
 
 void
 tzset()
+  PPCODE:
+    my_tzset(aTHX);
 
 void
 tzname()
     PPCODE:
 	EXTEND(SP,2);
-	PUSHs(sv_2mortal(newSVpvn(tzname[0],strlen(tzname[0]))));
-	PUSHs(sv_2mortal(newSVpvn(tzname[1],strlen(tzname[1]))));
+	PUSHs(newSVpvn_flags(tzname[0], strlen(tzname[0]), SVs_TEMP));
+	PUSHs(newSVpvn_flags(tzname[1], strlen(tzname[1]), SVs_TEMP));
 
 SysRet
 access(filename, mode)
@@ -1839,7 +1984,7 @@ ctermid(s = 0)
 	char *          s = 0;
     CODE:
 #ifdef HAS_CTERMID_R
-	s = safemalloc((size_t) L_ctermid);
+	s = (char *) safemalloc((size_t) L_ctermid);
 #endif
 	RETVAL = ctermid(s);
     OUTPUT:
@@ -1852,6 +1997,15 @@ ctermid(s = 0)
 char *
 cuserid(s = 0)
 	char *		s = 0;
+    CODE:
+#ifdef HAS_CUSERID
+  RETVAL = cuserid(s);
+#else
+  RETVAL = 0;
+  not_here("cuserid");
+#endif
+    OUTPUT:
+  RETVAL
 
 SysRetLong
 fpathconf(fd, name)

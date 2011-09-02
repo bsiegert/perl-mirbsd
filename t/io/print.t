@@ -3,11 +3,12 @@
 BEGIN {
     chdir 't' if -d 't';
     @INC = '../lib';
+    require './test.pl';
+    eval 'use Errno';
+    die $@ if $@ and !is_miniperl();
 }
 
 use strict 'vars';
-eval 'use Errno';
-die $@ if $@ and !$ENV{PERL_CORE_MINITEST};
 
 print "1..21\n";
 
@@ -48,6 +49,7 @@ if (!exists &Errno::EBADF) {
     print "ok 19 # skipped: no EBADF\n";
 } else {
     $! = 0;
+    no warnings 'unopened';
     print NONEXISTENT "foo";
     print "not " if ($! != &Errno::EBADF);
     print "ok 19\n";

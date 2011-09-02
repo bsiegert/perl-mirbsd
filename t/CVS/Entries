@@ -1,17 +1,22 @@
-/README/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/TEST/1.1.1.2/Fri Jun 30 22:45:25 2006//
-/TestInit.pm/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/harness/1.1.1.2/Fri Jun 30 22:45:25 2006//
-/perl.supp/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/test.pl/1.1.1.2/Fri Jun 30 22:45:25 2006//
+/README/1.1.1.1/Result of merge//
+/TEST/1.1.1.2/Result of merge//
+/TestInit.pm/-1.1.1.1///
+/harness/1.1.1.2/Result of merge//
+/perl.supp/1.1.1.1/Result of merge//
+/test.pl/1.1.1.2/Result of merge//
+/thread_it.pl/1.1.131.1/Fri Sep  2 20:17:45 2011//
 D/base////
+D/benchmark////
 D/cmd////
 D/comp////
 D/io////
 D/japh////
 D/lib////
+D/mro////
 D/op////
 D/pod////
+D/porting////
+D/re////
 D/run////
 D/uni////
 D/win32////

@@ -3,17 +3,19 @@
 # *** Only structures/arrays with constant initializers should go here.
 # *** Usual globals initialized at runtime should be added in *var*.h.
 
-AMG_names
+bincompat_options
 block_type
 check
+core_reg_engine
 fold
+fold_latin1
 fold_locale
 freq
+keyword_plugin
 memory_wrap
 no_aelem
 no_dir_func
 no_func
-no_helem
 no_helem_sv
 no_localize_ref
 no_mem
@@ -27,14 +29,19 @@ no_wrongref
 op_desc
 op_name
 opargs
+phase_names
 ppaddr
 regkind
+reg_name
+reg_extflags_name
 sig_name
 sig_num
 simple
+simple_bitmask
 utf8skip
 uuemap
 varies
+varies_bitmask
 vtbl_amagic
 vtbl_amagicelem
 vtbl_arylen
@@ -46,7 +53,6 @@ vtbl_defelem
 vtbl_env
 vtbl_envelem
 vtbl_fm
-vtbl_glob
 vtbl_isa
 vtbl_isaelem
 vtbl_mglob
@@ -70,3 +76,4 @@ warn_nl
 warn_nosemi
 warn_reserved
 warn_uninit
+watch_pvx

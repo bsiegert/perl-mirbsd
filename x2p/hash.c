@@ -1,7 +1,7 @@
 /*    hash.c
  *
  *    Copyright (C) 1991, 1992, 1993, 1994, 1995, 1999, 2000, 2001, 2002,
- *    by Larry Wall and others
+ *    2005 by Larry Wall and others
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
@@ -25,7 +25,7 @@ hfetch(register HASH *tb, char *key)
     register HENT *entry;
 
     if (!tb)
-	return Nullstr;
+	return NULL;
     for (s=key,		i=0,	hash = 0;
       /* while */ *s;
 	 s++,		i++,	hash *= 5) {
@@ -39,7 +39,7 @@ hfetch(register HASH *tb, char *key)
 	    continue;
 	return entry->hent_val;
     }
-    return Nullstr;
+    return NULL;
 }
 
 bool
@@ -144,6 +144,6 @@ int
 hiterinit(register HASH *tb)
 {
     tb->tbl_riter = -1;
-    tb->tbl_eiter = Null(HENT*);
+    tb->tbl_eiter = (HENT*)NULL;
     return tb->tbl_fill;
 }

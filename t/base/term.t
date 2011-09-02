@@ -1,7 +1,5 @@
 #!./perl
 
-# $RCSfile: term.t,v $$Revision: 1.7 $$Date: 2003/12/03 03:02:47 $
-
 BEGIN {
     chdir 't' if -d 't';
 }
@@ -40,11 +38,7 @@ if (($x | 1) == 101) {print "ok 5\n";} else {print "not ok 5\n";}
 
 # check <> pseudoliteral
 
-if ($^O eq 'MacOS') {
-	open(try,"Dev:Null") || (die "Can't open /dev/null.");
-} else {
-	open(try, "/dev/null") || open(try,"nla0:") || (die "Can't open /dev/null.");
-}
+open(try, "/dev/null") || open(try,"nla0:") || (die "Can't open /dev/null.");
 
 if (<try> eq '') {
     print "ok 6\n";

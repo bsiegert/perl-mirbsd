@@ -4,39 +4,15 @@ BEGIN {
     $| = 1;
     chdir 't' if -d 't';
     @INC = '../lib';
+    $ENV{PATH} = '/bin' if ${^TAINT};
     $SIG{__WARN__} = sub { die "Dying on warning: ", @_ };
+    require './test.pl';
 }
 
 use warnings;
 use Config;
 
-my $test = 1;
-sub ok {
-    my($ok, $info, $todo) = @_;
-
-    # You have to do it this way or VMS will get confused.
-    printf "%s $test%s\n", $ok ? "ok" : "not ok",
-                           $todo ? " # TODO $todo" : '';
-
-    unless( $ok ) {
-        printf "# Failed test at line %d\n", (caller)[2];
-        print  "# $info\n" if defined $info;
-    }
-
-    $test++;
-    return $ok;
-}
-
-sub skip {
-    my($reason) = @_;
-
-    printf "ok $test # skipped%s\n", defined $reason ? ": $reason" : '';
-
-    $test++;
-    return 1;
-}
-
-print "1..58\n";
+plan (tests => 87);
 
 $Is_MSWin32  = $^O eq 'MSWin32';
 $Is_NetWare  = $^O eq 'NetWare';
@@ -44,35 +20,36 @@ $Is_VMS      = $^O eq 'VMS';
 $Is_Dos      = $^O eq 'dos';
 $Is_os2      = $^O eq 'os2';
 $Is_Cygwin   = $^O eq 'cygwin';
-$Is_MacOS    = $^O eq 'MacOS';
 $Is_MPE      = $^O eq 'mpeix';		
-$Is_miniperl = $ENV{PERL_CORE_MINITEST};
 $Is_BeOS     = $^O eq 'beos';
 
 $PERL = $ENV{PERL}
     || ($Is_NetWare           ? 'perl'   :
-       ($Is_MacOS || $Is_VMS) ? $^X      :
+       $Is_VMS                ? $^X      :
        $Is_MSWin32            ? '.\perl' :
        './perl');
+
+END {
+    # On VMS, environment variable changes are peristent after perl exits
+    delete $ENV{'FOO'} if $Is_VMS;
+}
 
 eval '$ENV{"FOO"} = "hi there";';	# check that ENV is inited inside eval
 # cmd.exe will echo 'variable=value' but 4nt will echo just the value
 # -- Nikola Knezevic
-if ($Is_MSWin32)  { ok `set FOO` =~ /^(?:FOO=)?hi there$/; }
-elsif ($Is_MacOS) { ok "1 # skipped", 1; }
-elsif ($Is_VMS)   { ok `write sys\$output f\$trnlnm("FOO")` eq "hi there\n"; }
-else              { ok `echo \$FOO` eq "hi there\n"; }
+if ($Is_MSWin32)  { like `set FOO`, qr/^(?:FOO=)?hi there$/; }
+elsif ($Is_VMS)   { is `write sys\$output f\$trnlnm("FOO")`, "hi there\n"; }
+else              { is `echo \$FOO`, "hi there\n"; }
 
-unlink 'ajslkdfpqjsjfk';
+unlink_all 'ajslkdfpqjsjfk';
 $! = 0;
 open(FOO,'ajslkdfpqjsjfk');
-ok $!, $!;
+isnt($!, 0);
 close FOO; # just mention it, squelch used-only-once
 
-if ($Is_MSWin32 || $Is_NetWare || $Is_Dos || $Is_MPE || $Is_MacOS) {
-    skip('SIGINT not safe on this platform') for 1..4;
-}
-else {
+SKIP: {
+    skip('SIGINT not safe on this platform', 5)
+	if $Is_MSWin32 || $Is_NetWare || $Is_Dos || $Is_MPE;
   # the next tests are done in a subprocess because sh spits out a
   # newline onto stderr when a child process kills itself with SIGINT.
   # We use a pipe rather than system() because the VMS command buffer
@@ -131,58 +108,69 @@ END
     my $todo = ($^O eq 'os2' ? ' # TODO: EMX v0.9d_fix4 bug: wrong nibble? ' : '');
     print $? & 0xFF ? "ok 6$todo\n" : "not ok 6$todo\n";
 
-    $test += 4;
+    open(CMDPIPE, "| $PERL");
+    print CMDPIPE <<'END';
+
+    sub PVBM () { 'foo' }
+    index 'foo', PVBM;
+    my $pvbm = PVBM;
+
+    sub foo { exit 0 }
+
+    $SIG{"INT"} = $pvbm;
+    kill "INT", $$; sleep 1;
+END
+    close CMDPIPE;
+    $? >>= 8 if $^O eq 'VMS';
+    print $? ? "not ok 7\n" : "ok 7\n";
+
+    curr_test(curr_test() + 5);
 }
 
 # can we slice ENV?
 @val1 = @ENV{keys(%ENV)};
 @val2 = values(%ENV);
-ok join(':',@val1) eq join(':',@val2);
-ok @val1 > 1;
+is join(':',@val1), join(':',@val2);
+cmp_ok @val1, '>', 1;
 
 # regex vars
 'foobarbaz' =~ /b(a)r/;
-ok $` eq 'foo', $`;
-ok $& eq 'bar', $&;
-ok $' eq 'baz', $';
-ok $+ eq 'a', $+;
+is $`, 'foo';
+is $&, 'bar';
+is $', 'baz';
+is $+, 'a';
 
 # $"
 @a = qw(foo bar baz);
-ok "@a" eq "foo bar baz", "@a";
+is "@a", "foo bar baz";
 {
     local $" = ',';
-    ok "@a" eq "foo,bar,baz", "@a";
+    is "@a", "foo,bar,baz";
 }
 
 # $;
 %h = ();
 $h{'foo', 'bar'} = 1;
-ok((keys %h)[0] eq "foo\034bar", (keys %h)[0]);
+is((keys %h)[0], "foo\034bar");
 {
     local $; = 'x';
     %h = ();
     $h{'foo', 'bar'} = 1;
-    ok((keys %h)[0] eq 'fooxbar', (keys %h)[0]);
+    is((keys %h)[0], 'fooxbar');
 }
 
 # $?, $@, $$
-if ($Is_MacOS) {
-    skip('$? + system are broken on MacPerl') for 1..2;
-}
-else {
-    system qq[$PERL "-I../lib" -e "use vmsish qw(hushed); exit(0)"];
-    ok $? == 0, $?;
-    system qq[$PERL "-I../lib" -e "use vmsish qw(hushed); exit(1)"];
-    ok $? != 0, $?;
-}
+system qq[$PERL "-I../lib" -e "use vmsish qw(hushed); exit(0)"];
+is $?, 0;
+system qq[$PERL "-I../lib" -e "use vmsish qw(hushed); exit(1)"];
+isnt $?, 0;
 
 eval { die "foo\n" };
-ok $@ eq "foo\n", $@;
+is $@, "foo\n";
 
-ok $$ > 0, $$;
+cmp_ok($$, '>', 0);
 eval { $$++ };
-ok $@ =~ /^Modification of a read-only value attempted/;
+like ($@, qr/^Modification of a read-only value attempted/);
 
 # $^X and $0
 {
@@ -193,18 +181,20 @@ ok $@ =~ /^Modification of a read-only value attempted/;
        # Cygwin turns the symlink into the real file
        chomp($wd = `pwd`);
        $wd =~ s#/t$##;
+       $wd =~ /(.*)/; $wd = $1; # untaint
+       if ($Is_Cygwin) {
+	   $wd = Cygwin::win_to_posix_path(Cygwin::posix_to_win_path($wd, 1));
+       }
     }
     elsif($Is_os2) {
        $wd = Cwd::sys_cwd();
     }
-    elsif($Is_MacOS) {
-       $wd = ':';
-    }
     else {
 	$wd = '.';
     }
-    my $perl = ($Is_MacOS || $Is_VMS) ? $^X : "$wd/perl";
+    my $perl = $Is_VMS || $Config{d_procselfexe} ? $^X : "$wd/perl";
     my $headmaybe = '';
+    my $middlemaybe = '';
     my $tailmaybe = '';
     $script = "$wd/show-shebang";
     if ($Is_MSWin32) {
@@ -228,11 +218,14 @@ EOT
     elsif ($Is_os2) {
       $script = "./show-shebang";
     }
-    elsif ($Is_MacOS) {
-      $script = ":show-shebang";
-    }
     elsif ($Is_VMS) {
       $script = "[]show-shebang";
+    }
+    elsif ($Is_Cygwin) {
+      $middlemaybe = <<'EOX'
+$^X = Cygwin::win_to_posix_path(Cygwin::posix_to_win_path($^X, 1));
+$0 = Cygwin::win_to_posix_path(Cygwin::posix_to_win_path($0, 1));
+EOX
     }
     if ($^O eq 'os390' or $^O eq 'posix-bc' or $^O eq 'vmesa') {  # no shebang
 	$headmaybe = <<EOH ;
@@ -241,70 +234,283 @@ EOT
 EOH
     }
     $s1 = "\$^X is $perl, \$0 is $script\n";
-    ok open(SCRIPT, ">$script"), $!;
-    ok print(SCRIPT $headmaybe . <<EOB . <<'EOF' . $tailmaybe), $!;
-#!$wd/perl
+    ok open(SCRIPT, ">$script") or diag "Can't write to $script: $!";
+    ok print(SCRIPT $headmaybe . <<EOB . $middlemaybe . <<'EOF' . $tailmaybe) or diag $!;
+#!$perl
 EOB
 print "\$^X is $^X, \$0 is $0\n";
 EOF
-    ok close(SCRIPT), $!;
-    ok chmod(0755, $script), $!;
-    $_ = ($Is_MacOS || $Is_VMS) ? `$perl $script` : `$script`;
+    ok close(SCRIPT) or diag $!;
+    ok chmod(0755, $script) or diag $!;
+    $_ = $Is_VMS ? `$perl $script` : `$script`;
     s/\.exe//i if $Is_Dos or $Is_Cygwin or $Is_os2;
     s{./$script}{$script} if $Is_BeOS; # revert BeOS execvp() side-effect
-    s{\bminiperl\b}{perl}; # so that test doesn't fail with miniperl
     s{is perl}{is $perl}; # for systems where $^X is only a basename
     s{\\}{/}g;
-    ok((($Is_MSWin32 || $Is_os2) ? uc($_) eq uc($s1) : $_ eq $s1), " :$_:!=:$s1:");
+    if ($Is_MSWin32 || $Is_os2) {
+	is uc $_, uc $s1;
+    } else {
+	is $_, $s1;
+    }
     $_ = `$perl $script`;
-    s/\.exe//i if $Is_Dos or $Is_os2;
+    s/\.exe//i if $Is_Dos or $Is_os2 or $Is_Cygwin;
     s{./$perl}{$perl} if $Is_BeOS; # revert BeOS execvp() side-effect
     s{\\}{/}g;
-    ok((($Is_MSWin32 || $Is_os2) ? uc($_) eq uc($s1) : $_ eq $s1), " :$_:!=:$s1: after `$perl $script`");
-    ok unlink($script), $!;
+    if ($Is_MSWin32 || $Is_os2) {
+	is uc $_, uc $s1;
+    } else {
+	is $_, $s1;
+    }
+    ok unlink($script) or diag $!;
+    # CHECK
+    # Could this be replaced with:
+    # unlink_all($script);
 }
 
 # $], $^O, $^T
-ok $] >= 5.00319, $];
+cmp_ok $], '>=', 5.00319;
 ok $^O;
-ok $^T > 850000000, $^T;
+cmp_ok $^T, '>', 850000000;
 
 # Test change 25062 is working
 my $orig_osname = $^O;
 {
 local $^I = '.bak';
-ok($^O eq $orig_osname, 'Assigning $^I does not clobber $^O');
+is $^O, $orig_osname, 'Assigning $^I does not clobber $^O';
 }
 $^O = $orig_osname;
 
-if ($Is_VMS || $Is_Dos || $Is_MacOS) {
-    skip("%ENV manipulations fail or aren't safe on $^O") for 1..4;
+{
+    #RT #72422
+    foreach my $p (0, 1) {
+	fresh_perl_is(<<"EOP", '2 4 8', undef, "test \$^P = $p");
+\$DB::single = 2;
+\$DB::trace = 4;
+\$DB::signal = 8;
+\$^P = $p;
+print "\$DB::single \$DB::trace \$DB::signal";
+EOP
+    }
 }
-else {
-	if ($ENV{PERL_VALGRIND}) {
-	    skip("clearing \%ENV is not safe when running under valgrind");
-	} else {
+
+# Check that assigning to $0 on Linux sets the process name with both
+# argv[0] assignment and by calling prctl()
+{
+  SKIP: {
+    skip "We don't have prctl() here", 2 unless $Config{d_prctl_set_name};
+
+    # We don't really need these tests. prctl() is tested in the
+    # Kernel, but test it anyway for our sanity. If something doesn't
+    # work (like if the system doesn't have a ps(1) for whatever
+    # reason) just bail out gracefully.
+    my $maybe_ps = sub {
+        my ($cmd) = @_;
+        local ($?, $!);
+
+        no warnings;
+        my $res = `$cmd`;
+        skip "Couldn't shell out to `$cmd', returned code $?", 2 if $?;
+        return $res;
+    };
+
+    my $name = "Good Morning, Dave";
+    $0 = $name;
+
+    chomp(my $argv0 = $maybe_ps->("ps h $$"));
+    chomp(my $prctl = $maybe_ps->("ps hc $$"));
+
+    like($argv0, $name, "Set process name through argv[0] ($argv0)");
+    like($prctl, substr($name, 0, 15), "Set process name through prctl() ($prctl)");
+  }
+}
+
+{
+    my $ok = 1;
+    my $warn = '';
+    local $SIG{'__WARN__'} = sub { $ok = 0; $warn = join '', @_; $warn =~ s/\n$//; };
+    $! = undef;
+    local $TODO = $Is_VMS ? "'\$!=undef' does throw a warning" : '';
+    ok($ok, $warn);
+}
+
+SKIP: {
+    skip_if_miniperl("miniperl can't rely on loading %Errno", 2);
+   no warnings 'void';
+
+# Make sure Errno hasn't been prematurely autoloaded
+
+   ok !keys %Errno::;
+
+# Test auto-loading of Errno when %! is used
+
+   ok scalar eval q{
+      %!;
+      scalar %Errno::;
+   }, $@;
+}
+
+SKIP:  {
+    skip_if_miniperl("miniperl can't rely on loading %Errno", 1);
+    # Make sure that Errno loading doesn't clobber $!
+
+    undef %Errno::;
+    delete $INC{"Errno.pm"};
+
+    open(FOO, "nonesuch"); # Generate ENOENT
+    my %errs = %{"!"}; # Cause Errno.pm to be loaded at run-time
+    ok ${"!"}{ENOENT};
+}
+
+# Check that we don't auto-load packages
+SKIP: {
+    skip "staticly linked; may be preloaded", 4 unless $Config{usedl};
+    foreach (['powie::!', 'Errno'],
+	     ['powie::+', 'Tie::Hash::NamedCapture']) {
+	my ($symbol, $package) = @$_;
+	foreach my $scalar_first ('', '$$symbol;') {
+	    my $desc = qq{Referencing %{"$symbol"}};
+	    $desc .= qq{ after mentioning \${"$symbol"}} if $scalar_first;
+	    $desc .= " doesn't load $package";
+
+	    fresh_perl_is(<<"EOP", 0, {}, $desc);
+use strict qw(vars subs);
+my \$symbol = '$symbol';
+$scalar_first;
+1 if %{\$symbol};
+print scalar %${package}::;
+EOP
+	}
+    }
+}
+
+is $^S, 0;
+eval { is $^S,1 };
+eval " BEGIN { ok ! defined \$^S } ";
+is $^S, 0;
+
+my $taint = ${^TAINT};
+is ${^TAINT}, $taint;
+eval { ${^TAINT} = 1 };
+is ${^TAINT}, $taint;
+
+# 5.6.1 had a bug: @+ and @- were not properly interpolated
+# into double-quoted strings
+# 20020414 mjd-perl-patch+@plover.com
+"I like pie" =~ /(I) (like) (pie)/;
+is "@-",  "0 0 2 7";
+is "@+", "10 1 6 10";
+
+# Tests for the magic get of $\
+{
+    my $ok = 0;
+    # [perl #19330]
+    {
+	local $\ = undef;
+	$\++; $\++;
+	$ok = $\ eq 2;
+    }
+    ok $ok;
+    $ok = 0;
+    {
+	local $\ = "a\0b";
+	$ok = "a$\b" eq "aa\0bb";
+    }
+    ok $ok;
+}
+
+# Test for bug [perl #36434]
+# Can not do this test on VMS, EPOC, and SYMBIAN according to comments
+# in mg.c/Perl_magic_clear_all_env()
+SKIP: {
+    skip('Can\'t make assignment to \%ENV on this system', 3) if $Is_VMS;
+
+    local @ISA;
+    local %ENV;
+    # This used to be __PACKAGE__, but that causes recursive
+    #  inheritance, which is detected earlier now and broke
+    #  this test
+    eval { push @ISA, __FILE__ };
+    is $@, '', 'Push a constant on a magic array';
+    $@ and print "# $@";
+    eval { %ENV = (PATH => __PACKAGE__) };
+    is $@, '', 'Assign a constant to a magic hash';
+    $@ and print "# $@";
+    eval { my %h = qw(A B); %ENV = (PATH => (keys %h)[0]) };
+    is $@, '', 'Assign a shared key to a magic hash';
+    $@ and print "# $@";
+}
+
+# Tests for Perl_magic_clearsig
+foreach my $sig (qw(__WARN__ INT)) {
+    $SIG{$sig} = lc $sig;
+    is $SIG{$sig}, 'main::' . lc $sig, "Can assign to $sig";
+    is delete $SIG{$sig}, 'main::' . lc $sig, "Can delete from $sig";
+    is $SIG{$sig}, undef, "$sig is now gone";
+    is delete $SIG{$sig}, undef, "$sig remains gone";
+}
+
+# And now one which doesn't exist;
+{
+    no warnings 'signal';
+    $SIG{HUNGRY} = 'mmm, pie';
+}
+is $SIG{HUNGRY}, 'mmm, pie', 'Can assign to HUNGRY';
+is delete $SIG{HUNGRY}, 'mmm, pie', 'Can delete from HUNGRY';
+is $SIG{HUNGRY}, undef, "HUNGRY is now gone";
+is delete $SIG{HUNGRY}, undef, "HUNGRY remains gone";
+
+# Test deleting signals that we never set
+foreach my $sig (qw(__DIE__ _BOGUS_HOOK KILL THIRSTY)) {
+    is $SIG{$sig}, undef, "$sig is not present";
+    is delete $SIG{$sig}, undef, "delete of $sig returns undef";
+}
+
+{
+    $! = 9999;
+    is int $!, 9999, q{[perl #72850] Core dump in bleadperl from perl -e '$! = 9999; $a = $!;'};
+
+}
+
+# ^^^^^^^^^ New tests go here ^^^^^^^^^
+
+SKIP: {
+    skip("%ENV manipulations fail or aren't safe on $^O", 4)
+	if $Is_VMS || $Is_Dos;
+
+ SKIP: {
+	skip("clearing \%ENV is not safe when running under valgrind")
+	    if $ENV{PERL_VALGRIND};
+
 	    $PATH = $ENV{PATH};
 	    $PDL = $ENV{PERL_DESTRUCT_LEVEL} || 0;
 	    $ENV{foo} = "bar";
 	    %ENV = ();
 	    $ENV{PATH} = $PATH;
 	    $ENV{PERL_DESTRUCT_LEVEL} = $PDL || 0;
-	    ok ($Is_MSWin32 ? (`set foo 2>NUL` eq "")
-			    : (`echo \$foo` eq "\n") );
+	    if ($Is_MSWin32) {
+		is `set foo 2>NUL`, "";
+	    } else {
+		is `echo \$foo`, "\n";
+	    }
 	}
 
 	$ENV{__NoNeSuCh} = "foo";
 	$0 = "bar";
 # cmd.exe will echo 'variable=value' but 4nt will echo just the value
 # -- Nikola Knezevic
-       ok ($Is_MSWin32 ? (`set __NoNeSuCh` =~ /^(?:__NoNeSuCh=)?foo$/)
-			    : (`echo \$__NoNeSuCh` eq "foo\n") );
-	if ($^O =~ /^(linux|freebsd)$/ &&
-	    open CMDLINE, "/proc/$$/cmdline") {
+    	if ($Is_MSWin32) {
+	    like `set __NoNeSuCh`, qr/^(?:__NoNeSuCh=)?foo$/;
+	} else {
+	    is `echo \$__NoNeSuCh`, "foo\n";
+	}
+    SKIP: {
+	    skip("\$0 check only on Linux and FreeBSD", 2)
+		unless $^O =~ /^(linux|freebsd)$/
+		    && open CMDLINE, "/proc/$$/cmdline";
+
 	    chomp(my $line = scalar <CMDLINE>);
 	    my $me = (split /\0/, $line)[0];
-	    ok($me eq $0, 'altering $0 is effective (testing with /proc/)');
+	    is $me, $0, 'altering $0 is effective (testing with /proc/)';
 	    close CMDLINE;
             # perlbug #22811
             my $mydollarzero = sub {
@@ -332,127 +538,23 @@ else {
 	       # can get rid of the first one.
 	       || ($^O eq 'freebsd' && $ps =~ m/^(?:perl: )?x(?: \(perl\))?$/),
 		       'altering $0 is effective (testing with `ps`)');
-	} else {
-	    skip("\$0 check only on Linux and FreeBSD") for 0, 1;
 	}
-}
-
-{
-    my $ok = 1;
-    my $warn = '';
-    local $SIG{'__WARN__'} = sub { $ok = 0; $warn = join '', @_; };
-    $! = undef;
-    ok($ok, $warn, $Is_VMS ? "'\$!=undef' does throw a warning" : '');
 }
 
 # test case-insignificance of %ENV (these tests must be enabled only
 # when perl is compiled with -DENV_IS_CASELESS)
-if ($Is_MSWin32 || $Is_NetWare) {
+SKIP: {
+    skip('no caseless %ENV support', 4) unless $Is_MSWin32 || $Is_NetWare;
+
     %ENV = ();
     $ENV{'Foo'} = 'bar';
     $ENV{'fOo'} = 'baz';
-    ok (scalar(keys(%ENV)) == 1);
-    ok exists($ENV{'FOo'});
-    ok (delete($ENV{'foO'}) eq 'baz');
-    ok (scalar(keys(%ENV)) == 0);
-}
-else {
-    skip('no caseless %ENV support') for 1..4;
+    is scalar(keys(%ENV)), 1;
+    ok exists $ENV{'FOo'};
+    is delete $ENV{'foO'}, 'baz';
+    is scalar(keys(%ENV)), 0;
 }
 
-if ($Is_miniperl) {
-    skip ("miniperl can't rely on loading %Errno") for 1..2;
-} else {
-   no warnings 'void';
+__END__
 
-# Make sure Errno hasn't been prematurely autoloaded
-
-   ok !keys %Errno::;
-
-# Test auto-loading of Errno when %! is used
-
-   ok scalar eval q{
-      %!;
-      defined %Errno::;
-   }, $@;
-}
-
-if ($Is_miniperl) {
-    skip ("miniperl can't rely on loading %Errno");
-} else {
-    # Make sure that Errno loading doesn't clobber $!
-
-    undef %Errno::;
-    delete $INC{"Errno.pm"};
-
-    open(FOO, "nonesuch"); # Generate ENOENT
-    my %errs = %{"!"}; # Cause Errno.pm to be loaded at run-time
-    ok ${"!"}{ENOENT};
-}
-
-ok $^S == 0 && defined $^S;
-eval { ok $^S == 1 };
-eval " BEGIN { ok ! defined \$^S } ";
-ok $^S == 0 && defined $^S;
-
-ok ${^TAINT} == 0;
-eval { ${^TAINT} = 1 };
-ok ${^TAINT} == 0;
-
-# 5.6.1 had a bug: @+ and @- were not properly interpolated
-# into double-quoted strings
-# 20020414 mjd-perl-patch+@plover.com
-"I like pie" =~ /(I) (like) (pie)/;
-ok "@-" eq  "0 0 2 7";
-ok "@+" eq "10 1 6 10";
-
-# Tests for the magic get of $\
-{
-    my $ok = 0;
-    # [perl #19330]
-    {
-	local $\ = undef;
-	$\++; $\++;
-	$ok = $\ eq 2;
-    }
-    ok $ok;
-    $ok = 0;
-    {
-	local $\ = "a\0b";
-	$ok = "a$\b" eq "aa\0bb";
-    }
-    ok $ok;
-}
-
-# Test for bug [perl #27839]
-{
-    my $x;
-    sub f {
-	"abc" =~ /(.)./;
-	$x = "@+";
-	return @+;
-    };
-    my @y = f();
-    ok( $x eq "@y", "return a magic array ($x) vs (@y)" );
-}
-
-# Test for bug [perl #36434]
-if (!$Is_VMS) {
-    local @ISA;
-    local %ENV;
-    eval { push @ISA, __PACKAGE__ };
-    ok( $@ eq '', 'Push a constant on a magic array');
-    $@ and print "# $@";
-    eval { %ENV = (PATH => __PACKAGE__) };
-    ok( $@ eq '', 'Assign a constant to a magic hash');
-    $@ and print "# $@";
-    eval { my %h = qw(A B); %ENV = (PATH => (keys %h)[0]) };
-    ok( $@ eq '', 'Assign a shared key to a magic hash');
-    $@ and print "# $@";
-}
-else {
-# Can not do this test on VMS, EPOC, and SYMBIAN according to comments
-# in mg.c/Perl_magic_clear_all_env()
-#
-    skip('Can\'t make assignment to \%ENV on this system') for 1..3;
-}
+# Put new tests before the various ENV tests, as they blow %ENV away.

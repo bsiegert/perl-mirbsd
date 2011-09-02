@@ -1,6 +1,6 @@
 /*    util.h
  *
- *    Copyright (C) 1991, 1992, 1993, 1994, 1995, 1996, 1999, 2000,
+ *    Copyright (C) 1991, 1992, 1993, 1994, 1995, 1996, 1999, 2000, 2005
  *    by Larry Wall and others
  *
  *    You may distribute under the terms of either the GNU General Public
@@ -21,8 +21,8 @@
 char * cpy2 ( char *to, char *from, int delim );
 char * cpytill ( char *to, char *from, int delim );
 void growstr ( char **strptr, int *curlen, int newlen );
-char * instr ( char *big, char *little );
-char * savestr ( char *str );
+char * instr ( char *big, const char *little );
+char * savestr ( const char *str );
 void fatal ( const char *pat, ... );
 void warn  ( const char *pat, ... );
 int prewalk ( int numit, int level, int node, int *numericptr );

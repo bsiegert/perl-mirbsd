@@ -3,7 +3,7 @@ package DBM_Filter::null ;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub Store
 {
@@ -23,7 +23,7 @@ __END__
 
 =head1 NAME
 
-DBM_Filter::null -- DBM Filter to force null termination
+DBM_Filter::null - filter for DBM_Filter
 
 =head1 SYNOPSIS
 
@@ -32,7 +32,7 @@ DBM_Filter::null -- DBM Filter to force null termination
 
     $db = tie %hash, ...
     $db->Filter_Push('null');
-    
+
 =head1 DESCRIPTION
 
 This filter ensures that all data written to the DBM file is null

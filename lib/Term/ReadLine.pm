@@ -6,7 +6,7 @@ If no real package is found, substitutes stubs instead of basic functions.
 =head1 SYNOPSIS
 
   use Term::ReadLine;
-  my $term = new Term::ReadLine 'Simple Perl calc';
+  my $term = Term::ReadLine->new('Simple Perl calc');
   my $prompt = "Enter your arithmetic expression: ";
   my $OUT = $term->OUT || \*STDOUT;
   while ( defined ($_ = $term->readline($prompt)) ) {
@@ -26,7 +26,7 @@ CPAN (under the C<Term::ReadLine::*> namespace).
 
 All the supported functions should be called as methods, i.e., either as 
 
-  $term = new Term::ReadLine 'name';
+  $term = Term::ReadLine->new('name');
 
 or as 
 
@@ -156,22 +156,6 @@ empty, the best available package is loaded.
 (Note that processing of C<PERL_RL> for ornaments is in the discretion of the 
 particular used C<Term::ReadLine::*> package).
 
-=head1 CAVEATS
-
-It seems that using Term::ReadLine from Emacs minibuffer doesn't work
-quite right and one will get an error message like
-
-    Cannot open /dev/tty for read at ...
-
-One possible workaround for this is to explicitly open /dev/tty like this
-
-    open (FH, "/dev/tty" )
-      or eval 'sub Term::ReadLine::findConsole { ("&STDIN", "&STDERR") }';
-    die $@ if $@;
-    close (FH);
-
-or you can try using the 4-argument form of Term::ReadLine->new().
-
 =cut
 
 use strict;
@@ -196,7 +180,6 @@ sub readline {
 	and defined &Tk::DoOneEvent;
   #$str = scalar <$in>;
   $str = $self->get_line;
-  $str =~ s/^\s*\Q$prompt\E// if ($^O eq 'MacOS');
   utf8::upgrade($str)
       if (${^UNICODE} & PERL_UNICODE_STDIN || defined ${^ENCODING}) &&
          utf8::valid($str);
@@ -209,13 +192,13 @@ sub addhistory {}
 
 sub findConsole {
     my $console;
+    my $consoleOUT;
 
-    if ($^O eq 'MacOS') {
-        $console = "Dev:Console";
-    } elsif (-e "/dev/tty") {
+    if (-e "/dev/tty") {
 	$console = "/dev/tty";
     } elsif (-e "con" or $^O eq 'MSWin32') {
-	$console = "con";
+       $console = 'CONIN$';
+       $consoleOUT = 'CONOUT$';
     } else {
 	$console = "sys\$command";
     }
@@ -231,10 +214,14 @@ sub findConsole {
       }
     }
 
-    my $consoleOUT = $console;
+    $consoleOUT = $console unless defined $consoleOUT;
     $console = "&STDIN" unless defined $console;
+    if ($console eq "/dev/tty" && !open(my $fh, "<", $console)) {
+      $console = "&STDIN";
+      undef($consoleOUT);
+    }
     if (!defined $consoleOUT) {
-      $consoleOUT = defined fileno(STDERR) ? "&STDERR" : "&STDOUT";
+      $consoleOUT = defined fileno(STDERR) && $^O ne 'MSWin32' ? "&STDERR" : "&STDOUT";
     }
     ($console,$consoleOUT);
 }
@@ -247,8 +234,13 @@ sub new {
   if (@_==2) {
     my($console, $consoleOUT) = $_[0]->findConsole;
 
-    open(FIN, "<$console"); 
-    open(FOUT,">$consoleOUT");
+
+    # the Windows CONIN$ needs GENERIC_WRITE mode to allow
+    # a SetConsoleMode() if we end up using Term::ReadKey
+    open FIN, (  $^O eq 'MSWin32' && $console eq 'CONIN$' ) ? "+<$console" :
+                                                              "<$console";
+    open FOUT,">$consoleOUT";
+
     #OUT->autoflush(1);		# Conflicts with debugger?
     my $sel = select(FOUT);
     $| = 1;				# for DB::OUT
@@ -287,9 +279,16 @@ sub Attribs { {} }
 my %features = (tkRunning => 1, ornaments => 1, 'newTTY' => 1);
 sub Features { \%features }
 
+sub get_line {
+  my $self = shift;
+  my $in = $self->IN;
+  local ($/) = "\n";
+  return scalar <$in>;
+}
+
 package Term::ReadLine;		# So late to allow the above code be defined?
 
-our $VERSION = '1.02';
+our $VERSION = '1.07';
 
 my ($which) = exists $ENV{PERL_RL} ? split /\s+/, $ENV{PERL_RL} : undef;
 if ($which) {
@@ -297,6 +296,9 @@ if ($which) {
     eval "use Term::ReadLine::Gnu;";
   } elsif ($which =~ /\bperl\b/i) {
     eval "use Term::ReadLine::Perl;";
+  } elsif ($which =~ /^(Stub|TermCap|Tk)$/) {
+    # it is already in memory to avoid false exception as seen in:
+    # PERL_RL=Stub perl -e'$SIG{__DIE__} = sub { print @_ }; require Term::ReadLine'
   } else {
     eval "use Term::ReadLine::$which;";
   }

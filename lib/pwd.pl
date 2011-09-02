@@ -1,20 +1,21 @@
+warn "Legacy library @{[(caller(0))[6]]} will be removed from the Perl core distribution in the next major release. Please install it from the CPAN distribution Perl4::CoreLibs. It is being used at @{[(caller)[1]]}, line @{[(caller)[2]]}.\n";
+
 ;# pwd.pl - keeps track of current working directory in PWD environment var
 ;#
 #
 # This library is no longer being maintained, and is included for backward
 # compatibility with Perl 4 programs which may require it.
+# This legacy library is deprecated and will be removed in a future
+# release of perl.
 #
 # In particular, this should not be used as an example of modern Perl
 # programming techniques.
 #
 # Suggested alternative: Cwd
-#
-;# $RCSfile: pwd.pl,v $$Revision: 1.7 $$Date: 2003/12/03 03:02:36 $
+
+;# $RCSfile: pwd.pl,v $$Revision: 4.1 $$Date: 92/08/07 18:24:11 $
 ;#
-;# $Log: pwd.pl,v $
-;# Revision 1.7  2003/12/03 03:02:36  millert
-;# Resolve conflicts for perl 5.8.2, remove old files, and add OpenBSD-specific scaffolding
-;#
+;# $Log:	pwd.pl,v $
 ;#
 ;# Usage:
 ;#	require "pwd.pl";

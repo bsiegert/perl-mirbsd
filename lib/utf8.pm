@@ -2,7 +2,7 @@ package utf8;
 
 $utf8::hint_bits = 0x00800000;
 
-our $VERSION = '1.06';
+our $VERSION = '1.09';
 
 sub import {
     $^H |= $utf8::hint_bits;
@@ -32,13 +32,16 @@ utf8 - Perl pragma to enable/disable UTF-8 (or UTF-EBCDIC) in source code
     use utf8;
     no utf8;
 
-    # Convert a Perl scalar to/from UTF-8.
+    # Convert the internal representation of a Perl scalar to/from UTF-8.
+
     $num_octets = utf8::upgrade($string);
     $success    = utf8::downgrade($string[, FAIL_OK]);
 
-    # Change the native bytes of a Perl scalar to/from UTF-8 bytes.
-    utf8::encode($string);
-    utf8::decode($string);
+    # Change each character of a Perl scalar to/from a series of
+    # characters that represent the UTF-8 bytes of each original character.
+
+    utf8::encode($string);  # "\x{100}"  becomes "\xc4\x80"
+    utf8::decode($string);  # "\xc4\x80" becomes "\x{100}"
 
     $flag = utf8::is_utf8(STRING); # since Perl 5.8.1
     $flag = utf8::valid(STRING);
@@ -50,22 +53,18 @@ program text in the current lexical scope (allow UTF-EBCDIC on EBCDIC based
 platforms).  The C<no utf8> pragma tells Perl to switch back to treating
 the source text as literal bytes in the current lexical scope.
 
-This pragma is primarily a compatibility device.  Perl versions
-earlier than 5.6 allowed arbitrary bytes in source code, whereas
-in future we would like to standardize on the UTF-8 encoding for
-source text.
-
 B<Do not use this pragma for anything else than telling Perl that your
 script is written in UTF-8.> The utility functions described below are
-useful for their own purposes, but they are not really part of the
-"pragmatic" effect.
+directly usable without C<use utf8;>.
 
-Until UTF-8 becomes the default format for source text, either this
-pragma or the L<encoding> pragma should be used to recognize UTF-8
-in the source.  When UTF-8 becomes the standard source format, this
-pragma will effectively become a no-op.  For convenience in what
-follows the term I<UTF-X> is used to refer to UTF-8 on ASCII and ISO
-Latin based platforms and UTF-EBCDIC on EBCDIC based platforms.
+Because it is not possible to reliably tell UTF-8 from native 8 bit
+encodings, you need either a Byte Order Mark at the beginning of your
+source code, or C<use utf8;>, to instruct perl.
+
+When UTF-8 becomes the standard source format, this pragma will
+effectively become a no-op.  For convenience in what follows the term
+I<UTF-X> is used to refer to UTF-8 on ASCII and ISO Latin based
+platforms and UTF-EBCDIC on EBCDIC based platforms.
 
 See also the effects of the C<-C> switch and its cousin, the
 C<$ENV{PERL_UNICODE}>, in L<perlrun>.
@@ -77,7 +76,7 @@ Enabling the C<utf8> pragma has the following effect:
 =item *
 
 Bytes in the source text that have their high-bit set will be treated
-as being part of a literal UTF-8 character.  This includes most
+as being part of a literal UTF-X sequence.  This includes most
 literals such as identifier names, string constants, and constant
 regular expression patterns.
 
@@ -89,20 +88,9 @@ treated as being part of a literal UTF-EBCDIC character.
 Note that if you have bytes with the eighth bit on in your script
 (for example embedded Latin-1 in your string literals), C<use utf8>
 will be unhappy since the bytes are most probably not well-formed
-UTF-8.  If you want to have such bytes and use utf8, you can disable
-utf8 until the end the block (or file, if at top level) by C<no utf8;>.
-
-If you want to automatically upgrade your 8-bit legacy bytes to UTF-8,
-use the L<encoding> pragma instead of this pragma.  For example, if
-you want to implicitly upgrade your ISO 8859-1 (Latin-1) bytes to UTF-8
-as used in e.g. C<chr()> and C<\x{...}>, try this:
-
-    use encoding "latin-1";
-    my $c = chr(0xc4);
-    my $x = "\x{c5}";
-
-In case you are wondering: yes, C<use encoding 'utf8';> works much
-the same as C<use utf8;>.
+UTF-X.  If you want to have such bytes under C<use utf8>, you can disable
+this pragma until the end the block (or file, if at top level) by
+C<no utf8;>.
 
 =head2 Utility functions
 
@@ -114,64 +102,76 @@ you should not say that  unless you really want to have UTF-8 source code.
 
 =item * $num_octets = utf8::upgrade($string)
 
-Converts in-place the octet sequence in the native encoding
-(Latin-1 or EBCDIC) to the equivalent character sequence in I<UTF-X>.
-I<$string> already encoded as characters does no harm.
-Returns the number of octets necessary to represent the string as I<UTF-X>.
-Can be used to make sure that the UTF-8 flag is on,
-so that C<\w> or C<lc()> work as Unicode on strings
-containing characters in the range 0x80-0xFF (on ASCII and
-derivatives).
+Converts in-place the internal representation of the string from an octet
+sequence in the native encoding (Latin-1 or EBCDIC) to I<UTF-X>. The
+logical character sequence itself is unchanged.  If I<$string> is already
+stored as I<UTF-X>, then this is a no-op. Returns the
+number of octets necessary to represent the string as I<UTF-X>.  Can be
+used to make sure that the UTF-8 flag is on, so that C<\w> or C<lc()>
+work as Unicode on strings containing characters in the range 0x80-0xFF
+(on ASCII and derivatives).
 
 B<Note that this function does not handle arbitrary encodings.>
-Therefore I<Encode.pm> is recommended for the general purposes.
-
-Affected by the encoding pragma.
+Therefore Encode is recommended for the general purposes; see also
+L<Encode>.
 
 =item * $success = utf8::downgrade($string[, FAIL_OK])
 
-Converts in-place the character sequence in I<UTF-X>
-to the equivalent octet sequence in the native encoding (Latin-1 or EBCDIC).
-I<$string> already encoded as octets does no harm.
-Returns true on success. On failure dies or, if the value of
-C<FAIL_OK> is true, returns false.
-Can be used to make sure that the UTF-8 flag is off,
-e.g. when you want to make sure that the substr() or length() function
-works with the usually faster byte algorithm.
+Converts in-place the internal representation of the string from
+I<UTF-X> to the equivalent octet sequence in the native encoding (Latin-1
+or EBCDIC). The logical character sequence itself is unchanged. If
+I<$string> is already stored as native 8 bit, then this is a no-op.  Can
+be used to
+make sure that the UTF-8 flag is off, e.g. when you want to make sure
+that the substr() or length() function works with the usually faster
+byte algorithm.
+
+Fails if the original I<UTF-X> sequence cannot be represented in the
+native 8 bit encoding. On failure dies or, if the value of C<FAIL_OK> is
+true, returns false. 
+
+Returns true on success.
 
 B<Note that this function does not handle arbitrary encodings.>
-Therefore I<Encode.pm> is recommended for the general purposes.
-
-B<Not> affected by the encoding pragma.
-
-B<NOTE:> this function is experimental and may change
-or be removed without notice.
+Therefore Encode is recommended for the general purposes; see also
+L<Encode>.
 
 =item * utf8::encode($string)
 
-Converts in-place the character sequence to the corresponding octet sequence
-in I<UTF-X>.  The UTF-8 flag is turned off.  Returns nothing.
+Converts in-place the character sequence to the corresponding octet
+sequence in I<UTF-X>. That is, every (possibly wide) character gets
+replaced with a sequence of one or more characters that represent the
+individual I<UTF-X> bytes of the character.  The UTF8 flag is turned off.
+Returns nothing.
+
+    my $a = "\x{100}"; # $a contains one character, with ord 0x100
+    utf8::encode($a);  # $a contains two characters, with ords 0xc4 and 0x80
 
 B<Note that this function does not handle arbitrary encodings.>
-Therefore I<Encode.pm> is recommended for the general purposes.
+Therefore Encode is recommended for the general purposes; see also
+L<Encode>.
 
-=item * utf8::decode($string)
+=item * $success = utf8::decode($string)
 
-Attempts to convert in-place the octet sequence in I<UTF-X>
-to the corresponding character sequence.  The UTF-8 flag is turned on
-only if the source string contains multiple-byte I<UTF-X> characters.
-If I<$string> is invalid as I<UTF-X>, returns false; otherwise returns true.
+Attempts to convert in-place the octet sequence in I<UTF-X> to the
+corresponding character sequence. That is, it replaces each sequence of
+characters in the string whose ords represent a valid UTF-X byte
+sequence, with the corresponding single character.  The UTF-8 flag is
+turned on only if the source string contains multiple-byte I<UTF-X>
+characters.  If I<$string> is invalid as I<UTF-X>, returns false;
+otherwise returns true.
+
+    my $a = "\xc4\x80"; # $a contains two characters, with ords 0xc4 and 0x80
+    utf8::decode($a);   # $a contains one character, with ord 0x100
 
 B<Note that this function does not handle arbitrary encodings.>
-Therefore I<Encode.pm> is recommended for the general purposes.
-
-B<NOTE:> this function is experimental and may change
-or be removed without notice.
+Therefore Encode is recommended for the general purposes; see also
+L<Encode>.
 
 =item * $flag = utf8::is_utf8(STRING)
 
-(Since Perl 5.8.1)  Test whether STRING is in UTF-8.  Functionally
-the same as Encode::is_utf8().
+(Since Perl 5.8.1)  Test whether STRING is in UTF-8 internally.
+Functionally the same as Encode::is_utf8().
 
 =item * $flag = utf8::valid(STRING)
 
@@ -189,10 +189,10 @@ cleared.  See L<perlunicode> for more on the UTF8 flag and the C API
 functions C<sv_utf8_upgrade>, C<sv_utf8_downgrade>, C<sv_utf8_encode>,
 and C<sv_utf8_decode>, which are wrapped by the Perl functions
 C<utf8::upgrade>, C<utf8::downgrade>, C<utf8::encode> and
-C<utf8::decode>.  Note that in the Perl 5.8.0 and 5.8.1 implementation
-the functions utf8::is_utf8, utf8::valid, utf8::encode, utf8::decode,
-utf8::upgrade, and utf8::downgrade are always available, without a
-C<require utf8> statement-- this may change in future releases.
+C<utf8::decode>.  Also, the functions utf8::is_utf8, utf8::valid,
+utf8::encode, utf8::decode, utf8::upgrade, and utf8::downgrade are
+actually internal, and thus always available, without a C<require utf8>
+statement.
 
 =head1 BUGS
 
@@ -209,6 +209,6 @@ portable answers.
 
 =head1 SEE ALSO
 
-L<perluniintro>, L<encoding>, L<perlrun>, L<bytes>, L<perlunicode>
+L<perlunitut>, L<perluniintro>, L<perlrun>, L<bytes>, L<perlunicode>
 
 =cut

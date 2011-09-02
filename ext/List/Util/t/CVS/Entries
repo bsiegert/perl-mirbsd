@@ -1,36 +1,36 @@
-/00version.t/1.1.1.1/Fri Jun 30 22:39:04 2006//
-/blessed.t/1.1.1.2/Fri Jun 30 22:39:04 2006//
-/dualvar.t/1.1.1.2/Fri Jun 30 22:39:05 2006//
-/first.t/1.1.1.2/Fri Jun 30 22:39:05 2006//
-/isvstring.t/1.1.1.2/Fri Jun 30 22:39:05 2006//
-/lln.t/1.1.1.2/Fri Jun 30 22:39:05 2006//
-/max.t/1.1.1.2/Fri Jun 30 22:39:05 2006//
-/maxstr.t/1.1.1.2/Fri Jun 30 22:39:06 2006//
-/min.t/1.1.1.2/Fri Jun 30 22:39:06 2006//
-/minstr.t/1.1.1.2/Fri Jun 30 22:39:06 2006//
-/openhan.t/1.1.1.2/Fri Jun 30 22:39:06 2006//
-/p_blessed.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_first.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_lln.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_max.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_maxstr.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_min.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_minstr.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_openhan.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_readonly.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_reduce.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_refaddr.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_reftype.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_shuffle.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_sum.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/p_tainted.t/1.1.1.1/Fri Jun 30 22:39:06 2006//
-/proto.t/1.1.1.2/Fri Jun 30 22:39:07 2006//
-/readonly.t/1.1.1.2/Fri Jun 30 22:39:07 2006//
-/reduce.t/1.1.1.2/Fri Jun 30 22:39:07 2006//
-/refaddr.t/1.1.1.2/Fri Jun 30 22:39:07 2006//
-/reftype.t/1.1.1.2/Fri Jun 30 22:39:07 2006//
-/shuffle.t/1.1.1.2/Fri Jun 30 22:39:08 2006//
-/sum.t/1.1.1.2/Fri Jun 30 22:39:08 2006//
-/tainted.t/1.1.1.2/Fri Jun 30 22:39:08 2006//
-/weak.t/1.1.1.2/Fri Jun 30 22:39:09 2006//
+/00version.t/-1.1.1.1///
+/blessed.t/-1.1.1.2///
+/dualvar.t/-1.1.1.2///
+/first.t/-1.1.1.2///
+/isvstring.t/-1.1.1.2///
+/lln.t/-1.1.1.2///
+/max.t/-1.1.1.2///
+/maxstr.t/-1.1.1.2///
+/min.t/-1.1.1.2///
+/minstr.t/-1.1.1.2///
+/openhan.t/-1.1.1.2///
+/p_blessed.t/-1.1.1.1///
+/p_first.t/-1.1.1.1///
+/p_lln.t/-1.1.1.1///
+/p_max.t/-1.1.1.1///
+/p_maxstr.t/-1.1.1.1///
+/p_min.t/-1.1.1.1///
+/p_minstr.t/-1.1.1.1///
+/p_openhan.t/-1.1.1.1///
+/p_readonly.t/-1.1.1.1///
+/p_reduce.t/-1.1.1.1///
+/p_refaddr.t/-1.1.1.1///
+/p_reftype.t/-1.1.1.1///
+/p_shuffle.t/-1.1.1.1///
+/p_sum.t/-1.1.1.1///
+/p_tainted.t/-1.1.1.1///
+/proto.t/-1.1.1.2///
+/readonly.t/-1.1.1.2///
+/reduce.t/-1.1.1.2///
+/refaddr.t/-1.1.1.2///
+/reftype.t/-1.1.1.2///
+/shuffle.t/-1.1.1.2///
+/sum.t/-1.1.1.2///
+/tainted.t/-1.1.1.2///
+/weak.t/-1.1.1.2///
 D

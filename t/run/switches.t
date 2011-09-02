@@ -1,7 +1,7 @@
 #!./perl -w
 
 # Tests for the command-line switches:
-# -0, -c, -l, -s, -m, -M, -V, -v, -h, -z, -i
+# -0, -c, -l, -s, -m, -M, -V, -v, -h, -i, -E and all unknown
 # Some switches have their own tests, see MANIFEST.
 
 BEGIN {
@@ -9,9 +9,9 @@ BEGIN {
     @INC = '../lib';
 }
 
-require "./test.pl";
+BEGIN { require "./test.pl"; }
 
-plan(tests => 26);
+plan(tests => 71);
 
 use Config;
 
@@ -22,7 +22,7 @@ $TODO = "runperl() unable to emulate echo -n due to pipe bug" if $^O eq 'VMS';
 
 my $r;
 my @tmpfiles = ();
-END { unlink @tmpfiles }
+END { unlink_all @tmpfiles }
 
 # Tests for -0
 
@@ -76,7 +76,7 @@ is( $r, "(\066)[\066]", '$/ set at compile-time' );
 
 # Tests for -c
 
-my $filename = 'swctest.tmp';
+my $filename = tempfile();
 SKIP: {
     local $TODO = '';   # this one works on VMS
 
@@ -105,7 +105,6 @@ SWTEST
 	&& $r !~ /\bblock 5\b/,
 	'-c'
     );
-    push @tmpfiles, $filename;
 }
 
 # Tests for -l
@@ -125,8 +124,23 @@ $r = runperl(
 );
 is( $r, '21-', '-s switch parsing' );
 
+$filename = tempfile();
+SKIP: {
+    open my $f, ">$filename" or skip( "Can't write temp file $filename: $!" );
+    print $f <<'SWTEST';
+#!perl -s
+BEGIN { print $x,$y; exit }
+SWTEST
+    close $f or die "Could not close: $!";
+    $r = runperl(
+	progfile    => $filename,
+	args	    => [ '-x=foo -y' ],
+    );
+    is( $r, 'foo1', '-s on the shebang line' );
+}
+
 # Bug ID 20011106.084
-$filename = 'swstest.tmp';
+$filename = tempfile();
 SKIP: {
     open my $f, ">$filename" or skip( "Can't write temp file $filename: $!" );
     print $f <<'SWTEST';
@@ -138,33 +152,33 @@ SWTEST
 	progfile    => $filename,
 	args	    => [ '-x=foo' ],
     );
-    is( $r, 'foo', '-s on the shebang line' );
-    push @tmpfiles, $filename;
+    is( $r, 'foo', '-sn on the shebang line' );
 }
 
 # Tests for -m and -M
 
-$filename = 'swtest.pm';
+my $package = tempfile();
+$filename = "$package.pm";
 SKIP: {
     open my $f, ">$filename" or skip( "Can't write temp file $filename: $!",4 );
-    print $f <<'SWTESTPM';
-package swtest;
-sub import { print map "<$_>", @_ }
+    print $f <<"SWTESTPM";
+package $package;
+sub import { print map "<\$_>", \@_ }
 1;
 SWTESTPM
     close $f or die "Could not close: $!";
     $r = runperl(
-	switches    => [ '-Mswtest' ],
+	switches    => [ "-M$package" ],
 	prog	    => '1',
     );
-    is( $r, '<swtest>', '-M' );
+    is( $r, "<$package>", '-M' );
     $r = runperl(
-	switches    => [ '-Mswtest=foo' ],
+	switches    => [ "-M$package=foo" ],
 	prog	    => '1',
     );
-    is( $r, '<swtest><foo>', '-M with import parameter' );
+    is( $r, "<$package><foo>", '-M with import parameter' );
     $r = runperl(
-	switches    => [ '-mswtest' ],
+	switches    => [ "-m$package" ],
 	prog	    => '1',
     );
 
@@ -173,11 +187,43 @@ SWTESTPM
         is( $r, '', '-m' );
     }
     $r = runperl(
-	switches    => [ '-mswtest=foo,bar' ],
+	switches    => [ "-m$package=foo,bar" ],
 	prog	    => '1',
     );
-    is( $r, '<swtest><foo><bar>', '-m with import parameters' );
+    is( $r, "<$package><foo><bar>", '-m with import parameters' );
     push @tmpfiles, $filename;
+
+  {
+    local $TODO = '';  # these work on VMS
+
+    is( runperl( switches => [ '-MTie::Hash' ], stderr => 1, prog => 1 ),
+	  '', "-MFoo::Bar allowed" );
+
+    like( runperl( switches => [ "-M:$package" ], stderr => 1,
+		   prog => 'die q{oops}' ),
+	  qr/Invalid module name [\w:]+ with -M option\b/,
+          "-M:Foo not allowed" );
+
+    like( runperl( switches => [ '-mA:B:C' ], stderr => 1,
+		   prog => 'die q{oops}' ),
+	  qr/Invalid module name [\w:]+ with -m option\b/,
+          "-mFoo:Bar not allowed" );
+
+    like( runperl( switches => [ '-m-A:B:C' ], stderr => 1,
+		   prog => 'die q{oops}' ),
+	  qr/Invalid module name [\w:]+ with -m option\b/,
+          "-m-Foo:Bar not allowed" );
+
+    like( runperl( switches => [ '-m-' ], stderr => 1,
+		   prog => 'die q{oops}' ),
+	  qr/Module name required with -m option\b/,
+  	  "-m- not allowed" );
+
+    like( runperl( switches => [ '-M-=' ], stderr => 1,
+		   prog => 'die q{oops}' ),
+	  qr/Module name required with -M option\b/,
+  	  "-M- not allowed" );
+  }  # disable TODO on VMS
 }
 
 # Tests for -V
@@ -218,10 +264,13 @@ SWTESTPM
 
 {
     local $TODO = '';   # these ones should work on VMS
-
+    # there are definitely known build configs where this test will fail
+    # DG/UX comes to mind. Maybe we should remove these special cases?
     my $v = sprintf "%vd", $^V;
+    my $ver = $Config{PERL_VERSION};
+    my $rel = $Config{PERL_SUBVERSION};
     like( runperl( switches => ['-v'] ),
-	  qr/This is perl, v$v built for $Config{archname}.+Copyright.+Larry Wall.+Artistic License.+GNU General Public License/s,
+	  qr/This is perl 5, version \Q$ver\E, subversion \Q$rel\E \(v\Q$v\E(?:[-*\w]+| \([^)]+\))?\) built for \Q$Config{archname}\E.+Copyright.+Larry Wall.+Artistic License.+GNU General Public License/s,
           '-v looks okay' );
 
 }
@@ -237,14 +286,16 @@ SWTESTPM
 
 }
 
-# Tests for -z (which does not exist)
+# Tests for switches which do not exist
 
+foreach my $switch (split //, "ABbGgHJjKkLNOoPQqRrYyZz123456789_")
 {
     local $TODO = '';   # these ones should work on VMS
 
-    like( runperl( switches => ['-z'], stderr => 1 ),
-	  qr/\QUnrecognized switch: -z  (-h will show valid options)./,
-          '-z correctly unknown' );
+    like( runperl( switches => ["-$switch"], stderr => 1,
+		   prog => 'die q{oops}' ),
+	  qr/\QUnrecognized switch: -$switch  (-h will show valid options)./,
+          "-$switch correctly unknown" );
 
 }
 
@@ -253,7 +304,7 @@ SWTESTPM
 {
     local $TODO = '';   # these ones should work on VMS
 
-    sub do_i_unlink { 1 while unlink("file", "file.bak") }
+    sub do_i_unlink { unlink_all("file", "file.bak") }
 
     open(FILE, ">file") or die "$0: Failed to create 'file': $!";
     print FILE <<__EOF__;
@@ -281,4 +332,51 @@ __EOF__
     is(join(":", @bak),
        "foo yada dada:bada foo bing:king kong foo",
        "-i backup file");
+}
+
+# Tests for -E
+
+$TODO = '';  # the -E tests work on VMS
+
+$r = runperl(
+    switches	=> [ '-E', '"say q(Hello, world!)"']
+);
+is( $r, "Hello, world!\n", "-E say" );
+
+
+$r = runperl(
+    switches	=> [ '-E', '"undef ~~ undef and say q(Hello, world!)"']
+);
+is( $r, "Hello, world!\n", "-E ~~" );
+
+$r = runperl(
+    switches	=> [ '-E', '"given(undef) {when(undef) { say q(Hello, world!)"}}']
+);
+is( $r, "Hello, world!\n", "-E given" );
+
+$r = runperl(
+    switches    => [ '-nE', q("} END { say q/affe/") ],
+    stdin       => 'zomtek',
+);
+is( $r, "affe\n", '-E works outside of the block created by -n' );
+
+$r = runperl(
+    switches	=> [ '-E', q("*{'bar'} = sub{}; print 'Hello, world!',qq|\n|;")]
+);
+is( $r, "Hello, world!\n", "-E does not enable strictures" );
+
+# RT #30660
+
+$filename = tempfile();
+SKIP: {
+    open my $f, ">$filename" or skip( "Can't write temp file $filename: $!" );
+    print $f <<'SWTEST';
+#!perl -w    -iok
+print "$^I\n";
+SWTEST
+    close $f or die "Could not close: $!";
+    $r = runperl(
+	progfile    => $filename,
+    );
+    like( $r, qr/ok/, 'Spaces on the #! line (#30660)' );
 }

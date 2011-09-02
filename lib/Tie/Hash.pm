@@ -1,6 +1,6 @@
 package Tie::Hash;
 
-our $VERSION = '1.02';
+our $VERSION = '1.04';
 
 =head1 NAME
 
@@ -11,7 +11,7 @@ Tie::Hash, Tie::StdHash, Tie::ExtraHash - base class definitions for tied hashes
     package NewHash;
     require Tie::Hash;
 
-    @ISA = (Tie::Hash);
+    @ISA = qw(Tie::Hash);
 
     sub DELETE { ... }		# Provides needed method
     sub CLEAR { ... }		# Overrides inherited method
@@ -20,7 +20,7 @@ Tie::Hash, Tie::StdHash, Tie::ExtraHash - base class definitions for tied hashes
     package NewStdHash;
     require Tie::Hash;
 
-    @ISA = (Tie::StdHash);
+    @ISA = qw(Tie::StdHash);
 
     # All methods provided by default, define only those needing overrides
     # Accessors access the storage in %{$_[0]};
@@ -30,7 +30,7 @@ Tie::Hash, Tie::StdHash, Tie::ExtraHash - base class definitions for tied hashes
     package NewExtraHash;
     require Tie::Hash;
 
-    @ISA = (Tie::ExtraHash);
+    @ISA = qw(Tie::ExtraHash);
 
     # All methods provided by default, define only those needing overrides
     # Accessors access the storage in %{$_[0][0]};
@@ -173,7 +173,7 @@ proper time, see L<perltie>.
 C<SCALAR> is only defined in B<Tie::StdHash> and B<Tie::ExtraHash>.
 
 If needed, these methods should be defined by the package inheriting from
-B<Tie::Hash>, B<Tie::StdHash>, or B<Tie::ExtraHash>. See L<pertie/"SCALAR">
+B<Tie::Hash>, B<Tie::StdHash>, or B<Tie::ExtraHash>. See L<perltie/"SCALAR">
 to find out what happens when C<SCALAR> does not exist.
 
 =head1 MORE INFORMATION
@@ -197,9 +197,20 @@ sub new {
 
 sub TIEHASH {
     my $pkg = shift;
-    if (defined &{"${pkg}::new"}) {
-	warnings::warnif("WARNING: calling ${pkg}->new since ${pkg}->TIEHASH is missing");
-	$pkg->new(@_);
+    my $pkg_new = $pkg -> can ('new');
+
+    if ($pkg_new and $pkg ne __PACKAGE__) {
+        my $my_new = __PACKAGE__ -> can ('new');
+        if ($pkg_new == $my_new) {  
+            #
+            # Prevent recursion
+            #
+            croak "$pkg must define either a TIEHASH() or a new() method";
+        }
+
+	warnings::warnif ("WARNING: calling ${pkg}->new since " .
+                          "${pkg}->TIEHASH is missing");
+	$pkg -> new (@_);
     }
     else {
 	croak "$pkg doesn't define a TIEHASH method";

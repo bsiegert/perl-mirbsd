@@ -1,7 +1,7 @@
 /*    perlsdio.h
  *
- *    Copyright (C) 1996, 1997, 1998, 1999,
- *    2000, 2001, 2002, by Larry Wall and others
+ *    Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001,
+ *    2002, 2003, 2006, 2007, 2008 by Larry Wall and others
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
@@ -34,11 +34,11 @@
 #define PerlIO_fdopen			PerlSIO_fdopen
 #define PerlIO_reopen			PerlSIO_freopen
 #define PerlIO_close(f)			PerlSIO_fclose(f)
-#define PerlIO_puts(f,s)		PerlSIO_fputs(f,s)
-#define PerlIO_putc(f,c)		PerlSIO_fputc(f,c)
+#define PerlIO_puts(f,s)		PerlSIO_fputs(s,f)
+#define PerlIO_putc(f,c)		PerlSIO_fputc(c,f)
 #if defined(VMS)
 #  if defined(__DECC)
-     /* Unusual definition of ungetc() here to accomodate fast_sv_gets()'
+     /* Unusual definition of ungetc() here to accommodate fast_sv_gets()'
       * belief that it can mix getc/ungetc with reads from stdio buffer */
      int decc$ungetc(int __c, FILE *__stream);
 #    define PerlIO_ungetc(f,c) ((c) == EOF ? EOF : \
@@ -87,7 +87,7 @@
 #ifdef HAS_SETLINEBUF
 #define PerlIO_setlinebuf(f)		PerlSIO_setlinebuf(f);
 #else
-#define PerlIO_setlinebuf(f)		PerlSIO_setvbuf(f, Nullch, _IOLBF, 0);
+#define PerlIO_setlinebuf(f)		PerlSIO_setvbuf(f, NULL, _IOLBF, 0);
 #endif
 
 /* Now our interface to Configure's FILE_xxx macros */
@@ -152,3 +152,13 @@
 
 #endif	/* NETWARE */
 #endif /* PERLIO_IS_STDIO */
+
+/*
+ * Local variables:
+ * c-indentation-style: bsd
+ * c-basic-offset: 4
+ * indent-tabs-mode: t
+ * End:
+ *
+ * ex: set ts=8 sts=4 sw=4 noet:
+ */

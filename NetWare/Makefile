@@ -86,7 +86,7 @@ NLM_VERSION    = 3,20,0
 
 
 # Here comes the CW tools - TO BE FILLED TO BUILD WITH CW -
-MODULE_DESC     = "Perl 5.8.8 for NetWare"
+MODULE_DESC     = "Perl 5.14.1 for NetWare"
 CCTYPE          = CodeWarrior
 C_COMPILER		= mwccnlm -c
 CPP_COMPILER	= mwccnlm
@@ -285,9 +285,7 @@ NW_CFG_VARS = \
 		"static_ext=$(STATIC_EXT)"		\
 		"dynamic_ext=$(DYNAMIC_EXT)"		\
 		"nonxs_ext=$(NONXS_EXT)"		\
-		"use5005threads=$(USE_5005THREADS)"	\
 		"useithreads=$(USE_ITHREADS)"		\
-		"usethreads=$(USE_5005THREADS)"		\
 		"usemultiplicity=$(USE_MULTI)"		\
 		"ld=$(LINK)"			\
 		"base_import=$(BASE_IMPORT_FILES)"	\
@@ -314,8 +312,7 @@ IO_NLM		= $(AUTODIR)\IO\IO.NLM
 OPCODE_NLM	= $(AUTODIR)\Opcode\Opcode.NLM
 SDBM_FILE_NLM = $(AUTODIR)\SDBM_File\SDBM_File.NLM
 POSIX_NLM	= $(AUTODIR)\POSIX\POSIX.NLM
-ATTRS_NLM	= $(AUTODIR)\attrs\attrs.NLM
-THREAD_NLM	= $(AUTODIR)\Thread\Thread.NLM
+ATTRIBUTES_NLM	= $(AUTODIR)\attributes\attributes.NLM
 B_NLM		= $(AUTODIR)\B\B.NLM
 DUMPER_NLM	= $(AUTODIR)\Data\Dumper\Dumper.NLM
 PEEK_NLM	= $(AUTODIR)\Devel\Peek\Peek.NLM
@@ -331,6 +328,7 @@ MIMEBASE64_NLM		= $(EXTDIR)\MIME\Base64\Base64.NLM
 XSAPITEST_NLM		= $(EXTDIR)\XS\APItest\APItest.NLM
 XSTYPEMAP_NLM		= $(EXTDIR)\XS\Typemap\Typemap.NLM
 UNICODENORMALIZE_NLM 	= $(EXTDIR)\Unicode\Normalize\Normalize.NLM
+UNICODECOLLATE_NLM 	= $(EXTDIR)\Unicode\Collate\Collate.NLM
 
 EXTENSION_NLM	= 		\
 		$(FCNTL_NLM)	\
@@ -339,10 +337,9 @@ EXTENSION_NLM	= 		\
 		$(SOCKET_NLM)	\
 		$(OPCODE_NLM)	\
 		$(B_NLM)		\
-		$(ATTRS_NLM)	\
+		$(ATTRIBUTES_NLM)	\
 		$(SDBM_FILE_NLM)	\
 		$(POSIX_NLM)	\
-		$(THREAD_NLM)	\
 		$(DUMPER_NLM)	\
 		$(GLOB_NLM)		\
 		$(PEEK_NLM)		\
@@ -467,7 +464,7 @@ INST_NW_TOP2 = $(INST_NW_DRV)\perl
 # versioned installation can be obtained by setting INST_TOP above to a
 # path that includes an arbitrary version string.
 #
-INST_VER	= \5.8.8
+INST_VER	= \5.14.1
 
 #
 # Comment this out if you DON'T want your perl installation to have
@@ -505,15 +502,6 @@ USE_IMP_SYS	= define
 # else USE_STDIO will be defined.
 #USE_PERLIO	= define
 #USE_STDIO = define
-#
-# WARNING! This option is deprecated and will eventually go away (enable
-# USE_ITHREADS instead).
-#
-# uncomment to enable threads-capabilities.  This is incompatible with
-# USE_ITHREADS, and is only here for people who may have come to rely
-# on the experimental Thread support that was in 5.005.
-#
-#USE_5005THREADS= define
 
 # For now let this be here
 #
@@ -555,14 +543,6 @@ CRYPT_FLAG	= -DHAVE_DES_FCRYPT
 PERL_MALLOC	= undef
 !ENDIF
 
-!IF "$(USE_5005THREADS)" == ""
-USE_5005THREADS	= undef
-!ENDIF
-
-!IF "$(USE_5005THREADS)" == "define"
-USE_ITHREADS	= undef
-!ENDIF
-
 !IF "$(USE_IMP_SYS)" == "define"
 PERL_MALLOC	= undef
 !ENDIF
@@ -583,16 +563,15 @@ USE_IMP_SYS	= undef
 USE_PERLCRT	= undef
 !ENDIF
 
-!IF "$(USE_IMP_SYS)$(USE_MULTI)$(USE_5005THREADS)" == "defineundefundef"
+!IF "$(USE_IMP_SYS)$(USE_MULTI)" == "defineundef"
 USE_MULTI	= define
 !ENDIF
 
 !IF "$(USE_ITHREADS)$(USE_MULTI)" == "defineundef"
 USE_MULTI	= define
-USE_5005THREADS	= undef
 !ENDIF
 
-!IF "$(USE_MULTI)$(USE_5005THREADS)" != "undefundef"
+!IF "$(USE_MULTI)" != "undef"
 BUILDOPT	= $(BUILDOPT) -DPERL_IMPLICIT_CONTEXT
 !ENDIF
 
@@ -604,17 +583,13 @@ BUILDOPT	= $(BUILDOPT) -DPERL_IMPLICIT_SYS
 PROCESSOR_ARCHITECTURE	= x86
 !ENDIF
 
-!IF "$(USE_5005THREADS)" == "define"
-ARCHNAME	= NetWare-$(PROCESSOR_ARCHITECTURE)-thread
-!ELSE
 !IF "$(USE_MULTI)" == "define"
 ARCHNAME	= NetWare-$(PROCESSOR_ARCHITECTURE)-multi
 !ELSE
 ARCHNAME	= NetWare-$(PROCESSOR_ARCHITECTURE)
 !ENDIF
-!ENDIF
 
-!IF "$(USE_MULTI)$(USE_5005THREADS)" != "undefundef"
+!IF "$(USE_MULTI)" != "undef"
 ADD_BUILDOPT	= $(ADD_BUILDOPT) -DPERL_IMPLICIT_CONTEXT
 !ENDIF
 
@@ -693,8 +668,6 @@ UTILS		=			\
 		..\utils\c2ph		\
 		..\utils\h2xs		\
 		..\utils\perldoc	\
-		..\utils\perlcc		\
-		..\pod\checkpods	\
 		..\pod\pod2html		\
 		..\pod\pod2latex	\
 		..\pod\pod2man		\
@@ -726,8 +699,11 @@ MICROCORE_SRC	=		\
 		..\dump.c	\
 		..\globals.c	\
 		..\gv.c		\
+		..\mro.c	\
 		..\hv.c		\
+		..\keywords.c	\
 		..\locale.c	\
+                ..\mathoms.c    \
 		..\mg.c		\
 		..\numeric.c	\
 		..\op.c		\
@@ -750,8 +726,7 @@ MICROCORE_SRC	=		\
 		..\toke.c	\
 		..\universal.c	\
 		..\utf8.c	\
-		..\util.c	\
-		..\xsutils.c
+		..\util.c
 
 #EXTRACORE_SRC	= $(EXTRACORE_SRC) perllib.c
 
@@ -807,18 +782,17 @@ CORE_NOCFG_H	=		\
 		..\XSUB.h	\
 		..\EXTERN.h	\
 		..\perlvars.h	\
-		..\intrpvar.h	\
-		..\thrdvar.h	
+		..\intrpvar.h
 		
 CORE_H		= $(CORE_NOCFG_H) .\config.h
 
 DLL_OBJ		= $(DLL_SRC:.c=.obj)
 X2P_OBJ		= $(X2P_SRC:.c=.obj)
 
-DYNAMIC_EXT	= Socket IO Fcntl Opcode SDBM_File POSIX attrs Thread B re \
+DYNAMIC_EXT	= Socket IO Fcntl Opcode SDBM_File POSIX attributes B re \
 		Data/Dumper Devel/Peek ByteLoader Devel/DProf File/Glob \
 		Storable/Storable List/Util MIME/Base64/Base64 XS/APItest/APItest \
-		XS/Typemap/Typemap Unicode/Normalize/Normalize Sys/Hostname
+		XS/Typemap/Typemap Unicode/Collate/Collate Unicode/Normalize/Normalize Sys/Hostname
 
 STATIC_EXT	= DynaLoader
 NONXS_EXT	= Errno
@@ -830,8 +804,7 @@ OPCODE		= $(EXTDIR)\Opcode\Opcode
 SDBM_FILE	= $(EXTDIR)\SDBM_File\SDBM_File
 IO			= $(EXTDIR)\IO\IO
 POSIX		= $(EXTDIR)\POSIX\POSIX
-ATTRS		= $(EXTDIR)\attrs\attrs
-THREAD		= $(EXTDIR)\Thread\Thread
+ATTRIBUTES		= $(EXTDIR)\attributes\attributes
 B			= $(EXTDIR)\B\B
 RE			= $(EXTDIR)\re\re
 DUMPER		= $(EXTDIR)\Data\Dumper\Dumper
@@ -848,6 +821,7 @@ MIMEBASE64		= $(EXTDIR)\MIME\Base64\Base64
 XSAPITEST		= $(EXTDIR)\XS\APItest\APItest
 XSTYPEMAP		= $(EXTDIR)\XS\Typemap\Typemap
 UNICODENORMALIZE	= $(EXTDIR)\Unicode\Normalize\Normalize
+UNICODECOLLATE	= $(EXTDIR)\Unicode\Collate\Collate
 
 ERRNO_PM_NW	= $(LIBDIR)\Errno.pm
 
@@ -858,8 +832,7 @@ EXTENSION_C	= 		\
 		$(SDBM_FILE).c	\
 		$(IO).c		\
 		$(POSIX).c	\
-		$(ATTRS).c	\
-		$(THREAD).c	\
+		$(ATTRIBUTES).c	\
 		$(RE).c		\
 		$(DUMPER).c	\
 		$(PEEK).c	\
@@ -1093,7 +1066,7 @@ $(PERLIMPLIB): perllib.imp
 #	$(XCOPY) $(PERLIMPLIB) $(COREDIR)
 #	@echo $(PERLIMPLIB) Done
 
-perllib.imp : $(MINIPERL) $(CONFIGPM) ..\global.sym ..\pp.sym ..\makedef.pl
+perllib.imp : $(MINIPERL) $(CONFIGPM) ..\global.sym ..\makedef.pl
 #	$(MINIPERL) -w ..\makedef.pl PLATFORM=netware FILETYPE=def $(ADD_BUILDOPT) \
 #	    CCTYPE=$(CCTYPE) > perllib.def
 	@echo (Perl) > perl.imp
@@ -1255,13 +1228,7 @@ $(POSIX_NLM):
 	$(MAKE)
 	cd ..\..\netware
 
-$(THREAD_NLM):
-	cd $(EXTDIR)\$(*B)
-	..\..\miniperl -I..\..\lib Makefile.PL PERL_CORE=1 INSTALLDIRS=perl
-	$(MAKE)
-	cd ..\..\netware
-
-$(ATTRS_NLM):
+$(ATTRIBUTES_NLM):
 	cd $(EXTDIR)\$(*B)
 	..\..\miniperl -I..\..\lib Makefile.PL PERL_CORE=1 INSTALLDIRS=perl
 	$(MAKE)
@@ -1412,15 +1379,12 @@ utils: $(BLDDIR)\$(NLM_NAME8).$(NLM_EXT) $(X2P)
 	copy ..\README.cygwin .\perlcygwin.pod
 	copy ..\README.dos .\perldos.pod
 	copy ..\README.hpux .\perlhpux.pod
-#	copy ..\README.machten .\perlmachten.pod
 	copy ..\README.os2 .\perlos2.pod
 	copy ..\vms\perlvms.pod .\perlvms.pod
 	copy ..\README.win32 .\perlwin32.pod
 	copy ..\README.netware .\perlnw5.pod
 	$(MAKE) -f ..\win32\pod.mak converters
 
-	cd ..\lib
-	$(MINIPERL) lib_pm.PL
 	cd ..\netware
 	$(MINIPERL) $(PL2BAT) $(UTILS)
 
@@ -1432,7 +1396,7 @@ distclean: clean nwclean
 	-del /f /q $(EXTDIR)\DynaLoader\dl_win32.xs
 	-del /f /q $(EXTDIR)\DynaLoader\DynaLoader.pm
 	-del /f /q $(EXTDIR)\DynaLoader\XSLoader.pm
-	-del /f /q $(LIBDIR)\.exists $(LIBDIR)\attrs.pm $(LIBDIR)\DynaLoader.pm
+	-del /f /q $(LIBDIR)\.exists $(LIBDIR)\attributes.pm $(LIBDIR)\DynaLoader.pm
 	-del /f /q $(LIBDIR)\XSLoader.pm
 	-del /f /q $(LIBDIR)\Fcntl.pm $(LIBDIR)\IO.pm $(LIBDIR)\Opcode.pm
 	-del /f /q $(LIBDIR)\ops.pm $(LIBDIR)\Safe.pm
@@ -1442,8 +1406,8 @@ distclean: clean nwclean
 	-del /f /q $(LIBDIR)\Devel\Peek.pm $(LIBDIR)\Devel\DProf.pm
 	-del /f /q $(LIBDIR)\File\Glob.pm
 	-del /f /q $(LIBDIR)\Unicode\Normalize.pm
+	-del /f /q $(LIBDIR)\Unicode\Collate.pm
 	-rmdir /s /q $(LIBDIR)\IO
-	-rmdir /s /q $(LIBDIR)\Thread
 	-rmdir /s /q $(LIBDIR)\B
 	-rmdir /s /q $(LIBDIR)\Data
 	-del /f /q $(PODDIR)\*.html

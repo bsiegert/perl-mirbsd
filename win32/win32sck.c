@@ -1,7 +1,7 @@
 /* win32sck.c
  *
  * (c) 1995 Microsoft Corporation. All rights reserved. 
- * 		Developed by hip communications inc., http://info.hip.com/info/
+ * 		Developed by hip communications inc.
  * Portions (c) 1993 Intergraph Corporation. All rights reserved.
  *
  *    You may distribute under the terms of either the GNU General Public
@@ -37,22 +37,11 @@
 #	define TO_SOCKET(x)	(x)
 #endif	/* USE_SOCKETS_AS_HANDLES */
 
-#if defined(USE_5005THREADS) || defined(USE_ITHREADS)
 #define StartSockets() \
     STMT_START {					\
 	if (!wsock_started)				\
 	    start_sockets();				\
-	set_socktype();                                 \
     } STMT_END
-#else
-#define StartSockets() \
-    STMT_START {					\
-	if (!wsock_started) {				\
-	    start_sockets();				\
-	    set_socktype();				\
-	}						\
-    } STMT_END
-#endif
 
 #define SOCKET_TEST(x, y) \
     STMT_START {					\
@@ -97,20 +86,6 @@ start_sockets(void)
     /* atexit((void (*)(void)) EndSockets); */
     wsock_started = 1;
 }
-
-void
-set_socktype(void)
-{
-#ifdef USE_SOCKETS_AS_HANDLES
-#if defined(USE_5005THREADS) || defined(USE_ITHREADS)
-    dTHX;
-    if (!w32_init_socktype) {
-	w32_init_socktype = 1;
-    }
-#endif
-#endif	/* USE_SOCKETS_AS_HANDLES */
-}
-
 
 #ifndef USE_SOCKETS_AS_HANDLES
 #undef fdopen
@@ -284,14 +259,37 @@ win32_select(int nfds, Perl_fd_set* rd, Perl_fd_set* wr, Perl_fd_set* ex, const 
 {
     int r;
 #ifdef USE_SOCKETS_AS_HANDLES
-    Perl_fd_set dummy;
     int i, fd, save_errno = errno;
-    FD_SET nrd, nwr, nex, *prd, *pwr, *pex;
+    FD_SET nrd, nwr, nex;
+    bool just_sleep = TRUE;
 
-    /* winsock seems incapable of dealing with all three null fd_sets,
+    StartSockets();
+
+    FD_ZERO(&nrd);
+    FD_ZERO(&nwr);
+    FD_ZERO(&nex);
+    for (i = 0; i < nfds; i++) {
+	if (rd && PERL_FD_ISSET(i,rd)) {
+	    fd = TO_SOCKET(i);
+	    FD_SET((unsigned)fd, &nrd);
+            just_sleep = FALSE;
+	}
+	if (wr && PERL_FD_ISSET(i,wr)) {
+	    fd = TO_SOCKET(i);
+	    FD_SET((unsigned)fd, &nwr);
+            just_sleep = FALSE;
+	}
+	if (ex && PERL_FD_ISSET(i,ex)) {
+	    fd = TO_SOCKET(i);
+	    FD_SET((unsigned)fd, &nex);
+            just_sleep = FALSE;
+	}
+    }
+
+    /* winsock seems incapable of dealing with all three fd_sets being empty,
      * so do the (millisecond) sleep as a special case
      */
-    if (!(rd || wr || ex)) {
+    if (just_sleep) {
 	if (timeout)
 	    Sleep(timeout->tv_sec  * 1000 +
 		  timeout->tv_usec / 1000);	/* do the best we can */
@@ -299,46 +297,27 @@ win32_select(int nfds, Perl_fd_set* rd, Perl_fd_set* wr, Perl_fd_set* ex, const 
 	    Sleep(UINT_MAX);
 	return 0;
     }
-    StartSockets();
-    PERL_FD_ZERO(&dummy);
-    if (!rd)
-	rd = &dummy, prd = NULL;
-    else
-	prd = &nrd;
-    if (!wr)
-	wr = &dummy, pwr = NULL;
-    else
-	pwr = &nwr;
-    if (!ex)
-	ex = &dummy, pex = NULL;
-    else
-	pex = &nex;
-
-    FD_ZERO(&nrd);
-    FD_ZERO(&nwr);
-    FD_ZERO(&nex);
-    for (i = 0; i < nfds; i++) {
-	fd = TO_SOCKET(i);
-	if (PERL_FD_ISSET(i,rd))
-	    FD_SET((unsigned)fd, &nrd);
-	if (PERL_FD_ISSET(i,wr))
-	    FD_SET((unsigned)fd, &nwr);
-	if (PERL_FD_ISSET(i,ex))
-	    FD_SET((unsigned)fd, &nex);
-    }
 
     errno = save_errno;
-    SOCKET_TEST_ERROR(r = select(nfds, prd, pwr, pex, timeout));
+    SOCKET_TEST_ERROR(r = select(nfds, &nrd, &nwr, &nex, timeout));
     save_errno = errno;
 
     for (i = 0; i < nfds; i++) {
-	fd = TO_SOCKET(i);
-	if (PERL_FD_ISSET(i,rd) && !FD_ISSET(fd, &nrd))
-	    PERL_FD_CLR(i,rd);
-	if (PERL_FD_ISSET(i,wr) && !FD_ISSET(fd, &nwr))
-	    PERL_FD_CLR(i,wr);
-	if (PERL_FD_ISSET(i,ex) && !FD_ISSET(fd, &nex))
-	    PERL_FD_CLR(i,ex);
+	if (rd && PERL_FD_ISSET(i,rd)) {
+	    fd = TO_SOCKET(i);
+	    if (!FD_ISSET(fd, &nrd))
+		PERL_FD_CLR(i,rd);
+	}
+	if (wr && PERL_FD_ISSET(i,wr)) {
+	    fd = TO_SOCKET(i);
+	    if (!FD_ISSET(fd, &nwr))
+		PERL_FD_CLR(i,wr);
+	}
+	if (ex && PERL_FD_ISSET(i,ex)) {
+	    fd = TO_SOCKET(i);
+	    if (!FD_ISSET(fd, &nex))
+		PERL_FD_CLR(i,ex);
+	}
     }
     errno = save_errno;
 #else
@@ -494,9 +473,6 @@ int my_close(int fd)
 	int err;
 	err = closesocket(osf);
 	if (err == 0) {
-#if defined(USE_FIXED_OSFHANDLE) || defined(PERL_MSVCRT_READFIX)
-            _set_osfhnd(fd, INVALID_HANDLE_VALUE);
-#endif
 	    (void)close(fd);	/* handle already closed, ignore error */
 	    return 0;
 	}
@@ -525,9 +501,6 @@ my_fclose (FILE *pf)
 	win32_fflush(pf);
 	err = closesocket(osf);
 	if (err == 0) {
-#if defined(USE_FIXED_OSFHANDLE) || defined(PERL_MSVCRT_READFIX)
-            _set_osfhnd(win32_fileno(pf), INVALID_HANDLE_VALUE);
-#endif
 	    (void)fclose(pf);	/* handle already closed, ignore error */
 	    return 0;
 	}
@@ -541,62 +514,6 @@ my_fclose (FILE *pf)
 	}
     }
     return fclose(pf);
-}
-
-#undef fstat
-int
-my_fstat(int fd, Stat_t *sbufptr)
-{
-    /* This fixes a bug in fstat() on Windows 9x.  fstat() uses the
-     * GetFileType() win32 syscall, which will fail on Windows 9x.
-     * So if we recognize a socket on Windows 9x, we return the
-     * same results as on Windows NT/2000.
-     * XXX this should be extended further to set S_IFSOCK on
-     * sbufptr->st_mode.
-     */
-    int osf;
-    if (!wsock_started || IsWinNT()) {
-#if defined(WIN64) || defined(USE_LARGE_FILES)
-#if defined(__BORLANDC__) /* buk */
-	return win32_fstat(fd, sbufptr );
-#else
-	return _fstati64(fd, sbufptr);
-#endif
-#else
-	return fstat(fd, sbufptr);
-#endif
-    }
-
-    osf = TO_SOCKET(fd);
-    if (osf != -1) {
-	char sockbuf[256];
-	int optlen = sizeof(sockbuf);
-	int retval;
-
-	retval = getsockopt((SOCKET)osf, SOL_SOCKET, SO_TYPE, sockbuf, &optlen);
-	if (retval != SOCKET_ERROR || WSAGetLastError() != WSAENOTSOCK) {
-#if defined(__BORLANDC__)&&(__BORLANDC__<=0x520)
-	    sbufptr->st_mode = S_IFIFO;
-#else
-	    sbufptr->st_mode = _S_IFIFO;
-#endif
-	    sbufptr->st_rdev = sbufptr->st_dev = (dev_t)fd;
-	    sbufptr->st_nlink = 1;
-	    sbufptr->st_uid = sbufptr->st_gid = sbufptr->st_ino = 0;
-	    sbufptr->st_atime = sbufptr->st_mtime = sbufptr->st_ctime = 0;
-	    sbufptr->st_size = (Off_t)0;
-	    return 0;
-	}
-    }
-#if defined(WIN64) || defined(USE_LARGE_FILES)
-#if defined(__BORLANDC__) /* buk */
-    return win32_fstat(fd, sbufptr );
-#else
-    return _fstati64(fd, sbufptr);
-#endif
-#else
-    return fstat(fd, sbufptr);
-#endif
 }
 
 struct hostent *
@@ -674,15 +591,19 @@ int
 win32_ioctl(int i, unsigned int u, char *data)
 {
     dTHX;
-    u_long argp = (u_long)data;
+    u_long u_long_arg; 
     int retval;
-
+    
     if (!wsock_started) {
 	Perl_croak_nocontext("ioctl implemented only on sockets");
 	/* NOTREACHED */
     }
 
-    retval = ioctlsocket(TO_SOCKET(i), (long)u, &argp);
+    /* mauke says using memcpy avoids alignment issues */
+    memcpy(&u_long_arg, data, sizeof u_long_arg); 
+    retval = ioctlsocket(TO_SOCKET(i), (long)u, &u_long_arg);
+    memcpy(data, &u_long_arg, sizeof u_long_arg);
+    
     if (retval == SOCKET_ERROR) {
 	if (WSAGetLastError() == WSAENOTSOCK) {
 	    Perl_croak_nocontext("ioctl implemented only on sockets");
@@ -817,8 +738,8 @@ win32_savecopyservent(struct servent*d, struct servent*s, const char *proto)
     d->s_name = s->s_name;
     d->s_aliases = s->s_aliases;
     d->s_port = s->s_port;
-#ifndef __BORLANDC__	/* Buggy on Win95 and WinNT-with-Borland-WSOCK */
-    if (!IsWin95() && s->s_proto && strlen(s->s_proto))
+#ifndef __BORLANDC__	/* Buggy on WinNT-with-Borland-WSOCK */
+    if (s->s_proto && strlen(s->s_proto))
 	d->s_proto = s->s_proto;
     else
 #endif

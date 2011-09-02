@@ -17,6 +17,7 @@ B::PV		T_SV_OBJ
 B::IV		T_SV_OBJ
 B::NV		T_SV_OBJ
 B::PVMG		T_SV_OBJ
+B::REGEXP	T_SV_OBJ
 B::PVLV		T_SV_OBJ
 B::BM		T_SV_OBJ
 B::RV		T_SV_OBJ
@@ -31,6 +32,9 @@ B::MAGIC	T_MG_OBJ
 SSize_t		T_IV
 STRLEN		T_UV
 PADOFFSET	T_UV
+
+B::HE		T_HE_OBJ
+B::RHE		T_RHE_OBJ
 
 INPUT
 T_OP_OBJ
@@ -57,13 +61,28 @@ T_MG_OBJ
 	else
 	    croak(\"$var is not a reference\")
 
+T_HE_OBJ
+	if (SvROK($arg)) {
+	    IV tmp = SvIV((SV*)SvRV($arg));
+	    $var = INT2PTR($type,tmp);
+	}
+	else
+	    croak(\"$var is not a reference\")
+
+T_RHE_OBJ
+	if (SvROK($arg)) {
+	    IV tmp = SvIV((SV*)SvRV($arg));
+	    $var = INT2PTR($type,tmp);
+	}
+	else
+	    croak(\"$var is not a reference\")
+
 OUTPUT
-T_OP_OBJ
-	sv_setiv(newSVrv($arg, cc_opclassname(aTHX_ (OP*)$var)), PTR2IV($var));
-
-T_SV_OBJ
-	make_sv_object(aTHX_ ($arg), (SV*)($var));
-
-
 T_MG_OBJ
 	sv_setiv(newSVrv($arg, "B::MAGIC"), PTR2IV($var));
+
+T_HE_OBJ
+	sv_setiv(newSVrv($arg, "B::HE"), PTR2IV($var));
+
+T_RHE_OBJ
+	sv_setiv(newSVrv($arg, "B::RHE"), PTR2IV($var));

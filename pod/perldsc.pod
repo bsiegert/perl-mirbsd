@@ -71,8 +71,8 @@ these types of data structures.
 =head1 REFERENCES
 X<reference> X<dereference> X<dereferencing> X<pointer>
 
-The most important thing to understand about all data structures in Perl
--- including multidimensional arrays--is that even though they might
+The most important thing to understand about all data structures in
+Perl--including multidimensional arrays--is that even though they might
 appear otherwise, Perl C<@ARRAY>s and C<%HASH>es are all internally
 one-dimensional.  They can hold only scalar values (meaning a string,
 number, or a reference).  They cannot directly contain other arrays or
@@ -85,8 +85,8 @@ distinguishing between arrays and pointers to the same, this can be
 confusing.  If so, just think of it as the difference between a structure
 and a pointer to a structure.
 
-You can (and should) read more about references in the perlref(1) man
-page.  Briefly, references are rather like pointers that know what they
+You can (and should) read more about references in L<perlref>.
+Briefly, references are rather like pointers that know what they
 point to.  (Objects are also a kind of reference, but we won't be needing
 them right away--if ever.)  This means that when you have something which
 looks to you like an access to a two-or-more-dimensional array and/or hash,
@@ -199,7 +199,7 @@ much harder to read:
 Is it the same?  Well, maybe so--and maybe not.  The subtle difference
 is that when you assign something in square brackets, you know for sure
 it's always a brand new reference with a new I<copy> of the data.
-Something else could be going on in this new case with the C<@{$AoA[$i]}}>
+Something else could be going on in this new case with the C<@{$AoA[$i]}>
 dereference on the left-hand-side of the assignment.  It all depends on
 whether C<$AoA[$i]> had been undefined to start with, or whether it
 already contained a reference.  If you had already populated @AoA with
@@ -568,7 +568,7 @@ X<array of hashes> X<AoH>
  }
 
 =head1 HASHES OF HASHES
-X<hass of hashes> X<HoH>
+X<hash of hashes> X<HoH>
 
 =head2 Declaration of a HASH OF HASHES
 
@@ -837,7 +837,7 @@ source code to MLDBM.
 
 =head1 SEE ALSO
 
-perlref(1), perllol(1), perldata(1), perlobj(1)
+L<perlref>, L<perllol>, L<perldata>, L<perlobj>
 
 =head1 AUTHOR
 

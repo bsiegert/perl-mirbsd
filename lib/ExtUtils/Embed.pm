@@ -1,4 +1,3 @@
-# $Id: Embed.pm,v 1.7 2006/03/28 19:23:06 millert Exp $
 require 5.002;
 
 package ExtUtils::Embed;
@@ -18,7 +17,8 @@ use vars qw(@ISA @EXPORT $VERSION
 	    );
 use strict;
 
-$VERSION = 1.26;
+# This is not a dual-life module, so no need for development version numbers
+$VERSION = '1.30';
 
 @ISA = qw(Exporter);
 @EXPORT = qw(&xsinit &ldopts 
@@ -133,7 +133,9 @@ sub xsi_body {
 
 sub static_ext {
     unless (scalar @Extensions) {
-	@Extensions = sort split /\s+/, $Config{static_ext};
+      my $static_ext = $Config{static_ext};
+      $static_ext =~ s/^\s+//;
+      @Extensions = sort split /\s+/, $static_ext;
 	unshift @Extensions, qw(DynaLoader);
     }
     @Extensions;
@@ -141,6 +143,7 @@ sub static_ext {
 
 sub _escape {
     my $arg = shift;
+    return $$arg if $^O eq 'VMS'; # parens legal in qualifier lists
     $$arg =~ s/([\(\)])/\\$1/g;
 }
 
@@ -225,11 +228,13 @@ sub ldopts {
     if ($^O eq 'MSWin32') {
 	$libperl = $Config{libperl};
     }
-    else {
+    elsif ($^O eq 'os390' && $Config{usedl}) {
+	# Nothing for OS/390 (z/OS) dynamic.
+    } else {
 	$libperl = (grep(/^-l\w*perl\w*$/, @link_args))[0]
 	    || ($Config{libperl} =~ /^lib(\w+)(\Q$lib_ext\E|\.\Q$Config{dlext}\E)$/
 		? "-l$1" : '')
-	    || "-lperl";
+		|| "-lperl";
     }
 
     my $lpath = File::Spec->catdir($Config{archlibexp}, 'CORE');
@@ -276,7 +281,7 @@ sub canon {
        s:^(lib|ext)/(auto/)?::;
        s:/\w+\.\w+$::;
     }
-    grep(s:/:$as:, @ext) if ($as ne '/');
+    map(s:/:$as:, @ext) if ($as ne '/');
     @ext;
 }
 
@@ -425,7 +430,7 @@ rather than print it to STDOUT.
  perl -MExtUtils::Embed -e ldopts
 
 
-This will print arguments for linking with B<libperl.a>, B<DynaLoader> and 
+This will print arguments for linking with B<libperl> and
 extensions found in B<$Config{static_ext}>.  This includes libraries
 found in B<$Config{libs}> and the first ModuleName.a library
 for each extension that is found by searching B<@INC> or the path 
@@ -439,16 +444,7 @@ are picked up from the B<extralibs.ld> file in the same directory.
 
 This will do the same as the above example, along with printing additional arguments for linking with the B<Socket> extension.
 
-
- perl -MExtUtils::Embed -e ldopts -- DynaLoader
-
-
-This will print arguments for linking with just the B<DynaLoader> extension
-and B<libperl.a>.
-
-
  perl -MExtUtils::Embed -e ldopts -- -std Msql -- -L/usr/msql/lib -lmsql
-
 
 Any arguments after the second '--' token are additional linker
 arguments that will be examined for potential conflict.  If there is no

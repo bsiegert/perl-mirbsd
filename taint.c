@@ -1,7 +1,7 @@
 /*    taint.c
  *
- *    Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999,
- *    2000, 2001, 2002, by Larry Wall and others
+ *    Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
+ *    2002, 2003, 2004, 2005, 2006, 2007, 2008 by Larry Wall and others
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
@@ -9,9 +9,11 @@
  */
 
 /*
- * "...we will have peace, when you and all your works have perished--and
- * the works of your dark master to whom you would deliver us.  You are a
- * liar, Saruman, and a corrupter of men's hearts."  --Theoden
+ * '...we will have peace, when you and all your works have perished--and
+ *  the works of your dark master to whom you would deliver us.  You are a
+ *  liar, Saruman, and a corrupter of men's hearts.'       --Théoden
+ *
+ *     [p.580 of _The Lord of the Rings_, III/x: "The Voice of Saruman"]
  */
 
 /* This file contains a few functions for handling data tainting in Perl
@@ -22,9 +24,13 @@
 #include "perl.h"
 
 void
-Perl_taint_proper(pTHX_ const char *f, const char *s)
+Perl_taint_proper(pTHX_ const char *f, const char *const s)
 {
 #if defined(HAS_SETEUID) && defined(DEBUGGING)
+    dVAR;
+
+    PERL_ARGS_ASSERT_TAINT_PROPER;
+
 #   if Uid_t_size == 1
     {
 	const UV  uid = PL_uid;
@@ -60,8 +66,7 @@ Perl_taint_proper(pTHX_ const char *f, const char *s)
         else
 	    ug = " while running with -T switch";
 	if (PL_unsafe || PL_taint_warn) {
-            if(ckWARN(WARN_TAINT))
-                Perl_warner(aTHX_ packWARN(WARN_TAINT), f, s, ug);
+	    Perl_ck_warner_d(aTHX_ packWARN(WARN_TAINT), f, s, ug);
         }
         else {
             Perl_croak(aTHX_ f, s, ug);
@@ -72,6 +77,7 @@ Perl_taint_proper(pTHX_ const char *f, const char *s)
 void
 Perl_taint_env(pTHX)
 {
+    dVAR;
     SV** svp;
     MAGIC* mg;
     const char* const *e;
@@ -80,6 +86,9 @@ Perl_taint_env(pTHX)
 	"CDPATH",	/* ksh dain bramage #1 */
 	"ENV",		/* ksh dain bramage #2 */
 	"BASH_ENV",	/* bash dain bramage -- I guess it's contagious */
+#ifdef WIN32
+	"PERL5SHELL",	/* used for system() on Windows */
+#endif
 	NULL
     };
 
@@ -89,7 +98,7 @@ Perl_taint_env(pTHX)
     /* If there's no %ENV hash of if it's not magical, croak, because
      * it probably doesn't reflect the actual environment */
     if (!GvHV(PL_envgv) || !(SvRMAGICAL(GvHV(PL_envgv))
-	    && mg_find((SV*)GvHV(PL_envgv), PERL_MAGIC_env))) {
+	    && mg_find((const SV *)GvHV(PL_envgv), PERL_MAGIC_env))) {
 	const bool was_tainted = PL_tainted;
 	const char * const name = GvENAME(PL_envgv);
 	PL_tainted = TRUE;
@@ -107,11 +116,12 @@ Perl_taint_env(pTHX)
     {
     int i = 0;
     char name[10 + TYPE_DIGITS(int)] = "DCL$PATH";
+    STRLEN len = 8; /* strlen(name)  */
 
     while (1) {
 	if (i)
-	    (void)sprintf(name,"DCL$PATH;%d", i);
-	svp = hv_fetch(GvHVn(PL_envgv), name, strlen(name), FALSE);
+	    len = my_sprintf(name,"DCL$PATH;%d", i);
+	svp = hv_fetch(GvHVn(PL_envgv), name, len, FALSE);
 	if (!svp || *svp == &PL_sv_undef)
 	    break;
 	if (SvTAINTED(*svp)) {
@@ -127,7 +137,7 @@ Perl_taint_env(pTHX)
   }
 #endif /* VMS */
 
-    svp = hv_fetch(GvHVn(PL_envgv),"PATH",4,FALSE);
+    svp = hv_fetchs(GvHVn(PL_envgv),"PATH",FALSE);
     if (svp && *svp) {
 	if (SvTAINTED(*svp)) {
 	    TAINT;
@@ -141,7 +151,7 @@ Perl_taint_env(pTHX)
 
 #ifndef VMS
     /* tainted $TERM is okay if it contains no metachars */
-    svp = hv_fetch(GvHVn(PL_envgv),"TERM",4,FALSE);
+    svp = hv_fetchs(GvHVn(PL_envgv),"TERM",FALSE);
     if (svp && *svp && SvTAINTED(*svp)) {
 	STRLEN len;
 	const bool was_tainted = PL_tainted;
@@ -160,7 +170,7 @@ Perl_taint_env(pTHX)
 #endif /* !VMS */
 
     for (e = misc_env; *e; e++) {
-	SV ** const svp = hv_fetch(GvHVn(PL_envgv), *e, strlen(*e), FALSE);
+	SV * const * const svp = hv_fetch(GvHVn(PL_envgv), *e, strlen(*e), FALSE);
 	if (svp && *svp != &PL_sv_undef && SvTAINTED(*svp)) {
 	    TAINT;
 	    taint_proper("Insecure $ENV{%s}%s", *e);

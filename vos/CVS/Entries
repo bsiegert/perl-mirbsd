@@ -1,21 +1,22 @@
-/Changes/1.1.1.1/Sat Feb  5 17:24:08 2005//
-/Makefile/1.1.1.2/Fri Jun 30 22:47:28 2006//
-/build.cm/1.1.1.2/Fri Jun 30 22:47:28 2006//
+/Changes/1.1.1.1/Result of merge//
+/Makefile/-1.1.1.2///
+/build.cm/-1.1.1.2///
 /compile_full_perl.cm/1.1.1.1/Sat Feb  5 17:24:08 2005//
-/compile_perl.cm/1.1.1.1/Sat Feb  5 17:24:08 2005//
-/config.alpha.def/1.1.1.2/Fri Jun 30 22:47:29 2006//
-/config.alpha.h/1.1.1.2/Fri Jun 30 22:47:29 2006//
-/config.ga.def/1.1.1.2/Fri Jun 30 22:47:30 2006//
-/config.ga.h/1.1.1.2/Fri Jun 30 22:47:31 2006//
-/config.pl/1.1.1.1/Sat Feb  5 17:24:08 2005//
+/compile_perl.cm/-1.1.1.1///
+/config.alpha.def/-1.1.1.2///
+/config.alpha.h/-1.1.1.2///
+/config.ga.def/-1.1.1.2///
+/config.ga.h/-1.1.1.2///
+/config.pl/-1.1.1.1///
 /configure_full_perl.sh/1.1.1.1/Sat Feb  5 17:24:08 2005//
-/configure_perl.cm/1.1.1.1/Sat Feb  5 17:24:08 2005//
-/install_perl.cm/1.1.1.2/Fri Jun 30 22:47:32 2006//
+/configure_perl.cm/-1.1.1.1///
+/install_perl.cm/-1.1.1.2///
 /make_full_perl.sh/1.1.1.1/Sat Feb  5 17:24:09 2005//
-/mv-if-diff/1.1.1.1/Fri Jun 30 22:47:47 2006//
-/perl.bind/1.1.1.1/Sat Feb  5 17:24:09 2005//
-/test_vos_dummies.c/1.1.1.1/Sat Feb  5 17:24:09 2005//
-/vos.c/1.1.1.1/Sat Feb  5 17:24:09 2005//
-/vos_dummies.c/1.1.1.1/Sat Feb  5 17:24:09 2005//
-/vosish.h/1.1.1.1/Sat Feb  5 17:24:09 2005//
+/mv-if-diff/-1.1.1.1///
+/perl.bind/-1.1.1.1///
+/syslog.h/1.1.131.1/Fri Sep  2 20:17:48 2011//
+/test_vos_dummies.c/-1.1.1.1///
+/vos.c/1.1.1.1/Result of merge//
+/vos_dummies.c/-1.1.1.1///
+/vosish.h/1.1.1.1/Result of merge//
 D

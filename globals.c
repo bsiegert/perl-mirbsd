@@ -8,8 +8,10 @@
  */
 
 /*
- * "For the rest, they shall represent the other Free Peoples of the World:
- * Elves, Dwarves, and Men." --Elrond
+ * 'For the rest, they shall represent the other Free Peoples of the World:
+ *  Elves, Dwarves, and Men.'                                --Elrond
+ *
+ *     [p.275 of _The Lord of the Rings_, II/iii: "The Ring Goes South"]
  */
 
 /* This file exists to #include "perl.h" _ONCE_ with
@@ -23,34 +25,11 @@
  * functions not used by perl itself, but the functions get
  * pulled into the perl executable via the refrerence here.
  *
- * Two printf() like functions have also found their way here.
- * Most likely by analogy to the API scheme above (as perl doesn't
- * use them) but they probably belong elsewhere the obvious place
- * being in perlio.c
- *
 */
 
 #include "INTERN.h"
 #define PERL_IN_GLOBALS_C
 #include "perl.h"
-
-int
-Perl_fprintf_nocontext(PerlIO *stream, const char *format, ...)
-{
-    dTHXs;
-    va_list(arglist);
-    va_start(arglist, format);
-    return PerlIO_vprintf(stream, format, arglist);
-}
-
-int
-Perl_printf_nocontext(const char *format, ...)
-{
-    dTHX;
-    va_list(arglist);
-    va_start(arglist, format);
-    return PerlIO_vprintf(PerlIO_stdout(), format, arglist);
-}
 
 #include "perlapi.h"		/* bring in PL_force_link_funcs */
 

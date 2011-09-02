@@ -9,7 +9,12 @@
 #  socket3r.lib Nov21 1996.
 # perl-5.7.3 fails 2 known tests under QNX6.1.0
 #
-# As with many unix ports, this one depends on a few "standard"
+# perl-5.10.0-tobe compiles with Watcom C 10.6
+#                and QNX 4.25 patch G w/TCPSDK installed
+#  Some tests still fail, mostly to do with dynamic/static
+#  or unsupported features in QNX.
+# 
+## As with many unix ports, this one depends on a few "standard"
 # unix utilities which are not necessarily standard for QNX4.
 #
 # /bin/sh  This is used heavily by Configure and then by
@@ -50,7 +55,7 @@
 #   they both point to the correct library, that is,
 #   /usr/tcptk/current/usr/lib/socket3r.lib.
 # 
-#   ext/Cwd/Cwd.t will complain if `pwd` and cwd don't give
+#   dist/Cwd/Cwd.t will complain if `pwd` and cwd don't give
 #   the same results. cwd calls `fullpath -t`, so if you
 #   cd `fullpath -t` before running the test, it will
 #   pass.
@@ -229,10 +234,15 @@ if [ "$osname" = "qnx" ]; then
 	  /usr/local/bin or some other suitable location.
 	EOF
   fi
+
+  # includes a matherr() to silence noise from watcom libc
+  archobjs="qnx.o"
+  test -f qnx.c || cp qnx/qnx.c .
+
 else
   # $^O eq nto
 
-  ccflags='-DDLOPEN_WONT_DO_RELATIVE_PATHS'
+  ccflags='-U__STRICT_ANSI__'
 
   # Options required to get dynamic linking to work
   lddlflags='-shared'
@@ -243,7 +253,16 @@ else
   # recognize that option, so we're better off setting cc=gcc.
   cc='gcc'
 
+  # gcc uses $QNX_TARGET/usr/include as the include directory.
+  usrinc="$QNX_TARGET/usr/include"
+
   # If we use perl's malloc, it dies with an invalid sbrk.
   # This is probably worth tracking down someday.
   usemymalloc='false'
+  
+  libswanted=`echo " $libswanted "| sed 's/ malloc / /'`
+
+  # Some routines are only in our static libc.
+  # eg crypt() getlogin() getlogin_r()
+  usenm=false
 fi

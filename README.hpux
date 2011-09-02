@@ -32,14 +32,26 @@ following modules were installed:
   Font::AFM-1.18              Storable-1.011      libxml-perl-0.07
   HTML-Tree-3.11              URI-1.11            perl-ldap-0.23
 
-The build was a portable hppa-1.1 multithread build that supports large
-files compiled with gcc-2.9-hppa-991112
+That build was a portable hppa-1.1 multithread build that supports large
+files compiled with gcc-2.9-hppa-991112.
 
-If you perform a new installation, then Perl will be installed
-automatically.
+If you perform a new installation, then (a newer) Perl will be installed
+automatically.  Preinstalled HP-UX systems now slao have more recent versions
+of Perl and the updated modules.
 
-More recent (preinstalled) HP-UX systems have more recent versions of
-Perl and the updated modules.
+The official (threaded) builds from HP, as they are shipped on the
+Application DVD/CD's are available on
+L<http://www.software.hp.com/portal/swdepot/displayProductInfo.do?productNumber=PERL>
+for both PA-RISC and IPF (Itanium Processor Family). They are built
+with the HP ANSI-C compiler. Up till 5.8.8 that was done by ActiveState.
+
+To see what version is included on the DVD (assumed here to be mounted
+on /cdrom), issue this command:
+
+  # swlist -s /cdrom perl
+  # perl           D.5.8.8.B  5.8.8 Perl Programming Language
+    perl.Perl5-32  D.5.8.8.B  32-bit 5.8.8 Perl Programming Language with Extensions
+    perl.Perl5-64  D.5.8.8.B  64-bit 5.8.8 Perl Programming Language with Extensions
 
 =head2 Using perl from HP's porting centre
 
@@ -57,7 +69,7 @@ HP has asked the porting centre to move Open Source binaries
 from /opt to /usr/local, so binaries produced since the start
 of July 2002 are located in /usr/local.
 
-One of HP porting centres URL's is http://hpux.connect.org.uk/
+One of HP porting centres URL's is L<http://hpux.connect.org.uk/>
 The port currently available is built with GNU gcc.
 
 =head2 Compiling Perl 5 on HP-UX
@@ -77,15 +89,42 @@ details.
 
 =head2 PA-RISC
 
-HP's current Unix systems run on its own Precision Architecture
+HP's HP9000 Unix systems run on HP's own Precision Architecture
 (PA-RISC) chip.  HP-UX used to run on the Motorola MC68000 family of
 chips, but any machine with this chip in it is quite obsolete and this
 document will not attempt to address issues for compiling Perl on the
 Motorola chipset.
 
-The most recent version of PA-RISC at the time of this document's last
-update is 2.0. HP PA-RISC systems are usually refered to with model
-description "HP 9000".
+The version of PA-RISC at the time of this document's last update is 2.0,
+which is also the last there will be. HP PA-RISC systems are usually
+refered to with model description "HP 9000". The last CPU in this series
+is the PA-8900.  Support for PA-RISC architectured machines officially
+ends as shown in the following table:
+
+   PA-RISC End-of-Life Roadmap
+ +--------+----------------+----------------+-----------------+
+ | HP9000 | Superdome      | PA-8700        | Spring 2011     |
+ | 4-128  |                | PA-8800/sx1000 | Summer 2012     |
+ | cores  |                | PA-8900/sx1000 | 2014            |
+ |        |                | PA-8900/sx2000 | 2015            |
+ +--------+----------------+----------------+-----------------+
+ | HP9000 | rp7410, rp8400 | PA-8700        | Spring 2011     |
+ | 2-32   | rp7420, rp8420 | PA-8800/sx1000 | 2012            |
+ | cores  | rp7440, rp8440 | PA-8900/sx1000 | Autumn 2013     |
+ |        |                | PA-8900/sx2000 | 2015            |
+ +--------+----------------+----------------+-----------------+
+ | HP9000 | rp44x0         | PA-8700        | Spring 2011     |
+ | 1-8    |                | PA-8800/rp44x0 | 2012            |
+ | cores  |                | PA-8900/rp44x0 | 2014            |
+ +--------+----------------+----------------+-----------------+
+ | HP9000 | rp34x0         | PA-8700        | Spring 2011     |
+ | 1-4    |                | PA-8800/rp34x0 | 2012            |
+ | cores  |                | PA-8900/rp34x0 | 2014            |
+ +--------+----------------+----------------+-----------------+
+
+From L<http://www.hp.com/products1/evolution/9000/faqs.html>
+
+ The last order date for HP 9000 systems was December 31, 2008.
 
 A complete list of models at the time the OS was built is in the file
 /usr/sam/lib/mo/sched.models. The first column corresponds to the last
@@ -164,7 +203,7 @@ that contained the explanation is dead, so here's a short summary:
 
   rp2400, rp2405, rp2430, rp2450, rp2470, rp3410, rp3440, rp4410,
   rp4440, rp5400, rp5405, rp5430, rp5450, rp5470, rp7400, rp7405,
-  rp7410, rp7420, rp8400, rp8420, Superdome
+  rp7410, rp7420, rp7440, rp8400, rp8420, rp8440, Superdome
 
 The current naming convention is:
 
@@ -185,7 +224,7 @@ The current naming convention is:
           b = blade
           sa = appliance
 
-=head2 Itanium Processor Family and HP-UX
+=head2 Itanium Processor Family (IPF) and HP-UX
 
 HP-UX also runs on the new Itanium processor.  This requires the use
 of a different version of HP-UX (currently 11.23 or 11i v2), and with
@@ -200,20 +239,40 @@ while running a PA-RISC executable.
 HP Itanium 2 systems are usually refered to with model description
 "HP Integrity".
 
-=head2 Itanium & Itanium 2
+=head2 Itanium, Itanium 2 & Madison 6
 
-HP also ships servers with the 128-bit Itanium processor(s). As of the
-date of this document's last update, the following systems contain
-Itanium or Itanium 2 chips (this is very likely to be out of date):
+HP also ships servers with the 128-bit Itanium processor(s). The cx26x0
+is told to have Madison 6. As of the date of this document's last update,
+the following systems contain Itanium or Itanium 2 chips (this is likely
+to be out of date):
 
-  BL60p, rx1600, rx1620, rx2600, rx2600hptc, rx2620, rx4610, rx4640,
-  rx5670, rx7620, rx8620, rx9610
+  BL60p, BL860c, BL870c, cx2600, cx2620, rx1600, rx1620, rx2600,
+  rx2600hptc, rx2620, rx2660, rx3600, rx4610, rx4640, rx5670,
+  rx6600, rx7420, rx7620, rx7640, rx8420, rx8620, rx8640, rx9610,
+  sx1000, sx2000
 
 To see all about your machine, type
 
   # model
   ia64 hp server rx2600
   # /usr/contrib/bin/machinfo
+
+=head2 HP-UX versions
+
+Not all architectures (PA = PA-RISC, IPF = Itanium Processor Family)
+support all versions of HP-UX, here is a short list
+
+  HP-UX version  Kernel  Architecture
+  -------------  ------  ------------
+  10.20          32 bit  PA
+  11.00          32/64   PA
+  11.11  11i v1  32/64   PA
+  11.22  11i v2     64        IPF
+  11.23  11i v2     64   PA & IPF
+  11.31  11i v3     64   PA & IPF
+
+See for the full list of hardware/OS support and expected end-of-life
+L<http://www.hp.com/go/hpuxservermatrix>
 
 =head2 Building Dynamic Extensions on HP-UX
 
@@ -285,9 +344,9 @@ the DB_File module, which requires SleepyCat's libdb.sl:
   # vi Makefile
   ... add +Z to all cflags to create shared objects
   CFLAGS=         -c $(CPPFLAGS) +Z -Ae +O2 +Onolimit \
-		  -I/usr/local/include -I/usr/include/X11R6
+                  -I/usr/local/include -I/usr/include/X11R6
   CXXFLAGS=       -c $(CPPFLAGS) +Z -Ae +O2 +Onolimit \
-		  -I/usr/local/include -I/usr/include/X11R6
+                  -I/usr/local/include -I/usr/include/X11R6
 
   # make clean
   # make
@@ -312,7 +371,7 @@ As of db-4.2.x it is no longer needed to do this by hand. Sleepycat
 has changed the configuration process to add +z on HP-UX automatically.
 
   # cd .../db-4.2.25/build_unix
-  # env CFLAGS=+DA2.0w LDFLAGS=+DA2.0w ../dist/configure
+  # env CFLAGS=+DD64 LDFLAGS=+DD64 ../dist/configure
 
 should work to generate 64bit shared libraries for HP-UX 11.00 and 11i.
 
@@ -331,24 +390,32 @@ flag -Aa is added to the cpprun and cppstdin variables in the config.sh
 file (though see the section on 64-bit perl below). If you are using a
 recent version of the Perl distribution, these flags are set automatically.
 
+Even though HP-UX 10.20 and 11.00 are not actively maintained by HP
+anymore, updates for the HP ANSI C compiler are still available from
+time to time, and it might be advisable to see if updates are applicable.
+At the moment of writing, the latests available patches for 11.00 that
+should be applied are PHSS_35098, PHSS_35175, PHSS_35100, PHSS_33036,
+and PHSS_33902). If you have a SUM account, you can use it to search
+for updates/patches. Enter "ANSI" as keyword.
+
 =head2 The GNU C Compiler
 
 When you are going to use the GNU C compiler (gcc), and you don't have
 gcc yet, you can either build it yourself from the sources (available
-from e.g. http://www.gnu.ai.mit.edu/software/gcc/releases.html) or fetch
-a prebuilt binary from the HP porting center. There are two places where
-gcc prebuilds can be fetched; the first and best (for HP-UX 11 only) is
-http://h21007.www2.hp.com/dspp/tech/tech_TechSoftwareDetailPage_IDX/1,1703,547,00.html
-the second is http://hpux.cs.utah.edu/hppd/hpux/Gnu/ where you can also
-find the GNU binutils package. (Browse through the list, because there
-are often multiple versions of the same package available).
+from e.g. L<http://www.gnu.ai.mit.edu/software/gcc/releases.html>) or fetch
+a prebuilt binary from the HP porting center. gcc prebuilds can be
+fetched from
+L<http://h21007.www2.hp.com/dspp/tech/tech_TechSoftwareDetailPage_IDX/1,1703,547,00.html>
+(Browse through the list, because there are often multiple versions of
+the same package available).
 
 Above mentioned distributions are depots. H.Merijn Brand has made prebuilt
-gcc binaries available on http://mirrors.develooper.com/hpux/ and/or
-http://www.cmve.net/~merijn/ for HP-UX 10.20, HP-UX 11.00, and HP-UX 11.11
-(HP-UX 11i) in both 32- and 64-bit versions. These are bzipped tar archives
-that also include recent GNU binutils and GNU gdb.  Read the instructions
-on that page to rebuild gcc using itself.
+gcc binaries available on L<http://mirrors.develooper.com/hpux/> and/or
+L<http://www.cmve.net/~merijn/> for HP-UX 10.20, HP-UX 11.00, HP-UX 11.11
+(HP-UX 11i v1), and HP-UX 11.23 (HP-UX 11i v2) in both 32- and 64-bit
+versions. These are bzipped tar archives that also include recent GNU
+binutils and GNU gdb.  Read the instructions on that page to rebuild gcc
+using itself.
 
 On PA-RISC you need a different compiler for 32-bit applications and for
 64-bit applications. On PA-RISC, 32-bit objects and 64-bit objects do
@@ -379,14 +446,14 @@ which calls any file-manipulating C function will need to be recompiled
 procedure).
 
 The list of functions that will need to recompiled is:
-creat,		fgetpos,	fopen,
-freopen,	fsetpos,	fstat,
-fstatvfs,	fstatvfsdev,	ftruncate,
-ftw,		lockf,		lseek,
-lstat,		mmap,		nftw,
-open,		prealloc,	stat,
-statvfs,	statvfsdev,	tmpfile,
-truncate,	getrlimit,	setrlimit
+  creat,          fgetpos,        fopen,
+  freopen,        fsetpos,        fstat,
+  fstatvfs,       fstatvfsdev,    ftruncate,
+  ftw,            lockf,          lseek,
+  lstat,          mmap,           nftw,
+  open,           prealloc,       stat,
+  statvfs,        statvfsdev,     tmpfile,
+  truncate,       getrlimit,      setrlimit
 
 Another drawback is only valid for Perl versions before 5.6.0.  This
 drawback is that the seek and tell functions (both the builtin version
@@ -414,7 +481,8 @@ HP-UX versions before 10.30 require a separate installation of a POSIX
 threads library package. Two examples are the HP DCE package, available
 on "HP-UX Hardware Extensions 3.0, Install and Core OS, Release 10.20,
 April 1999 (B3920-13941)" or the Freely available PTH package, available
-on H.Merijn's site (http://mirrors.develooper.com/hpux/).
+on H.Merijn's site (L<http://mirrors.develooper.com/hpux/>). The use of PTH
+will be unsupported in perl-5.12 and up and is rather buggy in 5.11.x.
 
 If you are going to use the HP DCE package, the library used for threading
 is /usr/lib/libcma.sl, but there have been multiple updates of that
@@ -503,35 +571,24 @@ it is known to fail with 64-bit versions of GCC.
 
 =head2 GDBM and Threads on HP-UX
 
-If you attempt to compile Perl with threads on an 11.X system and also
-link in the GDBM library, then Perl will immediately core dump when it
-starts up.  The only workaround at this point is to relink the GDBM
-library under 11.X, then relink it into Perl.
+If you attempt to compile Perl with (POSIX) threads on an 11.X system
+and also link in the GDBM library, then Perl will immediately core dump
+when it starts up.  The only workaround at this point is to relink the
+GDBM library under 11.X, then relink it into Perl.
+
+the error might show something like:
+
+Pthread internal error: message: __libc_reinit() failed, file: ../pthreads/pthread.c, line: 1096
+Return Pointer is 0xc082bf33
+sh: 5345 Quit(coredump)
+
+and Configure will give up.
 
 =head2 NFS filesystems and utime(2) on HP-UX
 
 If you are compiling Perl on a remotely-mounted NFS filesystem, the test
 io/fs.t may fail on test #18.  This appears to be a bug in HP-UX and no
 fix is currently available.
-
-=head2 perl -P and // and HP-UX
-
-If HP-UX Perl is compiled with flags that will cause problems if the
--P flag of Perl (preprocess Perl code with the C preprocessor before
-perl sees it) is used.  The problem is that C<//>, being a C++-style
-until-end-of-line comment, will disappear along with the remainder
-of the line.  This means that common Perl constructs like
-
-  s/foo//;
-
-will turn into illegal code
-
-  s/foo
-
-The workaround is to use some other quoting separator than C<"/">,
-like for example C<"!">:
-
-  s!foo!!;
 
 =head2 HP-UX Kernel Parameters (maxdsiz) for Compiling Perl
 
@@ -577,15 +634,24 @@ bug seems to be to create add to the file F</etc/nsswitch.conf>
 Whether you are using NIS does not matter.  Amazingly enough,
 the same bug also affects Solaris.
 
+=head1 Miscellaneous
+
+HP-UX 11 Y2K patch "Y2K-1100 B.11.00.B0125 HP-UX Core OS Year 2000
+Patch Bundle" has been reported to break the io/fs test #18 which
+tests whether utime() can change timestamps.  The Y2K patch seems to
+break utime() so that over NFS the timestamps do not get changed
+(on local filesystems utime() still works). This has probably been
+fixed on your system by now.
+
 =head1 AUTHOR
 
-Jeff Okamoto <okamoto@corp.hp.com>
 H.Merijn Brand <h.m.brand@xs4all.nl>
+Jeff Okamoto <okamoto@corp.hp.com>
 
 With much assistance regarding shared libraries from Marc Sabatella.
 
 =head1 DATE
 
-Version 0.7.6: 2005-12-20
+Version 0.8.3: 2008-06-24
 
 =cut

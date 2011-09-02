@@ -8,7 +8,7 @@ BEGIN {
 
 # use strict;
 
-plan tests => 213;
+plan tests => 218;
 
 my @comma = ("key", "value");
 
@@ -273,11 +273,13 @@ foreach my $chr (60, 200, 600, 6000, 60000) {
 }
 
 # now some tests for hash assignment in scalar and list context with
-# duplicate keys [perl #24380]
+# duplicate keys [perl #24380],  [perl #31865]
 {
     my %h; my $x; my $ar;
     is( (join ':', %h = (1) x 8), '1:1',
 	'hash assignment in list context removes duplicates' );
+    is( (join ':', %h = qw(a 1 a 2 b 3 c 4 d 5 d 6)), 'a:2:b:3:c:4:d:6',
+	'hash assignment in list context removes duplicates 2' );
     is( scalar( %h = (1,2,1,3,1,4,1,5) ), 2,
 	'hash assignment in scalar context' );
     is( scalar( ($x,%h) = (0,1,2,1,3,1,4,1,5) ), 3,
@@ -288,4 +290,33 @@ foreach my $chr (60, 200, 600, 6000, 60000) {
     $ar = [ ($x,%h) = (0,1,2,1,3,1,4,1,5) ];
     is( $#$ar, 2, 'scalar + hash assignment in list context' );
     is( "@$ar", "0 1 5", '...gets the last values' );
+}
+
+# test stringification of keys
+{
+    no warnings 'once';
+    my @types = qw( SCALAR         ARRAY HASH CODE    GLOB);
+    my @refs =    ( \ do { my $x }, [],   {},  sub {}, \ *x);
+    my(%h, %expect);
+    @h{@refs} = @types;
+    @expect{map "$_", @refs} = @types;
+    ok (eq_hash(\%h, \%expect), 'unblessed ref stringification');
+
+    bless $_ for @refs;
+    %h = (); %expect = ();
+    @h{@refs} = @types;
+    @expect{map "$_", @refs} = @types;
+    ok (eq_hash(\%h, \%expect), 'blessed ref stringification');
+}
+
+# [perl #76716] Hash assignment should not zap weak refs.
+SKIP: {
+ skip_if_miniperl("no dynamic loading on miniperl, no Scalar::Util", 2);
+ my %tb;
+ require Scalar::Util;
+ Scalar::Util::weaken(my $p = \%tb);
+ %tb = ();
+ is $p, \%tb, "hash assignment should not zap weak refs";
+ undef %tb;
+ is $p, \%tb, "hash undef should not zap weak refs";
 }

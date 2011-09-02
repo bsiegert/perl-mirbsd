@@ -1,37 +1,68 @@
-/Contract/1.1.1.1/Sat Feb  5 17:22:35 2005//
-/Glossary/1.1.1.2/Fri Jun 30 22:40:19 2006//
+/Contract/-1.1.1.1///
+/GitUtils.pm/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/Glossary/1.1.1.2/Result of merge//
 /Maintainers/1.1.1.1/Sat Feb  5 17:22:35 2005//
-/Maintainers.pl/1.1.1.2/Fri Jun 30 22:40:21 2006//
-/Maintainers.pm/1.1.1.2/Fri Jun 30 22:40:21 2006//
-/apply/1.1.1.1/Sat Feb  5 17:22:35 2005//
-/check83.pl/1.1.1.2/Fri Jun 30 22:40:22 2006//
-/checkAUTHORS.pl/1.1.1.2/Fri Jun 30 22:40:22 2006//
-/checkURL.pl/1.1.1.1/Sat Feb  5 17:22:35 2005//
+/Maintainers.pl/1.1.1.2/Result of merge//
+/Maintainers.pm/1.1.1.2/Result of merge//
+/README.y2038/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/add-package.pl/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/apply/-1.1.1.1///
+/bump-perl-version/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/check-cpan-pollution/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/check83.pl/1.1.1.2/Result of merge//
+/checkAUTHORS.pl/1.1.1.2/Result of merge//
+/checkURL.pl/1.1.1.1/Result of merge//
 /checkVERSION.pl/1.1.1.1/Sat Feb  5 17:22:35 2005//
-/checkcase.pl/1.1.1.1/Sat Feb  5 17:22:35 2005//
-/checkcfgvar.pl/1.1.1.1/Fri Jun 30 22:40:22 2006//
-/cmpVERSION.pl/1.1.1.1/Sat Feb  5 17:22:35 2005//
-/config.sh/1.1.1.2/Fri Jun 30 22:40:23 2006//
-/config_H/1.1.1.2/Fri Jun 30 22:40:23 2006//
-/config_h.pl/1.1.1.1/Fri Jun 30 22:40:24 2006//
-/corecpan.pl/1.1.1.2/Fri Jun 30 22:40:25 2006//
-/curliff.pl/1.1.1.1/Sat Feb  5 17:22:36 2005//
+/checkansi.pl/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/checkcase.pl/-1.1.1.1///
+/checkcfgvar.pl/1.1.1.1/Result of merge//
+/checkpodencoding.pl/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/cherrymaint/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/cmpVERSION.pl/1.1.1.1/Result of merge//
+/config.sh/1.1.1.2/Result of merge//
+/config_H/1.1.1.2/Result of merge//
+/config_h.pl/1.1.1.1/Result of merge//
+/core-cpan-diff/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/corecpan.pl/1.1.1.2/Result of merge//
+/corelist-diff/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/corelist-perldelta.pl/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/corelist.pl/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/curliff.pl/1.1.1.1/Result of merge//
+/epigraphs.pod/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/exec-bit.txt/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/expand-macro.pl/1.1.131.1/Fri Sep  2 20:17:32 2011//
 /findrfuncs/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/findvars/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/fixCORE/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/fixvars/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/genlog/1.1.1.2/Fri Jun 30 22:40:25 2006//
-/makemeta/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/makerel/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/manicheck/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/p4d2p/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/p4genpatch/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/patching.pod/1.1.1.2/Fri Jun 30 22:40:26 2006//
-/patchls/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/pumpkin.pod/1.1.1.2/Fri Jun 30 22:40:27 2006//
-/repository.pod/1.1.1.2/Fri Jun 30 22:40:27 2006//
+/findvars/1.1.1.1/Result of merge//
+/fixCORE/1.1.1.1/Result of merge//
+/fixvars/1.1.1.1/Result of merge//
+/genlog/1.1.1.2/Result of merge//
+/git-deltatool/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/git-find-p4-change/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/git-make-p4-refs/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/how_to_write_a_perldelta.pod/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/make_dot_patch.pl/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/make_snapshot.pl/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/makemeta/1.1.1.1/Result of merge//
+/makerel/1.1.1.1/Result of merge//
+/manicheck/1.1.1.1/Result of merge//
+/manisort/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/newtests-perldelta.pl/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/p4d2p/-1.1.1.1///
+/p4genpatch/-1.1.1.1///
+/patching.pod/-1.1.1.2///
+/patchls/-1.1.1.1///
+/perldelta_template.pod/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/perlhist_calculate.pl/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/podtidy/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/pumpkin.pod/1.1.1.2/Result of merge//
+/release_managers_guide.pod/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/release_schedule.pod/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/repository.pod/-1.1.1.2///
+/rt_list_patches/1.1.131.1/Fri Sep  2 20:17:32 2011//
 /sort_perldiag.pl/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/testall.atom/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/thirdclean/1.1.1.1/Sat Feb  5 17:22:36 2005//
-/valgrindpp.pl/1.1.1.1/Sat Feb  5 17:22:36 2005//
+/testall.atom/1.1.1.1/Result of merge//
+/thirdclean/1.1.1.1/Result of merge//
+/timecheck.c/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/timecheck2.c/1.1.131.1/Fri Sep  2 20:17:32 2011//
+/valgrindpp.pl/1.1.1.1/Result of merge//
 D

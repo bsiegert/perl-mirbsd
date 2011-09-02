@@ -1,15 +1,15 @@
-/Changes/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/Closer.java/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/JNI.pm/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/JNI.xs/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/JNIConfig/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/JNIConfig.Win32/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/JNIConfig.kaffe/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/JNIConfig.noembed/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/JNIConfig.standard/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/Makefile.PL/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/test.pl/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/typemap/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/typemap.gcc/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/typemap.win32/1.1.1.1/Sat Feb  5 17:23:12 2005//
+/Changes/-1.1.1.1///
+/Closer.java/-1.1.1.1///
+/JNI.pm/-1.1.1.1///
+/JNI.xs/-1.1.1.1///
+/JNIConfig/-1.1.1.1///
+/JNIConfig.Win32/-1.1.1.1///
+/JNIConfig.kaffe/-1.1.1.1///
+/JNIConfig.noembed/-1.1.1.1///
+/JNIConfig.standard/-1.1.1.1///
+/Makefile.PL/-1.1.1.1///
+/test.pl/-1.1.1.1///
+/typemap/-1.1.1.1///
+/typemap.gcc/-1.1.1.1///
+/typemap.win32/-1.1.1.1///
 D

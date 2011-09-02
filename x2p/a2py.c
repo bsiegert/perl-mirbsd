@@ -18,8 +18,8 @@
 #endif
 #include "util.h"
 
-char *filename;
-char *myname;
+const char *filename;
+const char *myname;
 
 int checkers = 0;
 
@@ -59,7 +59,7 @@ usage()
 #endif
 
 int
-main(register int argc, register char **argv, register char **env)
+main(register int argc, register const char **argv, register const char **env)
 {
     register STR *str;
     int i;
@@ -117,7 +117,7 @@ main(register int argc, register char **argv, register char **env)
 
     /* open script */
 
-    if (argv[0] == Nullch) {
+    if (argv[0] == NULL) {
 #if defined(OS2) || defined(WIN32) || defined(NETWARE)
 	if ( isatty(fileno(stdin)) )
 	    usage();
@@ -126,14 +126,13 @@ main(register int argc, register char **argv, register char **env)
     }
     filename = savestr(argv[0]);
 
-    filename = savestr(argv[0]);
     if (strEQ(filename,"-"))
 	argv[0] = "";
     if (!*argv[0])
 	rsfp = stdin;
     else
 	rsfp = fopen(argv[0],"r");
-    if (rsfp == Nullfp)
+    if (rsfp == NULL)
 	fatal("Awk script \"%s\" doesn't seem to exist.\n",filename);
 
     /* init tokener */
@@ -254,10 +253,10 @@ yylex(void)
 	if (!rsfp)
 	    RETURN(0);
 	line++;
-	if ((s = str_gets(linestr, rsfp)) == Nullch) {
+	if ((s = str_gets(linestr, rsfp)) == NULL) {
 	    if (rsfp != stdin)
 		fclose(rsfp);
-	    rsfp = Nullfp;
+	    rsfp = NULL;
 	    s = str_get(linestr);
 	    RETURN(0);
 	}
@@ -429,7 +428,7 @@ yylex(void)
 	}
 	for (d = s; isALPHA(*s) || isDIGIT(*s) || *s == '_'; )
 	    s++;
-	split_to_array = set_array_base = TRUE;
+	split_to_array = TRUE;
 	if (d != s)
 	{
 	    yylval = string(d,s-d);
@@ -465,8 +464,6 @@ yylex(void)
 
     case 'a': case 'A':
 	SNARFWORD;
-	if (strEQ(d,"ARGC"))
-	    set_array_base = TRUE;
 	if (strEQ(d,"ARGV")) {
 	    yylval=numary(string("ARGV",0));
 	    XOP(VAR);
@@ -562,7 +559,7 @@ yylex(void)
 	else if (strEQ(d,"function"))
 	    XTERM(FUNCTION);
 	if (strEQ(d,"FILENAME"))
-	    d = "ARGV";
+	    ID("ARGV");
 	if (strEQ(d,"foreach"))
 	    *d = toUPPER(*d);
 	else if (strEQ(d,"format"))
@@ -599,7 +596,6 @@ yylex(void)
 	if (strEQ(d,"in"))
 	    XTERM(IN);
 	if (strEQ(d,"index")) {
-	    set_array_base = TRUE;
 	    XTERM(INDEX);
 	}
 	if (strEQ(d,"int")) {
@@ -645,7 +641,6 @@ yylex(void)
     case 'm': case 'M':
 	SNARFWORD;
 	if (strEQ(d,"match")) {
-	    set_array_base = TRUE;
 	    XTERM(MATCH);
 	}
 	if (strEQ(d,"m"))
@@ -654,7 +649,7 @@ yylex(void)
     case 'n': case 'N':
 	SNARFWORD;
 	if (strEQ(d,"NF"))
-	    do_chop = do_split = split_to_array = set_array_base = TRUE;
+	    do_chop = do_split = split_to_array = TRUE;
 	if (strEQ(d,"next")) {
 	    saw_line_op = TRUE;
 	    XTERM(NEXT);
@@ -666,14 +661,14 @@ yylex(void)
 	SNARFWORD;
 	if (strEQ(d,"ORS")) {
 	    saw_ORS = TRUE;
-	    d = "\\";
+	    ID("\\");
 	}
 	if (strEQ(d,"OFS")) {
 	    saw_OFS = TRUE;
-	    d = ",";
+	    ID(",");
 	}
 	if (strEQ(d,"OFMT")) {
-	    d = "#";
+	    ID("#");
 	}
 	if (strEQ(d,"open"))
 	    *d = toUPPER(*d);
@@ -701,8 +696,8 @@ yylex(void)
     case 'r': case 'R':
 	SNARFWORD;
 	if (strEQ(d,"RS")) {
-	    d = "/";
 	    saw_RS = TRUE;
+	    ID("/");
 	}
 	if (strEQ(d,"rand")) {
 	    yylval = ORAND;
@@ -720,11 +715,9 @@ yylex(void)
     case 's': case 'S':
 	SNARFWORD;
 	if (strEQ(d,"split")) {
-	    set_array_base = TRUE;
 	    XOP(SPLIT);
 	}
 	if (strEQ(d,"substr")) {
-	    set_array_base = TRUE;
 	    XTERM(SUBSTR);
 	}
 	if (strEQ(d,"sub"))
@@ -743,7 +736,7 @@ yylex(void)
 	    XTERM(FUN1);
 	}
 	if (strEQ(d,"SUBSEP")) {
-	    d = ";";
+	    ID(";");
 	}
 	if (strEQ(d,"sin")) {
 	    yylval = OSIN;
@@ -878,7 +871,7 @@ scanpat(register char *s)
 }
 
 void
-yyerror(char *s)
+yyerror(const char *s)
 {
     fprintf(stderr,"%s in file %s at line %d\n",
       s,filename,line);
@@ -921,7 +914,7 @@ scannum(register char *s)
 }
 
 int
-string(char *ptr, int len)
+string(const char *ptr, int len)
 {
     int retval = mop;
 
@@ -1205,7 +1198,6 @@ numary(int arg)
     str_cat(key,"[]");
     hstore(symtab,key->str_ptr,str_make("1"));
     str_free(key);
-    set_array_base = TRUE;
     return arg;
 }
 

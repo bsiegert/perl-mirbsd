@@ -1,118 +1,169 @@
-/Makefile.SH/1.1.1.2/Fri Jun 30 22:44:32 2006//
-/buildtoc/1.1.1.2/Fri Jun 30 22:44:32 2006//
-/checkpods.PL/1.1.1.2/Fri Jun 30 22:44:33 2006//
-/perl.pod/1.1.1.2/Fri Jun 30 22:44:33 2006//
-/perl5004delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
-/perl5005delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
-/perl561delta.pod/1.1.1.2/Fri Jun 30 22:44:34 2006//
-/perl56delta.pod/1.1.1.2/Fri Jun 30 22:44:35 2006//
-/perl570delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
-/perl571delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
-/perl572delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
-/perl573delta.pod/1.1.1.2/Fri Jun 30 22:44:37 2006//
-/perl581delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
+/Makefile.SH/1.1.1.2/Result of merge//
+/buildtoc/1.1.1.2/Result of merge//
+/checkpods.PL/-1.1.1.2///
+/perl.pod/1.1.1.2/Result of merge//
+/perl5004delta.pod/1.1.1.1/Result of merge//
+/perl5005delta.pod/1.1.1.1/Result of merge//
+/perl5100delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5101delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5110delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5111delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5112delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5113delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5114delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5115delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5120delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5121delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5122delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5123delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5130delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl51310delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl51311delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5131delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5132delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5133delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5134delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5135delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5136delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5137delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5138delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5139delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl5140delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl561delta.pod/1.1.1.2/Result of merge//
+/perl56delta.pod/1.1.1.2/Result of merge//
+/perl570delta.pod/1.1.1.1/Result of merge//
+/perl571delta.pod/1.1.1.1/Result of merge//
+/perl572delta.pod/1.1.1.1/Result of merge//
+/perl573delta.pod/1.1.1.2/Result of merge//
+/perl581delta.pod/1.1.1.1/Result of merge//
 /perl582delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
 /perl583delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
 /perl584delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
 /perl585delta.pod/1.1.1.2/Fri Jun 30 22:44:38 2006//
 /perl586delta.pod/1.1.1.2/Fri Jun 30 22:44:38 2006//
-/perl587delta.pod/1.1.1.1/Fri Jun 30 22:44:38 2006//
-/perl588delta.pod/1.1.1.1/Fri Jun 30 22:44:38 2006//
-/perl58delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
-/perlapi.pod/1.1.1.2/Fri Jun 30 22:44:39 2006//
-/perlapio.pod/1.1.1.2/Fri Jun 30 22:44:40 2006//
-/perlartistic.pod/1.1.1.1/Sat Feb  5 17:23:50 2005//
-/perlbook.pod/1.1.1.2/Fri Jun 30 22:44:41 2006//
-/perlboot.pod/1.1.1.1/Sat Feb  5 17:23:50 2005//
-/perlbot.pod/1.1.1.1/Sat Feb  5 17:23:50 2005//
-/perlcall.pod/1.1.1.2/Fri Jun 30 22:44:41 2006//
-/perlcheat.pod/1.1.1.1/Sat Feb  5 17:23:50 2005//
-/perlclib.pod/1.1.1.2/Fri Jun 30 22:44:42 2006//
-/perlcompile.pod/1.1.1.1/Sat Feb  5 17:23:50 2005//
-/perldata.pod/1.1.1.2/Fri Jun 30 22:44:42 2006//
-/perldbmfilter.pod/1.1.1.2/Fri Jun 30 22:44:43 2006//
-/perldebguts.pod/1.1.1.2/Fri Jun 30 22:44:43 2006//
-/perldebtut.pod/1.1.1.1/Sat Feb  5 17:23:50 2005//
-/perldebug.pod/1.1.1.2/Fri Jun 30 22:44:44 2006//
-/perldiag.pod/1.1.1.2/Fri Jun 30 22:44:45 2006//
-/perldoc.pod/1.1.1.2/Fri Jun 30 22:44:46 2006//
-/perldsc.pod/1.1.1.2/Fri Jun 30 22:44:46 2006//
-/perlebcdic.pod/1.1.1.1/Sat Feb  5 17:23:50 2005//
-/perlembed.pod/1.1.1.2/Fri Jun 30 22:44:47 2006//
-/perlfaq.pod/1.1.1.2/Fri Jun 30 22:44:48 2006//
-/perlfaq1.pod/1.1.1.2/Fri Jun 30 22:44:48 2006//
-/perlfaq2.pod/1.1.1.2/Fri Jun 30 22:44:48 2006//
-/perlfaq3.pod/1.1.1.2/Fri Jun 30 22:44:49 2006//
-/perlfaq4.pod/1.1.1.2/Fri Jun 30 22:44:49 2006//
-/perlfaq5.pod/1.1.1.2/Fri Jun 30 22:44:50 2006//
-/perlfaq6.pod/1.1.1.2/Fri Jun 30 22:44:50 2006//
-/perlfaq7.pod/1.1.1.2/Fri Jun 30 22:44:51 2006//
-/perlfaq8.pod/1.1.1.2/Fri Jun 30 22:44:51 2006//
-/perlfaq9.pod/1.1.1.2/Fri Jun 30 22:44:52 2006//
-/perlfilter.pod/1.1.1.2/Fri Jun 30 22:44:52 2006//
-/perlfork.pod/1.1.1.1/Sat Feb  5 17:23:53 2005//
-/perlform.pod/1.1.1.2/Fri Jun 30 22:44:53 2006//
-/perlfunc.pod/1.1.1.2/Fri Jun 30 22:44:54 2006//
-/perlglossary.pod/1.1.1.1/Fri Jun 30 22:44:56 2006//
-/perlgpl.pod/1.1.1.2/Fri Jun 30 22:44:56 2006//
-/perlguts.pod/1.1.1.2/Fri Jun 30 22:44:57 2006//
-/perlhack.pod/1.1.1.2/Fri Jun 30 22:44:58 2006//
-/perlhist.pod/1.1.1.2/Fri Jun 30 22:44:59 2006//
-/perlintern.pod/1.1.1.2/Fri Jun 30 22:44:59 2006//
-/perlintro.pod/1.1.1.1/Sat Feb  5 17:23:53 2005//
-/perliol.pod/1.1.1.1/Sat Feb  5 17:23:53 2005//
-/perlipc.pod/1.1.1.2/Fri Jun 30 22:45:00 2006//
-/perllexwarn.pod/1.1.1.2/Fri Jun 30 22:45:01 2006//
-/perllocale.pod/1.1.1.2/Fri Jun 30 22:45:01 2006//
-/perllol.pod/1.1.1.1/Sat Feb  5 17:23:53 2005//
-/perlmod.pod/1.1.1.2/Fri Jun 30 22:45:02 2006//
-/perlmodinstall.pod/1.1.1.2/Fri Jun 30 22:45:02 2006//
-/perlmodlib.PL/1.1.1.2/Fri Jun 30 22:45:03 2006//
-/perlmodlib.pod/1.1.1.2/Fri Jun 30 22:45:03 2006//
-/perlmodstyle.pod/1.1.1.1/Sat Feb  5 17:23:54 2005//
-/perlnewmod.pod/1.1.1.1/Sat Feb  5 17:23:54 2005//
+/perl587delta.pod/1.1.1.1/Result of merge//
+/perl588delta.pod/1.1.1.1/Result of merge//
+/perl589delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl58delta.pod/1.1.1.1/Result of merge//
+/perl590delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl591delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl592delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl593delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl594delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perl595delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perlapi.pod/-1.1.1.2///
+/perlapio.pod/1.1.1.2/Result of merge//
+/perlartistic.pod/1.1.1.1/Result of merge//
+/perlbook.pod/1.1.1.2/Result of merge//
+/perlboot.pod/1.1.1.1/Result of merge//
+/perlbot.pod/1.1.1.1/Result of merge//
+/perlcall.pod/1.1.1.2/Result of merge//
+/perlcheat.pod/1.1.1.1/Result of merge//
+/perlclib.pod/1.1.1.2/Result of merge//
+/perlcommunity.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perlcompile.pod/1.1.1.1/Result of merge//
+/perldata.pod/1.1.1.2/Result of merge//
+/perldbmfilter.pod/1.1.1.2/Result of merge//
+/perldebguts.pod/1.1.1.2/Result of merge//
+/perldebtut.pod/1.1.1.1/Result of merge//
+/perldebug.pod/1.1.1.2/Result of merge//
+/perldelta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
+/perldiag.pod/1.1.1.2/Result of merge//
+/perldoc.pod/1.1.1.2/Result of merge//
+/perldsc.pod/1.1.1.2/Result of merge//
+/perlebcdic.pod/1.1.1.1/Result of merge//
+/perlembed.pod/1.1.1.2/Result of merge//
+/perlfaq.pod/1.1.1.2/Result of merge//
+/perlfaq1.pod/1.1.1.2/Result of merge//
+/perlfaq2.pod/1.1.1.2/Result of merge//
+/perlfaq3.pod/1.1.1.2/Result of merge//
+/perlfaq4.pod/1.1.1.2/Result of merge//
+/perlfaq5.pod/1.1.1.2/Result of merge//
+/perlfaq6.pod/1.1.1.2/Result of merge//
+/perlfaq7.pod/1.1.1.2/Result of merge//
+/perlfaq8.pod/1.1.1.2/Result of merge//
+/perlfaq9.pod/1.1.1.2/Result of merge//
+/perlfilter.pod/1.1.1.2/Result of merge//
+/perlfork.pod/1.1.1.1/Result of merge//
+/perlform.pod/1.1.1.2/Result of merge//
+/perlfunc.pod/1.1.1.2/Result of merge//
+/perlgit.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlglossary.pod/1.1.1.1/Result of merge//
+/perlgpl.pod/1.1.1.2/Result of merge//
+/perlguts.pod/1.1.1.2/Result of merge//
+/perlhack.pod/1.1.1.2/Result of merge//
+/perlhacktips.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlhacktut.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlhist.pod/1.1.1.2/Result of merge//
+/perlintern.pod/-1.1.1.2///
+/perlinterp.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlintro.pod/1.1.1.1/Result of merge//
+/perliol.pod/1.1.1.1/Result of merge//
+/perlipc.pod/1.1.1.2/Result of merge//
+/perllexwarn.pod/1.1.1.2/Result of merge//
+/perllocale.pod/1.1.1.2/Result of merge//
+/perllol.pod/1.1.1.1/Result of merge//
+/perlmod.pod/1.1.1.2/Result of merge//
+/perlmodinstall.pod/1.1.1.2/Result of merge//
+/perlmodlib.PL/1.1.1.2/Result of merge//
+/perlmodlib.pod/-1.1.1.2///
+/perlmodstyle.pod/1.1.1.1/Result of merge//
+/perlmroapi.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlnewmod.pod/1.1.1.1/Result of merge//
 /perlnumber.pod/1.1.1.1/Sat Feb  5 17:23:54 2005//
-/perlobj.pod/1.1.1.2/Fri Jun 30 22:45:04 2006//
-/perlop.pod/1.1.1.2/Fri Jun 30 22:45:05 2006//
-/perlopentut.pod/1.1.1.2/Fri Jun 30 22:45:06 2006//
-/perlothrtut.pod/1.1.1.1/Sat Feb  5 17:23:54 2005//
-/perlpacktut.pod/1.1.1.1/Sat Feb  5 17:23:54 2005//
-/perlpod.pod/1.1.1.2/Fri Jun 30 22:45:07 2006//
-/perlpodspec.pod/1.1.1.2/Fri Jun 30 22:45:07 2006//
-/perlport.pod/1.1.1.2/Fri Jun 30 22:45:08 2006//
-/perlre.pod/1.1.1.2/Fri Jun 30 22:45:09 2006//
-/perlref.pod/1.1.1.2/Fri Jun 30 22:45:09 2006//
-/perlreftut.pod/1.1.1.2/Fri Jun 30 22:45:10 2006//
-/perlrequick.pod/1.1.1.1/Sat Feb  5 17:23:54 2005//
-/perlreref.pod/1.1.1.2/Fri Jun 30 22:45:10 2006//
-/perlretut.pod/1.1.1.1/Sat Feb  5 17:23:54 2005//
-/perlrun.pod/1.1.1.2/Fri Jun 30 22:45:11 2006//
-/perlsec.pod/1.1.1.2/Fri Jun 30 22:45:11 2006//
+/perlobj.pod/1.1.1.2/Result of merge//
+/perlop.pod/1.1.1.2/Result of merge//
+/perlopentut.pod/1.1.1.2/Result of merge//
+/perlothrtut.pod/-1.1.1.1///
+/perlpacktut.pod/1.1.1.1/Result of merge//
+/perlperf.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlpod.pod/1.1.1.2/Result of merge//
+/perlpodspec.pod/1.1.1.2/Result of merge//
+/perlpodstyle.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlpolicy.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlport.pod/1.1.1.2/Result of merge//
+/perlpragma.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlre.pod/1.1.1.2/Result of merge//
+/perlreapi.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlrebackslash.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlrecharclass.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlref.pod/1.1.1.2/Result of merge//
+/perlreftut.pod/1.1.1.2/Result of merge//
+/perlreguts.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlrequick.pod/1.1.1.1/Result of merge//
+/perlreref.pod/1.1.1.2/Result of merge//
+/perlretut.pod/1.1.1.1/Result of merge//
+/perlrun.pod/1.1.1.2/Result of merge//
+/perlsec.pod/1.1.1.2/Result of merge//
+/perlsource.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
 /perlstyle.pod/1.1.1.2/Fri Jun 30 22:45:12 2006//
-/perlsub.pod/1.1.1.2/Fri Jun 30 22:45:12 2006//
-/perlsyn.pod/1.1.1.2/Fri Jun 30 22:45:13 2006//
-/perlthrtut.pod/1.1.1.2/Fri Jun 30 22:45:13 2006//
-/perltie.pod/1.1.1.2/Fri Jun 30 22:45:13 2006//
-/perltoc.pod/1.1.1.2/Fri Jun 30 22:45:15 2006//
-/perltodo.pod/1.1.1.2/Fri Jun 30 22:45:18 2006//
+/perlsub.pod/1.1.1.2/Result of merge//
+/perlsyn.pod/1.1.1.2/Result of merge//
+/perlthrtut.pod/1.1.1.2/Result of merge//
+/perltie.pod/1.1.1.2/Result of merge//
+/perltoc.pod/-1.1.1.2///
+/perltodo.pod/1.1.1.2/Result of merge//
 /perltooc.pod/1.1.1.2/Fri Jun 30 22:45:18 2006//
-/perltoot.pod/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/perltrap.pod/1.1.1.2/Fri Jun 30 22:45:19 2006//
-/perlunicode.pod/1.1.1.2/Fri Jun 30 22:45:20 2006//
-/perluniintro.pod/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/perlutil.pod/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/perlvar.pod/1.1.1.2/Fri Jun 30 22:45:21 2006//
-/perlxs.pod/1.1.1.2/Fri Jun 30 22:45:21 2006//
-/perlxstut.pod/1.1.1.3/Sun Apr 29 20:12:58 2007//
-/pod2html.PL/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/pod2latex.PL/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/pod2man.PL/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/pod2text.PL/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/pod2usage.PL/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/podchecker.PL/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/podselect.PL/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/roffitall/1.1.1.1/Sat Feb  5 17:23:57 2005//
+/perltoot.pod/1.1.1.1/Result of merge//
+/perltrap.pod/1.1.1.2/Result of merge//
+/perlunicode.pod/1.1.1.2/Result of merge//
+/perlunifaq.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perluniintro.pod/1.1.1.1/Result of merge//
+/perlunitut.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlutil.pod/1.1.1.1/Result of merge//
+/perlvar.pod/1.1.1.2/Result of merge//
+/perlvms.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
+/perlxs.pod/1.1.1.2/Result of merge//
+/perlxstut.pod/1.1.1.3/Result of merge//
+/pod2html.PL/-1.1.1.1///
+/pod2latex.PL/-1.1.1.1///
+/pod2man.PL/-1.1.1.1///
+/pod2text.PL/-1.1.1.1///
+/pod2usage.PL/-1.1.1.1///
+/podchecker.PL/-1.1.1.1///
+/podselect.PL/-1.1.1.1///
+/roffitall/1.1.1.1/Result of merge//
 /rofftoc/1.1.1.1/Sat Feb  5 17:23:49 2005//
 /splitman/1.1.1.1/Sat Feb  5 17:23:57 2005//
-/splitpod/1.1.1.1/Sat Feb  5 17:23:57 2005//
+/splitpod/1.1.1.1/Result of merge//
 D

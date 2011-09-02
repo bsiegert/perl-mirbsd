@@ -1,22 +1,40 @@
-/1_compile.t/1.1.1.2/Fri Jun 30 22:45:33 2006//
-/NoExporter.pm/1.1.1.1/Fri Jun 30 22:45:33 2006//
-/TieIn.pm/1.1.1.1/Sat Feb  5 17:23:58 2005//
-/TieOut.pm/1.1.1.2/Fri Jun 30 22:45:33 2006//
-/commonsense.t/1.1.1.1/Sat Feb  5 17:23:58 2005//
+/1_compile.t/1.1.1.2/Result of merge//
+/Cname.pm/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/NoExporter.pm/-1.1.1.1///
+/Sans_mypragma.pm/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/TieIn.pm/-1.1.1.1///
+/TieOut.pm/-1.1.1.2///
+/common.pl/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/commonsense.t/1.1.1.1/Result of merge//
 /compmod.pl/1.1.1.1/Sat Feb  5 17:23:58 2005//
-/contains_pod.xr/1.1.1.1/Fri Jun 30 22:45:33 2006//
-/cygwin.t/1.1.1.1/Fri Jun 30 22:45:33 2006//
-/filter-util.pl/1.1.1.1/Sat Feb  5 17:23:58 2005//
-/h2ph.h/1.1.1.2/Fri Jun 30 22:45:34 2006//
-/h2ph.pht/1.1.1.2/Fri Jun 30 22:45:34 2006//
+/contains_pod.xr/-1.1.1.1///
+/croak.t/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/cygwin.t/1.1.1.1/Result of merge//
+/dbmt_common.pl/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/deprecate.t/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/filter-util.pl/-1.1.1.1///
+/h2ph.h/1.1.1.2/Result of merge//
+/h2ph.pht/1.1.1.2/Result of merge//
+/mypragma.pm/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/mypragma.t/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/no_load.t/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/overload_fallback.t/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/proxy_constant_subs.t/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/test_use.pm/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/test_use_14937.pm/1.1.131.1/Fri Sep  2 20:17:45 2011//
+/universal.t/1.1.131.1/Fri Sep  2 20:17:45 2011//
 D/Dev////
 D/Devel////
 D/Filter////
 D/MakeMaker////
 D/Math////
 D/Test////
+D/charnames////
+D/deprecate////
 D/dprof////
+D/feature////
 D/locale////
 D/sample-tests////
 D/strict////
+D/subs////
 D/warnings////

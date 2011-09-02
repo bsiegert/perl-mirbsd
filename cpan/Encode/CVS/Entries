@@ -1,0 +1,23 @@
+/AUTHORS/1.1.131.1/Fri Sep  2 20:17:33 2011//
+/Changes/1.1.131.1/Fri Sep  2 20:17:33 2011//
+/Encode.pm/1.1.131.1/Fri Sep  2 20:17:33 2011//
+/Encode.xs/1.1.131.1/Fri Sep  2 20:17:33 2011//
+/MANIFEST/1.1.131.1/Fri Sep  2 20:17:33 2011//
+/META.yml/1.1.131.1/Fri Sep  2 20:17:33 2011//
+/Makefile.PL/1.1.131.1/Fri Sep  2 20:17:33 2011//
+/README/1.1.131.1/Fri Sep  2 20:17:33 2011//
+/encengine.c/1.1.131.1/Fri Sep  2 20:17:33 2011//
+/encoding.pm/1.1.131.1/Fri Sep  2 20:17:33 2011//
+D/Byte////
+D/CN////
+D/EBCDIC////
+D/Encode////
+D/JP////
+D/KR////
+D/Symbol////
+D/TW////
+D/Unicode////
+D/bin////
+D/lib////
+D/t////
+D/ucm////

@@ -278,7 +278,7 @@ Anyway, here it is.  Should run on perl v4 or greater.  Maybe less.
 
 =cut
 
-$RCSID = '$Id: c2ph.PL,v 1.9 2005/01/15 21:30:41 millert Exp $';
+$RCSID = '$Id: c2ph,v 1.7 95/10/28 10:41:47 tchrist Exp Locker: tchrist $';
 
 use File::Temp;
 
@@ -369,13 +369,13 @@ $DEFINES = '';
 
 $perl++ if $0 =~ m#/?c2ph$#;
 
-require 'getopts.pl';
+use Getopt::Std qw(getopts);
 
 use File::Temp 'tempdir';
 
 eval '$'.$1.'$2;' while $ARGV[0] =~ /^([A-Za-z_]+=)(.*)/ && shift;
 
-&Getopts('aixdpvtnws:') || &usage(0);
+getopts('aixdpvtnws:') || &usage(0);
 
 $opt_d && $debug++;
 $opt_t && $trace++;
@@ -394,7 +394,7 @@ eval '$'.$1.'$2;' while $ARGV[0] =~ /^([A-Za-z_]+=)(.*)/ && shift;
 
 sub PLUMBER {
     select(STDERR);
-    print "oops, apperent pager foulup\n";
+    print "oops, apparent pager foulup\n";
     $isatty++;
     &usage(1);
 }
@@ -1320,7 +1320,7 @@ EOF
 	$intrinsics{$_[1]} = $template{$_[0]};
     }
     close(PIPE) || die "couldn't read intrinsics!";
-    unlink($TMP, '$SAFEDIR/a.out');
+    unlink($TMP, "$SAFEDIR/a.out");
     print STDERR "done\n" if $trace;
 }
 
@@ -1435,9 +1435,9 @@ sub repeat_template {
 close OUT or die "Can't close $file: $!";
 chmod 0755, $file or die "Can't reset permissions for $file: $!\n";
 unlink 'pstruct';
-print "Linking c2ph to pstruct.\n";
+print "Linking $file to pstruct.\n";
 if (defined $Config{d_link}) {
-  link 'c2ph', 'pstruct';
+    link $file, 'pstruct';
 } else {
   unshift @INC, '../lib';
   require File::Copy;

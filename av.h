@@ -1,7 +1,7 @@
 /*    av.h
  *
- *    Copyright (C) 1991, 1992, 1993, 1995, 1996, 1997, 1998, 1999,
- *    2000, 2001, 2002, by Larry Wall and others
+ *    Copyright (C) 1991, 1992, 1993, 1995, 1996, 1997, 1998, 1999, 2000,
+ *    2001, 2002, 2005, 2006, 2007, 2008, by Larry Wall and others
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
@@ -9,26 +9,21 @@
  */
 
 struct xpvav {
-    char*	xav_array;      /* pointer to first array element */
+    HV*		xmg_stash;	/* class package */
+    union _xmgu	xmg_u;
     SSize_t	xav_fill;       /* Index of last element present */
     SSize_t	xav_max;        /* max index for which array has space */
-    IV		xof_off;	/* ptr is incremented by offset */
-    NV		xnv_nv;		/* numeric value, if any */
-    MAGIC*	xmg_magic;	/* magic for scalar array */
-    HV*		xmg_stash;	/* class package */
-
     SV**	xav_alloc;	/* pointer to beginning of C array of SVs */
-    SV*		xav_arylen;
-    U8		xav_flags;
 };
 
+/* SV*	xav_arylen; */
 
-/* AVf_REAL is set for all AVs whose xav_array contents are refcounted.
+/* SVpav_REAL is set for all AVs whose xav_array contents are refcounted.
  * Some things like "@_" and the scratchpad list do not set this, to
  * indicate that they are cheating (for efficiency) by not refcounting
  * the AV's contents.
  * 
- * AVf_REIFY is only meaningful on such "fake" AVs (i.e. where AVf_REAL
+ * SVpav_REIFY is only meaningful on such "fake" AVs (i.e. where SVpav_REAL
  * is not set).  It indicates that the fake AV is capable of becoming
  * real if the array needs to be modified in some way.  Functions that
  * modify fake AVs check both flags to call av_reify() as appropriate.
@@ -40,17 +35,14 @@ struct xpvav {
  * manipulations external to perl should not care about any of this.
  * GSAR 1999-09-10
  */
-#define AVf_REAL 1	/* free old entries */
-#define AVf_REIFY 2	/* can become real */
-
-/* XXX this is not used anywhere */
-#define AVf_REUSED 4	/* got undeffed--don't turn old memory into SVs now */
 
 /*
 =head1 Handy Values
 
 =for apidoc AmU||Nullav
 Null AV pointer.
+
+(deprecated - use C<(AV *)NULL> instead)
 
 =head1 Array Manipulation Functions
 
@@ -60,28 +52,48 @@ Same as C<av_len()>.  Deprecated, use C<av_len()> instead.
 =cut
 */
 
-#define Nullav Null(AV*)
+#ifndef PERL_CORE
+#  define Nullav Null(AV*)
+#endif
 
-#define AvARRAY(av)	((SV**)((XPVAV*)  SvANY(av))->xav_array)
+#define AvARRAY(av)	((av)->sv_u.svu_array)
 #define AvALLOC(av)	((XPVAV*)  SvANY(av))->xav_alloc
 #define AvMAX(av)	((XPVAV*)  SvANY(av))->xav_max
 #define AvFILLp(av)	((XPVAV*)  SvANY(av))->xav_fill
-#define AvARYLEN(av)	((XPVAV*)  SvANY(av))->xav_arylen
-#define AvFLAGS(av)	((XPVAV*)  SvANY(av))->xav_flags
+#define AvARYLEN(av)	(*Perl_av_arylen_p(aTHX_ MUTABLE_AV(av)))
 
-#define AvREAL(av)	(AvFLAGS(av) & AVf_REAL)
-#define AvREAL_on(av)	(AvFLAGS(av) |= AVf_REAL)
-#define AvREAL_off(av)	(AvFLAGS(av) &= ~AVf_REAL)
-#define AvREIFY(av)	(AvFLAGS(av) & AVf_REIFY)
-#define AvREIFY_on(av)	(AvFLAGS(av) |= AVf_REIFY)
-#define AvREIFY_off(av)	(AvFLAGS(av) &= ~AVf_REIFY)
-#define AvREUSED(av)	(AvFLAGS(av) & AVf_REUSED)
-#define AvREUSED_on(av)	(AvFLAGS(av) |= AVf_REUSED)
-#define AvREUSED_off(av) (AvFLAGS(av) &= ~AVf_REUSED)
+#define AvREAL(av)	(SvFLAGS(av) & SVpav_REAL)
+#define AvREAL_on(av)	(SvFLAGS(av) |= SVpav_REAL)
+#define AvREAL_off(av)	(SvFLAGS(av) &= ~SVpav_REAL)
+#define AvREAL_only(av)	(AvREIFY_off(av), SvFLAGS(av) |= SVpav_REAL)
+#define AvREIFY(av)	(SvFLAGS(av) & SVpav_REIFY)
+#define AvREIFY_on(av)	(SvFLAGS(av) |= SVpav_REIFY)
+#define AvREIFY_off(av)	(SvFLAGS(av) &= ~SVpav_REIFY)
+#define AvREIFY_only(av)	(AvREAL_off(av), SvFLAGS(av) |= SVpav_REIFY)
 
-#define AvREALISH(av)	(AvFLAGS(av) & (AVf_REAL|AVf_REIFY))
+#define AvREALISH(av)	(SvFLAGS(av) & (SVpav_REAL|SVpav_REIFY))
                                           
-#define AvFILL(av)	((SvRMAGICAL((SV *) (av))) \
-			  ? mg_size((SV *) av) : AvFILLp(av))
+#define AvFILL(av)	((SvRMAGICAL((const SV *) (av))) \
+			 ? mg_size(MUTABLE_SV(av)) : AvFILLp(av))
 
 #define NEGATIVE_INDICES_VAR "NEGATIVE_INDICES"
+
+/*
+=for apidoc newAV
+
+Creates a new AV.  The reference count is set to 1.
+
+=cut
+*/
+
+#define newAV()	MUTABLE_AV(newSV_type(SVt_PVAV))
+
+/*
+ * Local variables:
+ * c-indentation-style: bsd
+ * c-basic-offset: 4
+ * indent-tabs-mode: t
+ * End:
+ *
+ * ex: set ts=8 sts=4 sw=4 noet:
+ */

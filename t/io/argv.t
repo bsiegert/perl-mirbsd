@@ -5,13 +5,18 @@ BEGIN {
     @INC = '../lib';
 }
 
-require "./test.pl";
+BEGIN { require "./test.pl"; }
 
-plan(tests => 22);
+plan(tests => 23);
 
-use File::Spec;
+my ($devnull, $no_devnull);
 
-my $devnull = File::Spec->devnull;
+if (is_miniperl()) {
+    $no_devnull = "no dynamic loading on miniperl, File::Spec not built, so can't determine /dev/null";
+} else {
+    require File::Spec;
+    $devnull = File::Spec->devnull;
+}
 
 open(TRY, '>Io_argv1.tmp') || (die "Can't open temp file: $!");
 print TRY "a line\n";
@@ -38,7 +43,15 @@ is($x, "1a line\n2a line\n", '<> from two files');
     is($x, "foo\n", '   from just STDIN');
 }
 
-@ARGV = ('Io_argv1.tmp', 'Io_argv1.tmp', $devnull, 'Io_argv1.tmp');
+{
+    # 5.10 stopped autovivifying scalars in globs leading to a
+    # segfault when $ARGV is written to.
+    runperl( prog => 'eof()', stdin => "nothing\n" );
+    is( 0+$?, 0, q(eof() doesn't segfault) );
+}
+
+@ARGV = is_miniperl() ? ('Io_argv1.tmp', 'Io_argv1.tmp', 'Io_argv1.tmp')
+    : ('Io_argv1.tmp', 'Io_argv1.tmp', $devnull, 'Io_argv1.tmp');
 while (<>) {
     $y .= $. . $_;
     if (eof()) {
@@ -56,7 +69,7 @@ close TRY or die "Could not close: $!";
 @ARGV = ('Io_argv1.tmp', 'Io_argv2.tmp');
 $^I = '_bak';   # not .bak which confuses VMS
 $/ = undef;
-my $i = 6;
+my $i = 7;
 while (<>) {
     s/^/ok $i\n/;
     ++$i;
@@ -81,37 +94,42 @@ open STDIN, 'Io_argv1.tmp' or die $!;
 @ARGV = ();
 ok( !eof(),     'STDIN has something' );
 
-is( <>, "ok 6\n" );
+is( <>, "ok 7\n" );
 
-open STDIN, $devnull or die $!;
-@ARGV = ();
-ok( eof(),      'eof() true with empty @ARGV' );
+SKIP: {
+    skip_if_miniperl($no_devnull, 4);
+    open STDIN, $devnull or die $!;
+    @ARGV = ();
+    ok( eof(),      'eof() true with empty @ARGV' );
 
-@ARGV = ('Io_argv1.tmp');
-ok( !eof() );
+    @ARGV = ('Io_argv1.tmp');
+    ok( !eof() );
 
-@ARGV = ($devnull, $devnull);
-ok( !eof() );
+    @ARGV = ($devnull, $devnull);
+    ok( !eof() );
 
-close ARGV or die $!;
-ok( eof(),      'eof() true after closing ARGV' );
+    close ARGV or die $!;
+    ok( eof(),      'eof() true after closing ARGV' );
+}
 
-{
+SKIP: {
     local $/;
-    open F, 'Io_argv1.tmp' or die "Could not open Io_argv1.tmp: $!";
-    <F>;	# set $. = 1
-    is( <F>, undef );
+    open my $fh, 'Io_argv1.tmp' or die "Could not open Io_argv1.tmp: $!";
+    <$fh>;	# set $. = 1
+    is( <$fh>, undef );
 
-    open F, $devnull or die;
-    ok( defined(<F>) );
+    skip_if_miniperl($no_devnull, 5);
 
-    is( <F>, undef );
-    is( <F>, undef );
+    open $fh, $devnull or die;
+    ok( defined(<$fh>) );
 
-    open F, $devnull or die;	# restart cycle again
-    ok( defined(<F>) );
-    is( <F>, undef );
-    close F or die "Could not close: $!";
+    is( <$fh>, undef );
+    is( <$fh>, undef );
+
+    open $fh, $devnull or die;	# restart cycle again
+    ok( defined(<$fh>) );
+    is( <$fh>, undef );
+    close $fh or die "Could not close: $!";
 }
 
 # This used to dump core
@@ -130,6 +148,6 @@ unlink "Io_argv3.tmp";
 **PROG**
 
 END {
-    1 while unlink 'Io_argv1.tmp', 'Io_argv1.tmp_bak',
+    unlink_all 'Io_argv1.tmp', 'Io_argv1.tmp_bak',
 	'Io_argv2.tmp', 'Io_argv2.tmp_bak', 'Io_argv3.tmp';
 }

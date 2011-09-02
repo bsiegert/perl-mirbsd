@@ -1,5 +1,5 @@
 %{
-/* $RCSfile: a2p.y,v $$Revision: 1.8 $$Date: 2006/03/28 19:23:15 $
+/* $RCSfile: a2p.y,v $$Revision: 4.1 $$Date: 92/08/07 18:29:12 $
  *
  *    Copyright (C) 1991, 1992, 1993, 1994, 1996, 1997, 1999, 2000,
  *    by Larry Wall and others
@@ -7,13 +7,7 @@
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
- * $Log: a2p.y,v $
- * Revision 1.8  2006/03/28 19:23:15  millert
- * merge in perl 5.8.8
- *
- * Revision 1.7  2003/12/03 03:02:53  millert
- * Resolve conflicts for perl 5.8.2, remove old files, and add OpenBSD-specific scaffolding
- *
+ * $Log:	a2p.y,v $
  */
 
 #include "INTERN.h"

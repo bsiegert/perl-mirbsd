@@ -4,7 +4,7 @@ require Exporter;
 
 =head1 NAME
 
-Getopt::Std, getopt, getopts - Process single-character switches with switch clustering
+getopt, getopts - Process single-character switches with switch clustering
 
 =head1 SYNOPSIS
 
@@ -28,6 +28,7 @@ there is a space between the switch and the argument.
 The getopts() function is similar, but you should pass to it the list of all
 switches to be recognized.  If unspecified switches are found on the
 command-line, the user will be warned that an unknown option was given.
+The getopts() function returns true unless an invalid option was found.
 
 Note that, if your code is running under the recommended C<use strict
 'vars'> pragma, you will need to declare these package variables
@@ -71,7 +72,7 @@ and version_mess() with the switches string as an argument.
 
 @ISA = qw(Exporter);
 @EXPORT = qw(getopt getopts);
-$VERSION = '1.05';
+$VERSION = '1.06';
 # uncomment the next line to disable 1.03-backward compatibility paranoia
 # $STANDARD_HELP_VERSION = 1;
 

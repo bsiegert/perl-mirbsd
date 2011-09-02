@@ -81,9 +81,9 @@ countit - see how many times a chunk of code runs in a given time
 Returns the current time.   Example:
 
     use Benchmark;
-    $t0 = new Benchmark;
+    $t0 = Benchmark->new;
     # ... your code here ...
-    $t1 = new Benchmark;
+    $t1 = Benchmark->new;
     $td = timediff($t1, $t0);
     print "the code took:",timestr($td),"\n";
 
@@ -91,9 +91,9 @@ Returns the current time.   Example:
 
 Enables or disable debugging by setting the C<$Benchmark::Debug> flag:
 
-    debug Benchmark 1;
+    Benchmark->debug(1);
     $t = timeit(10, ' 5 ** $Global ');
-    debug Benchmark 0;
+    Benchmark->debug(0);
 
 =item iters
 
@@ -161,7 +161,7 @@ The routines are called in string comparison order of KEY.
 
 The COUNT can be zero or negative, see timethis().
 
-Returns a hash of Benchmark objects, keyed by name.
+Returns a hash reference of Benchmark objects, keyed by name.
 
 =item timediff ( T1, T2 )
 
@@ -219,12 +219,14 @@ outputs a chart like:
 This chart is sorted from slowest to fastest, and shows the percent speed
 difference between each pair of tests.
 
-c<cmpthese> can also be passed the data structure that timethese() returns:
+C<cmpthese> can also be passed the data structure that timethese() returns:
 
     $results = timethese( -1, { a => "++\$i", b => "\$i *= 2" } ) ;
     cmpthese( $results );
 
 in case you want to see both sets of results.
+If the first argument is an unblessed hash reference,
+that is RESULTSHASHREF; otherwise that is COUNT.
 
 Returns a reference to an ARRAY of rows, each row is an ARRAY of cells from the
 above chart, including labels. This:
@@ -243,7 +245,7 @@ B<NOTE>: This result value differs from previous versions, which returned
 the C<timethese()> result structure.  If you want that, just use the two
 statement C<timethese>...C<cmpthese> idiom shown above.
 
-Incidently, note the variance in the result values between the two examples;
+Incidentally, note the variance in the result values between the two examples;
 this is typical of benchmarking.  If this were a real benchmark, you would
 probably want to run a lot more iterations.
 
@@ -316,7 +318,7 @@ calls like these:
     enablecache();
 
 Caching is off by default, as it can (usually slightly) decrease
-accuracy and does not usually noticably affect runtimes.
+accuracy and does not usually noticeably affect runtimes.
 
 =head1 EXAMPLES
 
@@ -415,6 +417,9 @@ September, 2002; by Jarkko Hietaniemi: add ':hireswallclock' special tag.
 February, 2004; by Chia-liang Kao: make cmpthese and timestr use time
 statistics for children instead of parent when the style is 'nop'.
 
+November, 2007; by Christophe Grosjean: make cmpthese and timestr compute
+time consistently with style argument, default is 'all' not 'noc' any more.
+
 =cut
 
 # evaluate something in a clean lexical environment
@@ -435,7 +440,7 @@ our(@ISA, @EXPORT, @EXPORT_OK, %EXPORT_TAGS, $VERSION);
 	      clearcache clearallcache disablecache enablecache);
 %EXPORT_TAGS=( all => [ @EXPORT, @EXPORT_OK ] ) ;
 
-$VERSION = 1.07;
+$VERSION = 1.12;
 
 # --- ':hireswallclock' special handling
 
@@ -456,6 +461,7 @@ sub import {
     my $class = shift;
     if (grep { $_ eq ":hireswallclock" } @_) {
 	@_ = grep { $_ ne ":hireswallclock" } @_;
+	local $^W=0;
 	*mytime = $hirestime if defined $hirestime;
     }
     Benchmark->export_to_level(1, $class, @_);
@@ -551,6 +557,8 @@ sub timediff {
     for (my $i=0; $i < @$a; ++$i) {
 	push(@r, $a->[$i] - $b->[$i]);
     }
+    #die "Bad timediff(): ($r[1] + $r[2]) <= 0 (@$a[1,2]|@$b[1,2])\n"
+    #        if ($r[1] + $r[2]) < 0;
     bless \@r;
 }
 
@@ -591,14 +599,18 @@ sub timestr {
     $style = ($ct>0) ? 'all' : 'noc' if $style eq 'auto';
     my $s = "@t $style"; # default for unknown style
     my $w = $hirestime ? "%2g" : "%2d";
-    $s=sprintf("$w wallclock secs (%$f usr %$f sys + %$f cusr %$f csys = %$f CPU)",
+    $s = sprintf("$w wallclock secs (%$f usr %$f sys + %$f cusr %$f csys = %$f CPU)",
 			    $r,$pu,$ps,$cu,$cs,$tt) if $style eq 'all';
-    $s=sprintf("$w wallclock secs (%$f usr + %$f sys = %$f CPU)",
+    $s = sprintf("$w wallclock secs (%$f usr + %$f sys = %$f CPU)",
 			    $r,$pu,$ps,$pt) if $style eq 'noc';
-    $s=sprintf("$w wallclock secs (%$f cusr + %$f csys = %$f CPU)",
+    $s = sprintf("$w wallclock secs (%$f cusr + %$f csys = %$f CPU)",
 			    $r,$cu,$cs,$ct) if $style eq 'nop';
-    $s .= sprintf(" @ %$f/s (n=$n)", $n / ( $style eq 'nop' ? $cu + $cs : $pu + $ps ))
-	if $n && ($style eq 'nop' ? $cu+$cs : $pu+$ps);
+    my $elapsed = do {
+	if ($style eq 'nop') {$cu+$cs}
+	elsif ($style eq 'noc') {$pu+$ps}
+	else {$cu+$cs+$pu+$ps}
+    };
+    $s .= sprintf(" @ %$f/s (n=$n)",$n/($elapsed)) if $n && $elapsed;
     $s;
 }
 
@@ -716,9 +728,16 @@ sub countit {
     my ($n, $tc);
 
     # First find the minimum $n that gives a significant timing.
+    my $zeros=0;
     for ($n = 1; ; $n *= 2 ) {
 	my $td = timeit($n, $code);
 	$tc = $td->[1] + $td->[2];
+	if ( $tc <= 0 and $n > 1024 ) {
+	    ++$zeros > 16
+	        and die "Timing is consistently zero in estimation loop, cannot benchmark. N=$n\n";
+	} else {
+	    $zeros = 0;
+	}
 	last if $tc > 0.1;
     }
 
@@ -730,7 +749,7 @@ sub countit {
 	# The 5% fudge is to keep us from iterating again all
 	# that often (this speeds overall responsiveness when $tmax is big
 	# and we guess a little low).  This does not noticably affect 
-	# accuracy since we're not couting these times.
+	# accuracy since we're not counting these times.
 	$n = int( $tpra * 1.05 * $n / $tc ); # Linear approximation.
 	my $td = timeit($n, $code);
 	my $new_tc = $td->[1] + $td->[2];
@@ -752,7 +771,7 @@ sub countit {
     # with stable times and avoiding extra timeit()s is nice for
     # accuracy's sake.
     $n = int( $n * ( 1.05 * $tmax / $tc ) );
-
+    $zeros=0;
     while () {
 	my $td = timeit($n, $code);
 	$ntot  += $n;
@@ -763,7 +782,12 @@ sub countit {
 	$cstot += $td->[4];
 	$ttot = $utot + $stot;
 	last if $ttot >= $tmax;
-
+	if ( $ttot <= 0 ) {
+	    ++$zeros > 16
+	        and die "Timing is consistently zero, cannot benchmark. N=$n\n";
+	} else {
+	    $zeros = 0;
+	}
         $ttot = 0.01 if $ttot < 0.01;
 	my $r = $tmax / $ttot - 1; # Linear approximation.
 	$n = int( $r * $ntot );
@@ -866,7 +890,8 @@ USAGE
 sub cmpthese{
     my ($results, $style);
 
-    if( ref $_[0] ) {
+    # $count can be a blessed object.
+    if ( ref $_[0] eq 'HASH' ) {
         ($results, $style) = @_;
     }
     else {
@@ -886,8 +911,12 @@ sub cmpthese{
     for (@vals) {
 	# The epsilon fudge here is to prevent div by 0.  Since clock
 	# resolutions are much larger, it's below the noise floor.
-	my $rate = $_->[6] / (( $style eq 'nop' ? $_->[4] + $_->[5]
-						: $_->[2] + $_->[3]) + 0.000000000000001 );
+	my $elapsed = do {
+	    if ($style eq 'nop') {$_->[4]+$_->[5]}
+	    elsif ($style eq 'noc') {$_->[2]+$_->[3]}
+	    else {$_->[2]+$_->[3]+$_->[4]+$_->[5]}
+	};
+	my $rate = $_->[6]/(($elapsed)+0.000000000000001);
 	$_->[7] = $rate;
     }
 

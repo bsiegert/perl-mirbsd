@@ -15,7 +15,7 @@ BEGIN {
 # If you find tests are failing, please try adding names to tests to track
 # down where the failure is, and supply your new names as a patch.
 # (Just-in-time test naming)
-plan tests => 49;
+plan tests => 171 + (10*13*2) + 4;
 
 # numerics
 ok ((0xdead & 0xbeef) == 0x9ead);
@@ -62,6 +62,20 @@ is (($foo & $bar), ($Aaz x 75 ));
 is (($foo | $bar), ($Aoz x 75 . $zap));
 # ^ does not truncate
 is (($foo ^ $bar), ($Axz x 75 . $zap));
+
+# string constants
+sub _and($) { $_[0] & "+0" }
+sub _oar($) { $_[0] | "+0" }
+sub _xor($) { $_[0] ^ "+0" }
+is _and "waf", '# ',  'str var & const str'; # These three
+is _and  0,    '0',   'num var & const str';    # are from
+is _and "waf", '# ',  'str var & const str again'; # [perl #20661]
+is _oar "yit", '{yt', 'str var | const str';
+is _oar  0,    '0',   'num var | const str';
+is _oar "yit", '{yt', 'str var | const str again';
+is _xor "yit", 'RYt', 'str var ^ const str';
+is _xor  0,    '0',   'num var ^ const str';
+is _xor "yit", 'RYt', 'str var ^ const str again';
 
 #
 is ("ok \xFF\xFF\n" & "ok 19\n", "ok 19\n");
@@ -175,6 +189,149 @@ $neg7 = -7.0;
 ok (~ $neg7 == 6);
 
 
+# double magic tests
+
+sub TIESCALAR { bless { value => $_[1], orig => $_[1] } }
+sub STORE { $_[0]{store}++; $_[0]{value} = $_[1] }
+sub FETCH { $_[0]{fetch}++; $_[0]{value} }
+sub stores { tied($_[0])->{value} = tied($_[0])->{orig};
+             delete(tied($_[0])->{store}) || 0 }
+sub fetches { delete(tied($_[0])->{fetch}) || 0 }
+
+# numeric double magic tests
+
+tie $x, "main", 1;
+tie $y, "main", 3;
+
+is(($x | $y), 3);
+is(fetches($x), 1);
+is(fetches($y), 1);
+is(stores($x), 0);
+is(stores($y), 0);
+
+is(($x & $y), 1);
+is(fetches($x), 1);
+is(fetches($y), 1);
+is(stores($x), 0);
+is(stores($y), 0);
+
+is(($x ^ $y), 2);
+is(fetches($x), 1);
+is(fetches($y), 1);
+is(stores($x), 0);
+is(stores($y), 0);
+
+is(($x |= $y), 3);
+is(fetches($x), 2);
+is(fetches($y), 1);
+is(stores($x), 1);
+is(stores($y), 0);
+
+is(($x &= $y), 1);
+is(fetches($x), 2);
+is(fetches($y), 1);
+is(stores($x), 1);
+is(stores($y), 0);
+
+is(($x ^= $y), 2);
+is(fetches($x), 2);
+is(fetches($y), 1);
+is(stores($x), 1);
+is(stores($y), 0);
+
+is(~~$y, 3);
+is(fetches($y), 1);
+is(stores($y), 0);
+
+{ use integer;
+
+is(($x | $y), 3);
+is(fetches($x), 1);
+is(fetches($y), 1);
+is(stores($x), 0);
+is(stores($y), 0);
+
+is(($x & $y), 1);
+is(fetches($x), 1);
+is(fetches($y), 1);
+is(stores($x), 0);
+is(stores($y), 0);
+
+is(($x ^ $y), 2);
+is(fetches($x), 1);
+is(fetches($y), 1);
+is(stores($x), 0);
+is(stores($y), 0);
+
+is(($x |= $y), 3);
+is(fetches($x), 2);
+is(fetches($y), 1);
+is(stores($x), 1);
+is(stores($y), 0);
+
+is(($x &= $y), 1);
+is(fetches($x), 2);
+is(fetches($y), 1);
+is(stores($x), 1);
+is(stores($y), 0);
+
+is(($x ^= $y), 2);
+is(fetches($x), 2);
+is(fetches($y), 1);
+is(stores($x), 1);
+is(stores($y), 0);
+
+is(~$y, -4);
+is(fetches($y), 1);
+is(stores($y), 0);
+
+} # end of use integer;
+
+# stringwise double magic tests
+
+tie $x, "main", "a";
+tie $y, "main", "c";
+
+is(($x | $y), ("a" | "c"));
+is(fetches($x), 1);
+is(fetches($y), 1);
+is(stores($x), 0);
+is(stores($y), 0);
+
+is(($x & $y), ("a" & "c"));
+is(fetches($x), 1);
+is(fetches($y), 1);
+is(stores($x), 0);
+is(stores($y), 0);
+
+is(($x ^ $y), ("a" ^ "c"));
+is(fetches($x), 1);
+is(fetches($y), 1);
+is(stores($x), 0);
+is(stores($y), 0);
+
+is(($x |= $y), ("a" | "c"));
+is(fetches($x), 2);
+is(fetches($y), 1);
+is(stores($x), 1);
+is(stores($y), 0);
+
+is(($x &= $y), ("a" & "c"));
+is(fetches($x), 2);
+is(fetches($y), 1);
+is(stores($x), 1);
+is(stores($y), 0);
+
+is(($x ^= $y), ("a" ^ "c"));
+is(fetches($x), 2);
+is(fetches($y), 1);
+is(stores($x), 1);
+is(stores($y), 0);
+
+is(~~$y, "c");
+is(fetches($y), 1);
+is(stores($y), 0);
+
 $a = "\0\x{100}"; chop($a);
 ok(utf8::is_utf8($a)); # make sure UTF8 flag is still there
 $a = ~$a;
@@ -197,3 +354,203 @@ SKIP: {
     $b &= "b";
     ok($b =~ /b+$/, 'Unicode "b" is NUL-terminated');
 }
+
+{
+    $a = chr(0x101) x 0x101;
+    $b = chr(0x0FF) x 0x0FF;
+
+    $c = $a | $b;
+    is($c, chr(0x1FF) x 0xFF . chr(0x101) x 2);
+
+    $c = $b | $a;
+    is($c, chr(0x1FF) x 0xFF . chr(0x101) x 2);
+
+    $c = $a & $b;
+    is($c, chr(0x001) x 0x0FF);
+
+    $c = $b & $a;
+    is($c, chr(0x001) x 0x0FF);
+
+    $c = $a ^ $b;
+    is($c, chr(0x1FE) x 0x0FF . chr(0x101) x 2);
+
+    $c = $b ^ $a;
+    is($c, chr(0x1FE) x 0x0FF . chr(0x101) x 2);
+}
+
+{
+    $a = chr(0x101) x 0x101;
+    $b = chr(0x0FF) x 0x0FF;
+
+    $a |= $b;
+    is($a, chr(0x1FF) x 0xFF . chr(0x101) x 2);
+}
+
+{
+    $a = chr(0x101) x 0x101;
+    $b = chr(0x0FF) x 0x0FF;
+
+    $b |= $a;
+    is($b, chr(0x1FF) x 0xFF . chr(0x101) x 2);
+}
+
+{
+    $a = chr(0x101) x 0x101;
+    $b = chr(0x0FF) x 0x0FF;
+
+    $a &= $b;
+    is($a, chr(0x001) x 0x0FF);
+}
+
+{
+    $a = chr(0x101) x 0x101;
+    $b = chr(0x0FF) x 0x0FF;
+
+    $b &= $a;
+    is($b, chr(0x001) x 0x0FF);
+}
+
+{
+    $a = chr(0x101) x 0x101;
+    $b = chr(0x0FF) x 0x0FF;
+
+    $a ^= $b;
+    is($a, chr(0x1FE) x 0x0FF . chr(0x101) x 2);
+}
+
+{
+    $a = chr(0x101) x 0x101;
+    $b = chr(0x0FF) x 0x0FF;
+
+    $b ^= $a;
+    is($b, chr(0x1FE) x 0x0FF . chr(0x101) x 2);
+}
+
+# update to pp_complement() via Coverity
+SKIP: {
+  # UTF-EBCDIC is limited to 0x7fffffff and can't encode ~0.
+  skip "EBCDIC" if $Is_EBCDIC;
+
+  my $str = "\x{10000}\x{800}";
+  # U+10000 is four bytes in UTF-8/UTF-EBCDIC.
+  # U+0800 is three bytes in UTF-8/UTF-EBCDIC.
+
+  no warnings "utf8";
+  { use bytes; $str =~ s/\C\C\z//; }
+
+  # it's really bogus that (~~malformed) is \0.
+  my $ref = "\x{10000}\0";
+  is(~~$str, $ref);
+
+  # same test, but this time with a longer replacement string that
+  # exercises a different branch in pp_subsr()
+
+  $str = "\x{10000}\x{800}";
+  { use bytes; $str =~ s/\C\C\z/\0\0\0/; }
+
+  # it's also bogus that (~~malformed) is \0\0\0\0.
+  my $ref = "\x{10000}\0\0\0\0";
+  is(~~$str, $ref, "use bytes with long replacement");
+}
+
+# ref tests
+
+my %res;
+
+for my $str ("x", "\x{100}") {
+    for my $chr (qw/S A H G X ( * F/) {
+        for my $op (qw/| & ^/) {
+            my $co = ord $chr;
+            my $so = ord $str;
+            $res{"$chr$op$str"} = eval qq/chr($co $op $so)/;
+        }
+    }
+    $res{"undef|$str"} = $str;
+    $res{"undef&$str"} = "";
+    $res{"undef^$str"} = $str;
+}
+
+sub PVBM () { "X" }
+index "foo", PVBM;
+
+my $warn = 0;
+local $^W = 1;
+local $SIG{__WARN__} = sub { $warn++ };
+
+sub is_first {
+    my ($got, $orig, $op, $str, $name) = @_;
+    is(substr($got, 0, 1), $res{"$orig$op$str"}, $name);
+}
+
+for (
+    # [object to test, first char of stringification, name]
+    [undef,             "undef",    "undef"         ],
+    [\1,                "S",        "scalar ref"    ],
+    [[],                "A",        "array ref"     ],
+    [{},                "H",        "hash ref"      ],
+    [qr/x/,             "(",        "qr//"          ],
+    [*foo,              "*",        "glob"          ],
+    [\*foo,             "G",        "glob ref"      ],
+    [PVBM,              "X",        "PVBM"          ],
+    [\PVBM,             "S",        "PVBM ref"      ],
+    [bless([], "Foo"),  "F",        "object"        ],
+) {
+    my ($val, $orig, $type) = @$_;
+
+    for (["x", "string"], ["\x{100}", "utf8"]) {
+        my ($str, $desc) = @$_;
+
+        $warn = 0;
+
+        is_first($val | $str, $orig, "|", $str, "$type | $desc");
+        is_first($val & $str, $orig, "&", $str, "$type & $desc");
+        is_first($val ^ $str, $orig, "^", $str, "$type ^ $desc");
+
+        is_first($str | $val, $orig, "|", $str, "$desc | $type");
+        is_first($str & $val, $orig, "&", $str, "$desc & $type");
+        is_first($str ^ $val, $orig, "^", $str, "$desc ^ $type");
+
+        my $new;
+        ($new = $val) |= $str;
+        is_first($new, $orig, "|", $str, "$type |= $desc");
+        ($new = $val) &= $str;
+        is_first($new, $orig, "&", $str, "$type &= $desc");
+        ($new = $val) ^= $str;
+        is_first($new, $orig, "^", $str, "$type ^= $desc");
+
+        ($new = $str) |= $val;
+        is_first($new, $orig, "|", $str, "$desc |= $type");
+        ($new = $str) &= $val;
+        is_first($new, $orig, "&", $str, "$desc &= $type");
+        ($new = $str) ^= $val;
+        is_first($new, $orig, "^", $str, "$desc ^= $type");
+
+        if ($orig eq "undef") {
+            # undef |= and undef ^= don't warn
+            is($warn, 10, "no duplicate warnings");
+        }
+        else {
+            is($warn, 0, "no warnings");
+        }
+    }
+}
+
+my $strval;
+
+{
+    package Bar;
+    use overload q/""/ => sub { $strval };
+
+    package Baz;
+    use overload q/|/ => sub { "y" };
+}
+
+ok(!eval { bless([], "Bar") | "x"; 1 },     "string overload can't use |");
+like($@, qr/no method found/,               "correct error");
+is(eval { bless([], "Baz") | "x" }, "y",    "| overload works");
+
+my $obj = bless [], "Bar";
+$strval = "x";
+eval { $obj |= "Q" };
+$strval = "z";
+is("$obj", "z", "|= doesn't break string overload");

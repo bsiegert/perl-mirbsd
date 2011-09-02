@@ -1,8 +1,7 @@
 use ExtUtils::MakeMaker;
-use ExtUtils::Constant 0.11 'WriteConstants';
+use ExtUtils::Constant 0.23 'WriteConstants';
 WriteMakefile(
     NAME 	=> 'Fcntl',
-    MAN3PODS 	=> {}, 	# Pods will be built by installman.
     XSPROTOARG => '-noprototypes', 		# XXX remove later?
     VERSION_FROM => 'Fcntl.pm',
     realclean => {FILES=> 'const-c.inc const-xs.inc'},
@@ -40,6 +39,7 @@ my @names = (qw(
             {name=>"SEEK_END", default=>["IV", "2"]},
             {name=>"_S_IFMT", macro=>"S_IFMT", value=>"S_IFMT"});
 WriteConstants(
+    PROXYSUBS => {autoload => 1},
     NAME => 'Fcntl',
     NAMES => \@names,
 );

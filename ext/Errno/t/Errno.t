@@ -1,58 +1,53 @@
-#!./perl
+#!./perl -w
+
+use Test::More tests => 12;
+
+# Keep this before the use Errno.
+my $has_einval = exists &Errno::EINVAL;
 
 BEGIN {
-    unless(grep /blib/, @INC) {
-	chdir 't' if -d 't';
-	if ($^O eq 'MacOS') { 
-	    @INC = qw(: ::lib ::macos:lib); 
-	} else { 
-	    @INC = '../lib'; 
-	}
-    }
+    use_ok("Errno");
 }
 
-use Errno;
+BAIL_OUT("No errno's are exported") unless @Errno::EXPORT_OK;
 
-print "1..6\n";
+my $err = $Errno::EXPORT_OK[0];
+my $num = &{"Errno::$err"};
 
-print "not " unless @Errno::EXPORT_OK;
-print "ok 1\n";
-die unless @Errno::EXPORT_OK;
-
-$err = $Errno::EXPORT_OK[0];
-$num = &{"Errno::$err"};
-
-print "not " unless &{"Errno::$err"} == $num;
-print "ok 2\n";
+is($num, &{"Errno::$err"});
 
 $! = $num;
-# Some systems have ESUCCESS 0, that's why exists instead of boolean.
-print "not " unless exists $!{$err};
-print "ok 3\n";
+ok(exists $!{$err});
 
 $! = 0;
-print "not " if $!{$err};
-print "ok 4\n";
+ok(! $!{$err});
 
-$s1 = join(",",sort keys(%!));
-$s2 = join(",",sort @Errno::EXPORT_OK);
-
-if($s1 ne $s2) {
-    my @s1 = keys(%!);
-    my @s2 = @Errno::EXPORT_OK;
-    my(%s1,%s2);
-    @s1{@s1} = ();
-    @s2{@s2} = ();
-    delete @s2{@s1};
-    delete @s1{@s2};
-    print "# These are only in \%!\n";
-    print "# ",join(" ",map { "'$_'" } keys %s1),"\n";
-    print "# These are only in \@EXPORT_OK\n";
-    print "# ",join(" ",map { "'$_'" } keys %s2),"\n";
-    print "not ";
-}
-
-print "ok 5\n";
+ok(join(",",sort keys(%!)) eq join(",",sort @Errno::EXPORT_OK));
 
 eval { exists $!{[]} };
-print $@ ? "not ok 6\n" : "ok 6\n";
+ok(! $@);
+
+eval {$!{$err} = "qunckkk" };
+like($@, qr/^ERRNO hash is read only!/);
+
+eval {delete $!{$err}};
+like($@, qr/^ERRNO hash is read only!/);
+
+# The following tests are in trouble if some OS picks errno values
+# through Acme::MetaSyntactic::batman
+is($!{EFLRBBB}, "");
+ok(! exists($!{EFLRBBB}));
+
+SKIP: {
+    skip("Errno does not have EINVAL", 1)
+	unless grep {$_ eq 'EINVAL'} @Errno::EXPORT_OK;
+    is($has_einval, 1,
+       'exists &Errno::EINVAL compiled before Errno is loaded works fine');
+}
+
+SKIP: {
+    skip("Errno does not have EBADF", 1)
+	unless grep {$_ eq 'EBADF'} @Errno::EXPORT_OK;
+    is(exists &Errno::EBADF, 1,
+       'exists &Errno::EBADF compiled after Errno is loaded works fine');
+}

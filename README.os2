@@ -208,9 +208,8 @@ under earlier versions of EMX, but this is not tested.
 
 One can get different parts of EMX from, say
 
-  http://www.leo.org/pub/comp/os/os2/leo/gnu/emx+gcc/
-  http://powerusersbbs.com/pub/os2/dev/   [EMX+GCC Development]
-  http://hobbes.nmsu.edu/pub/os2/dev/emx/v0.9d/
+  ftp://crydee.sai.msu.ru/pub/comp/os/os2/leo/gnu/emx+gcc/
+  http://hobbes.nmsu.edu/h-browse.php?dir=/pub/os2/dev/emx/v0.9d/
 
 The runtime component should have the name F<emxrt.zip>.
 
@@ -235,9 +234,8 @@ can have Perl development environment under DOS.
 
 One can get RSX from, say
 
-  ftp://ftp.cdrom.com/pub/os2/emx09c/contrib
-  ftp://ftp.uni-bielefeld.de/pub/systems/msdos/misc
-  ftp://ftp.leo.org/pub/comp/os/os2/leo/devtools/emx+gcc/contrib
+  http://cd.textfiles.com/hobbesos29804/disk1/EMX09C/
+  ftp://crydee.sai.msu.ru/pub/comp/os/os2/leo/gnu/emx+gcc/contrib/
 
 Contact the author on C<rainer@mathematik.uni-bielefeld.de>.
 
@@ -489,7 +487,7 @@ DPMI is required for RSX.
 
 The whole idea of the "standard C API to start applications" is that
 the forms C<foo> and C<"foo"> of program arguments are completely
-interchangable.  F<find> breaks this paradigm;
+interchangeable.  F<find> breaks this paradigm;
 
   find "pattern" file
   find pattern file
@@ -620,7 +618,7 @@ C<set PERLLIB_PREFIX> in F<Config.sys>, see L<"PERLLIB_PREFIX">.
 
 =item Additional Perl modules
 
-  unzip perl_ste.zip -d f:/perllib/lib/site_perl/5.8.8/
+  unzip perl_ste.zip -d f:/perllib/lib/site_perl/5.14.1/
 
 Same remark as above applies.  Additionally, if this directory is not
 one of directories on @INC (and @INC is influenced by C<PERLLIB_PREFIX>), you
@@ -799,8 +797,7 @@ can be constructed using C<pod2latex>.
 
 =head1 BUILD
 
-Here we discuss how to build Perl under OS/2. There is an alternative
-(but maybe older) view on L<http://www.shadow.net/~troc/os2perl.html>.
+Here we discuss how to build Perl under OS/2.
 
 =head2 The short story
 
@@ -846,10 +843,11 @@ optionally - Berkeley DB headers and libraries, and crypt.
 
 Possible locations to get the files:
 
-  ftp://hobbes.nmsu.edu/os2/unix/
-  ftp://ftp.cdrom.com/pub/os2/unix/
-  ftp://ftp.cdrom.com/pub/os2/dev32/
-  ftp://ftp.cdrom.com/pub/os2/emx09c/
+
+  ftp://ftp.uni-heidelberg.de/pub/os2/unix/
+  http://hobbes.nmsu.edu/h-browse.php?dir=/pub/os2
+  http://cd.textfiles.com/hobbesos29804/disk1/DEV32/
+  http://cd.textfiles.com/hobbesos29804/disk1/EMX09C/
 
 It is reported that the following archives contain enough utils to
 build perl: F<gnufutil.zip>, F<gnusutil.zip>, F<gnututil.zip>, F<gnused.zip>,
@@ -857,7 +855,7 @@ F<gnupatch.zip>, F<gnuawk.zip>, F<gnumake.zip>, F<gnugrep.zip>, F<bsddev.zip> an
 F<ksh527rt.zip> (or a later version).  Note that all these utilities are
 known to be available from LEO:
 
-  ftp://ftp.leo.org/pub/comp/os/os2/leo/gnu
+  ftp://crydee.sai.msu.ru/pub/comp/os/os2/leo/gnu/
 
 Note also that the F<db.lib> and F<db.a> from the EMX distribution
 are not suitable for multi-threaded compile (even single-threaded
@@ -901,8 +899,8 @@ link386 prompts, press C<Ctrl-C> to exit.
 You need to fetch the latest perl source (including developers
 releases). With some probability it is located in 
 
-  http://www.cpan.org/src/5.0
-  http://www.cpan.org/src/5.0/unsupported
+  http://www.cpan.org/src/
+  http://www.cpan.org/src/unsupported
 
 If not, you may need to dig in the indices to find it in the directory
 of the current maintainer.
@@ -1501,7 +1499,7 @@ Here is the sample C file:
   {
       main_t f;
       handler_t h;
-    
+
       me = argv[0];
       /**/
       handle = load_perl_dll(PERL_DLL_BASENAME);
@@ -1651,7 +1649,7 @@ leaves drive as it is.
 
 =item  C<Cwd::change_drive(name)>
 
-chanes the "current" drive.
+changes the "current" drive.
 
 =item  C<Cwd::sys_is_absolute(name)>
 
@@ -1898,7 +1896,7 @@ _DLLInitTerm() (e.g., F<TCP32IP>).  This means that even if you do not I<call>
 any function in the DLL, just the act of loading this DLL will reset your
 flags.  What is worse, the same compiler was used to compile some HOOK DLLs.
 Given that HOOK dlls are executed in the context of I<all> the applications
-in the system, this means a complete unpredictablity of floating point
+in the system, this means a complete unpredictability of floating point
 flags on systems using such HOOK DLLs.  E.g., F<GAMESRVR.DLL> of B<DIVE>
 origin changes the floating point flags on each write to the TTY of a VIO
 (windowed text-mode) applications.
@@ -2027,7 +2025,7 @@ WM_QUIT, and which did not process the received WM_QUIT message, the
 shutdown will be automatically cancelled.  Do not call C<perl_hmq_GET(1)>
 unless you are going to process messages on an orderly basis.
 
-=item * Treating errors reported by OS/2 API
+=item Treating errors reported by OS/2 API
 
 There are two principal conventions (it is useful to call them C<Dos*>
 and C<Win*> - though this part of the function signature is not always
@@ -2104,7 +2102,7 @@ Sets C<Perl_rc> to C<rc>, and sets $^E to the corresponding value.
 
 =back
 
-=item * Loading DLLs and ordinals in DLLs
+=item Loading DLLs and ordinals in DLLs
 
 Some DLLs are only present in some versions of OS/2, or in some
 configurations of OS/2.  Some exported entry points are present only

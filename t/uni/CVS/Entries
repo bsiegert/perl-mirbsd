@@ -1,14 +1,21 @@
-/case.pl/1.1.1.2/Fri Jun 30 22:47:09 2006//
-/chomp.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/class.t/1.1.1.2/Fri Jun 30 22:47:09 2006//
-/fold.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/lower.t/1.1.1.2/Fri Jun 30 22:47:10 2006//
+/cache.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
+/case.pl/1.1.1.2/Result of merge//
+/chomp.t/1.1.1.1/Result of merge//
+/chr.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
+/class.t/1.1.1.2/Result of merge//
+/fold.t/1.1.1.1/Result of merge//
+/greek.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
+/latin2.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
+/lex_utf8.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
+/lower.t/1.1.1.2/Result of merge//
+/overload.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /sprintf.t/1.1.1.2/Fri Jun 30 22:47:10 2006//
-/title.t/1.1.1.2/Fri Jun 30 22:47:10 2006//
-/tr_7jis.t/1.1.1.2/Fri Jun 30 22:47:10 2006//
-/tr_eucjp.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/tr_sjis.t/1.1.1.2/Fri Jun 30 22:47:11 2006//
-/tr_utf8.t/1.1.1.2/Fri Jun 30 22:47:11 2006//
-/upper.t/1.1.1.2/Fri Jun 30 22:47:11 2006//
-/write.t/1.1.1.1/Sat Feb  5 17:24:07 2005//
+/tie.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
+/title.t/1.1.1.2/Result of merge//
+/tr_7jis.t/1.1.1.2/Result of merge//
+/tr_eucjp.t/1.1.1.1/Result of merge//
+/tr_sjis.t/1.1.1.2/Result of merge//
+/tr_utf8.t/1.1.1.2/Result of merge//
+/upper.t/1.1.1.2/Result of merge//
+/write.t/1.1.1.1/Result of merge//
 D

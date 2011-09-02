@@ -12,7 +12,7 @@ into nine major sections outlined in this document.
 
 The perlfaq comes with the standard Perl distribution, so if you have Perl
 you should have the perlfaq. You should also have the C<perldoc> tool
-that let's you read the L<perlfaq>:
+that lets you read the L<perlfaq>:
 
 	$ perldoc perlfaq
 
@@ -23,25 +23,27 @@ The perlfaq is an evolving document and you can read the latest version
 at http://faq.perl.org/ . The perlfaq-workers periodically post extracts
 of the latest perlfaq to comp.lang.perl.misc.
 
-You can view the source tree at
-http://cvs.perl.org/viewcvs/cvs-public/perlfaq/ (which is outside of the
-main Perl source tree).  The CVS repository notes all changes to the FAQ
-and holds the latest version of the working documents and may vary
+The perlfaq documents are in the perl source tree (see
+L<perlgit>). The git repository notes all changes to the FAQ and
+holds the latest version of the working documents and may vary
 significantly from the version distributed with the latest version of
 Perl. Check the repository before sending your corrections.
 
 =head2 How to contribute to the perlfaq
 
-You can mail corrections, additions, and suggestions to 
+You can mail corrections, additions, and suggestions to
 C<< <perlfaq-workers AT perl DOT org> >>. The perlfaq volunteers use this
 address to coordinate their efforts and track the perlfaq development.
 They appreciate your contributions to the FAQ but do not have time to
 provide individual help, so don't use this address to ask FAQs.
 
-The perlfaq server posts extracts of the perlfaq to that newsgroup every
-6 hours (or so), and the community of volunteers reviews and updates the
-answers. If you'd like to help review and update the answers, check out
-comp.lang.perl.misc.
+The perlfaq server posts extracts of the perlfaq to that newsgroup
+every 6 hours (or so), and the community of volunteers reviews and
+updates the answers. If you'd like to help review and update the
+answers, check out comp.lang.perl.misc.
+
+You can also fork the perl repository, make your changes, and send them
+to Perl 5 Porters. See L<perlgit>.
 
 =head2 What will happen if you mail your Perl programming problems to the authors?
 
@@ -60,14 +62,14 @@ it, try the resources in L<perlfaq2>.
 =head1 CREDITS
 
 Tom Christiansen wrote the original perlfaq then expanded it with the
-help of Nat Torkington.  The perlfaq-workers maintain current document
-and the dezinens of comp.lang.perl.misc regularly review and update the
+help of Nat Torkington. The perlfaq-workers maintain current document
+and the denizens of comp.lang.perl.misc regularly review and update the
 FAQ. Several people have contributed answers, corrections, and comments,
 and the perlfaq notes those contributions wherever appropriate.
 
 =head1 AUTHOR AND COPYRIGHT
 
-Tom Christainsen wrote the original version of this document.
+Tom Christiansen wrote the original version of this document.
 brian d foy C<< <bdfoy@cpan.org> >> wrote this version. See the
 individual perlfaq documents for additional copyright information.
 
@@ -115,7 +117,7 @@ What is Perl?
 
 =item *
 
-Who supports Perl?  Who develops it?  Why is it free?
+Who supports Perl? Who develops it? Why is it free?
 
 =item *
 
@@ -123,15 +125,15 @@ Which version of Perl should I use?
 
 =item *
 
-What are perl4, perl5, or perl6?
+What are Perl 4, Perl 5, or Perl 6?
 
 =item *
 
-What is Ponie?
+What was Ponie?
 
 =item *
 
-What is perl6?
+What is Perl 6?
 
 =item *
 
@@ -171,7 +173,7 @@ Where can I get a list of Larry Wall witticisms?
 
 =item *
 
-How can I convince my sysadmin/supervisor/employees to use version 5/5.6.1/Perl instead of some other language?
+How can I convince others to use Perl?
 
 =back
 
@@ -305,7 +307,7 @@ Where can I get Perl macros for vi?
 
 =item *
 
-Where can I get perl-mode for emacs?
+Where can I get perl-mode or cperl-mode for emacs?
 
 =item *
 
@@ -313,7 +315,7 @@ How can I use curses with Perl?
 
 =item *
 
-How can I use X or Tk with Perl?
+How can I write a GUI (X, Tk, Gtk, etc.) in Perl?
 
 =item *
 
@@ -342,10 +344,6 @@ How can I hide the source for my Perl program?
 =item *
 
 How can I compile my Perl program into byte code or C?
-
-=item *
-
-How can I compile Perl into Java?
 
 =item *
 
@@ -462,7 +460,7 @@ How do I find yesterday's date?
 
 =item *
 
-Does Perl have a Year 2000 problem?  Is Perl Y2K compliant?
+Does Perl have a Year 2000 or 2038 problem? Is Perl Y2K compliant?
 
 =item *
 
@@ -514,7 +512,7 @@ How do I capitalize all the words on one line?
 
 =item *
 
-How can I split a [character] delimited string except when inside [character]?
+How can I split a [character]-delimited string except when inside [character]?
 
 =item *
 
@@ -614,6 +612,10 @@ How do I process an entire hash?
 
 =item *
 
+How do I merge two hashes?
+
+=item *
+
 What happens if I add or remove keys from a hash while iterating over it?
 
 =item *
@@ -670,6 +672,10 @@ How can I use a reference as a hash key?
 
 =item *
 
+How can I check if a key exists in a multilevel hash?
+
+=item *
+
 How do I handle binary data correctly?
 
 =item *
@@ -711,11 +717,15 @@ How do I flush/unbuffer an output filehandle?  Why must I do this?
 
 =item *
 
-How do I change one line in a file/delete a line in a file/insert a line in the middle of a file/append to the beginning of a file?
+How do I change, delete, or insert a line in a file, or append to the beginning of a file?
 
 =item *
 
 How do I count the number of lines in a file?
+
+=item *
+
+How do I delete the last N lines from a file?
 
 =item *
 
@@ -748,6 +758,10 @@ How can I set up a footer format to be used with write()?
 =item *
 
 How can I write() into a string?
+
+=item *
+
+How can I open a filehandle to a string?
 
 =item *
 
@@ -787,11 +801,11 @@ Why can't I just open(FH, "E<gt>file.lock")?
 
 =item *
 
-I still don't get locking.  I just want to increment the number in the file.  How can I do this?
+I still don't get locking. I just want to increment the number in the file. How can I do this?
 
 =item *
 
-All I want to do is append a small amount of text to the end of a file.  Do I still have to use locking?
+All I want to do is append a small amount of text to the end of a file. Do I still have to use locking?
 
 =item *
 
@@ -857,6 +871,18 @@ How do I select a random line from a file?
 
 Why do I get weird spaces when I print an array of lines?
 
+=item *
+
+How do I traverse a directory tree?
+
+=item *
+
+How do I delete a directory tree?
+
+=item *
+
+How do I copy an entire directory?
+
 =back
 
 
@@ -872,7 +898,7 @@ How can I hope to use regular expressions without creating illegible and unmaint
 
 =item *
 
-I'm having trouble matching over more than one line.  What's wrong?
+I'm having trouble matching over more than one line. What's wrong?
 
 =item *
 
@@ -880,11 +906,15 @@ How can I pull out lines between two patterns that are themselves on different l
 
 =item *
 
+How do I match XML, HTML, or other nasty, ugly things with a regex?
+
+=item *
+
 I put a regular expression into $/ but it didn't work. What's wrong?
 
 =item *
 
-How do I substitute case insensitively on the LHS while preserving case on the RHS?
+How do I substitute case-insensitively on the LHS while preserving case on the RHS?
 
 =item *
 
@@ -904,7 +934,7 @@ What is C</o> really for?
 
 =item *
 
-How do I use a regular expression to strip C style comments from a file?
+How do I use a regular expression to strip C-style comments from a file?
 
 =item *
 
@@ -912,7 +942,7 @@ Can I use Perl regular expressions to match balanced text?
 
 =item *
 
-What does it mean that regexes are greedy?  How can I get around it?
+What does it mean that regexes are greedy? How can I get around it?
 
 =item *
 
@@ -944,7 +974,7 @@ What good is C<\G> in a regular expression?
 
 =item *
 
-Are Perl regexes DFAs or NFAs?  Are they POSIX compliant?
+Are Perl regexes DFAs or NFAs? Are they POSIX compliant?
 
 =item *
 
@@ -956,7 +986,7 @@ How can I match strings with multibyte characters?
 
 =item *
 
-How do I match a pattern that is supplied by the user?
+How do I match a regular expression that's in a variable?
 
 =back
 
@@ -1002,6 +1032,10 @@ How do I declare/create a structure?
 =item *
 
 How do I create a module?
+
+=item *
+
+How do I adopt or take over a module already on CPAN?
 
 =item *
 
@@ -1065,11 +1099,11 @@ Why can't a method included in this same file be found?
 
 =item *
 
-How can I find out my current package?
+How can I find out my current or calling package?
 
 =item *
 
-How can I comment out a large block of perl code?
+How can I comment out a large block of Perl code?
 
 =item *
 
@@ -1307,7 +1341,7 @@ What is the correct form of response from a CGI script?
 
 =item *
 
-My CGI script runs from the command line but not the browser.  (500 Server Error)
+My CGI script runs from the command line but not the browser. (500 Server Error)
 
 =item *
 
@@ -1327,7 +1361,7 @@ How do I download a file from the user's machine?  How do I open a file on anoth
 
 =item *
 
-How do I make a pop-up menu in HTML?
+How do I make an HTML pop-up menu with Perl?
 
 =item *
 

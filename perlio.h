@@ -1,7 +1,7 @@
 /*    perlio.h
  *
  *    Copyright (C) 1996, 1997, 1999, 2000, 2001, 2002, 2003,
- *    by Larry Wall and others
+ *    2004, 2005, 2006, 2007, by Larry Wall and others
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
@@ -25,7 +25,7 @@
                    then there are two modes determined by USE_SFIO:
 
    USE_SFIO    - If set causes PerlIO_xxx() to be #define-d onto sfio functions.
-                 A backward compatability mode for some specialist applications.
+                 A backward compatibility mode for some specialist applications.
 
                  If USE_SFIO is not set then PerlIO_xxx() are real functions
                  defined in perlio.c which implement extra functionality
@@ -174,8 +174,6 @@ PERL_EXPORT_C void PerlIO_clone(pTHX_ PerlInterpreter *proto,
 #endif				/* ifndef PERLIO_NOT_STDIO */
 #endif				/* PERLIO_IS_STDIO */
 
-#define specialCopIO(sv) ((sv) == Nullsv)
-
 /* ----------- fill in things that have not got #define'd  ---------- */
 
 #ifndef Fpos_t
@@ -189,6 +187,11 @@ PERL_EXPORT_C void PerlIO_clone(pTHX_ PerlInterpreter *proto,
 /* This is to catch case with no stdio */
 #ifndef BUFSIZ
 #define BUFSIZ 1024
+#endif
+
+/* The default buffer size for the perlio buffering layer */
+#ifndef PERLIOBUF_DEFAULT_BUFSIZ
+#define PERLIOBUF_DEFAULT_BUFSIZ (BUFSIZ > 8192 ? BUFSIZ : 8192)
 #endif
 
 #ifndef SEEK_SET
@@ -384,3 +387,13 @@ typedef struct PerlIO_list_s PerlIO_list_t;
 
 END_EXTERN_C
 #endif				/* _PERLIO_H */
+
+/*
+ * Local variables:
+ * c-indentation-style: bsd
+ * c-basic-offset: 4
+ * indent-tabs-mode: t
+ * End:
+ *
+ * ex: set ts=8 sts=4 sw=4 noet:
+ */

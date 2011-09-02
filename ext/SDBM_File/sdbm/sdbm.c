@@ -60,7 +60,7 @@ static int makroom proto((DBM *, long, int));
 #define OFF_PAG(off)	(long) (off) * PBLKSIZ
 #define OFF_DIR(off)	(long) (off) * DBLKSIZ
 
-static long masks[] = {
+static const long masks[] = {
 	000000000000, 000000000001, 000000000003, 000000000007,
 	000000000017, 000000000037, 000000000077, 000000000177,
 	000000000377, 000000000777, 000000001777, 000000003777,
@@ -77,23 +77,28 @@ sdbm_open(register char *file, register int flags, register int mode)
 	register DBM *db;
 	register char *dirname;
 	register char *pagname;
-	register int n;
+	size_t filelen;
+	const size_t dirfext_len = sizeof(DIRFEXT "");
+	const size_t pagfext_len = sizeof(PAGFEXT "");
 
 	if (file == NULL || !*file)
 		return errno = EINVAL, (DBM *) NULL;
 /*
- * need space for two seperate filenames
+ * need space for two separate filenames
  */
-	n = strlen(file) * 2 + strlen(DIRFEXT) + strlen(PAGFEXT) + 2;
+	filelen = strlen(file);
 
-	if ((dirname = (char *) malloc((unsigned) n)) == NULL)
+	if ((dirname = (char *) malloc(filelen + dirfext_len + 1
+				       + filelen + pagfext_len + 1)) == NULL)
 		return errno = ENOMEM, (DBM *) NULL;
 /*
  * build the file names
  */
-	dirname = strcat(strcpy(dirname, file), DIRFEXT);
-	pagname = strcpy(dirname + strlen(dirname) + 1, file);
-	pagname = strcat(pagname, PAGFEXT);
+	memcpy(dirname, file, filelen);
+	memcpy(dirname + filelen, DIRFEXT, dirfext_len + 1);
+	pagname = dirname + filelen + dirfext_len + 1;
+	memcpy(pagname, file, filelen);
+	memcpy(pagname + filelen, PAGFEXT, pagfext_len + 1);
 
 	db = sdbm_prep(dirname, pagname, flags, mode);
 	free((char *) dirname);
@@ -301,7 +306,7 @@ makroom(register DBM *db, long int hash, int need)
 		newp = (hash & db->hmask) | (db->hmask + 1);
 
 /*
- * write delay, read avoidence/cache shuffle:
+ * write delay, read avoidance/cache shuffle:
  * select the page for incoming pair: if key is to go to the new page,
  * write out the previous one, and copy the new one over, thus making
  * it the current page. If not, simply write the new page, and we are

@@ -1385,7 +1385,7 @@ already.  The fatal error has been downgraded to an optional warning:
 
 This warns you that C<"fred@example.com"> is going to turn into
 C<fred.com> if you don't backslash the C<@>.
-See http://www.plover.com/~mjd/perl/at-error.html for more details
+See http://perl.plover.com/at-error.html for more details
 about the history here.
 
 =head2 @- and @+ provide starting/ending offsets of regex submatches
@@ -1409,7 +1409,7 @@ See L<attributes>.
 =item B
 
 The Perl Compiler suite has been extensively reworked for this
-release.  More of the standard Perl testsuite passes when run
+release.  More of the standard Perl test suite passes when run
 under the Compiler, but there is still a significant way to
 go to achieve production quality compiled executables.
 

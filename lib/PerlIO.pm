@@ -1,6 +1,6 @@
 package PerlIO;
 
-our $VERSION = '1.04';
+our $VERSION = '1.07';
 
 # Map layer name to package that defines it
 our %alias;
@@ -71,7 +71,7 @@ UNIX/POSIX numeric file descriptor calls
 
 Layer which calls C<fread>, C<fwrite> and C<fseek>/C<ftell> etc.  Note
 that as this is "real" stdio it will ignore any layers beneath it and
-got straight to the operating system via the C library as usual.
+go straight to the operating system via the C library as usual.
 
 =item :perlio
 
@@ -85,43 +85,31 @@ C<:perlio> will insert a C<:unix> layer below itself to do low level IO.
 
 A layer that implements DOS/Windows like CRLF line endings.  On read
 converts pairs of CR,LF to a single "\n" newline character.  On write
-converts each "\n" to a CR,LF pair.  Note that this layer likes to be
-one of its kind: it silently ignores attempts to be pushed into the
-layer stack more than once.
+converts each "\n" to a CR,LF pair.  Note that this layer will silently
+refuse to be pushed on top of itself.
 
 It currently does I<not> mimic MS-DOS as far as treating of Control-Z
 as being an end-of-file marker.
-
-(Gory details follow) To be more exact what happens is this: after
-pushing itself to the stack, the C<:crlf> layer checks all the layers
-below itself to find the first layer that is capable of being a CRLF
-layer but is not yet enabled to be a CRLF layer.  If it finds such a
-layer, it enables the CRLFness of that other deeper layer, and then
-pops itself off the stack.  If not, fine, use the one we just pushed.
-
-The end result is that a C<:crlf> means "please enable the first CRLF
-layer you can find, and if you can't find one, here would be a good
-spot to place a new one."
 
 Based on the C<:perlio> layer.
 
 =item :mmap
 
 A layer which implements "reading" of files by using C<mmap()> to
-make (whole) file appear in the process's address space, and then
+make a (whole) file appear in the process's address space, and then
 using that as PerlIO's "buffer". This I<may> be faster in certain
 circumstances for large files, and may result in less physical memory
 use when multiple processes are reading the same file.
 
 Files which are not C<mmap()>-able revert to behaving like the C<:perlio>
-layer. Writes also behave like C<:perlio> layer as C<mmap()> for write
+layer. Writes also behave like the C<:perlio> layer, as C<mmap()> for write
 needs extra house-keeping (to extend the file) which negates any advantage.
 
-The C<:mmap> layer will not exist if platform does not support C<mmap()>.
+The C<:mmap> layer will not exist if the platform does not support C<mmap()>.
 
 =item :utf8
 
-Declares that the stream accepts perl's internal encoding of
+Declares that the stream accepts perl's I<internal> encoding of
 characters.  (Which really is UTF-8 on ASCII machines, but is
 UTF-EBCDIC on EBCDIC machines.)  This allows any character perl can
 represent to be read from or written to the stream. The UTF-X encoding
@@ -139,35 +127,39 @@ and then read it back in.
 	$in = <F>;
 	close(F);
 
+Note that this layer does not validate byte sequences. For reading
+input, using C<:encoding(utf8)> instead of bare C<:utf8> is strongly
+recommended.
+
 =item :bytes
 
-This is the inverse of C<:utf8> layer. It turns off the flag
+This is the inverse of the C<:utf8> layer. It turns off the flag
 on the layer below so that data read from it is considered to
-be "octets" i.e. characters in range 0..255 only. Likewise
+be "octets" i.e. characters in the range 0..255 only. Likewise
 on output perl will warn if a "wide" character is written
 to a such a stream.
 
 =item :raw
 
 The C<:raw> layer is I<defined> as being identical to calling
-C<binmode($fh)> - the stream is made suitable for passing binary data
+C<binmode($fh)> - the stream is made suitable for passing binary data,
 i.e. each byte is passed as-is. The stream will still be
 buffered.
 
 In Perl 5.6 and some books the C<:raw> layer (previously sometimes also
 referred to as a "discipline") is documented as the inverse of the
 C<:crlf> layer. That is no longer the case - other layers which would
-alter binary nature of the stream are also disabled.  If you want UNIX
+alter the binary nature of the stream are also disabled.  If you want UNIX
 line endings on a platform that normally does CRLF translation, but still
-want UTF-8 or encoding defaults the appropriate thing to do is to add
-C<:perlio> to PERLIO environment variable.
+want UTF-8 or encoding defaults, the appropriate thing to do is to add
+C<:perlio> to the PERLIO environment variable.
 
 The implementation of C<:raw> is as a pseudo-layer which when "pushed"
 pops itself and then any layers which do not declare themselves as suitable
 for binary data. (Undoing :utf8 and :crlf are implemented by clearing
 flags rather than popping layers but that is an implementation detail.)
 
-As a consequence of the fact that C<:raw> normally pops layers
+As a consequence of the fact that C<:raw> normally pops layers,
 it usually only makes sense to have it as the only or first element in
 a layer specification.  When used as the first element it provides
 a known base on which to build e.g.
@@ -194,8 +186,8 @@ A more elegant (and safer) interface is needed.
 
 =item :win32
 
-On Win32 platforms this I<experimental> layer uses native "handle" IO
-rather than unix-like numeric file descriptor layer. Known to be
+On Win32 platforms this I<experimental> layer uses the native "handle" IO
+rather than the unix-like numeric file descriptor layer. Known to be
 buggy as of perl 5.8.2.
 
 =back
@@ -211,7 +203,7 @@ in Perl using the latter) come with the Perl distribution.
 =item :encoding
 
 Use C<:encoding(ENCODING)> either in open() or binmode() to install
-a layer that does transparently character set and encoding transformations,
+a layer that transparently does character set and encoding transformations,
 for example from Shift-JIS to Unicode.  Note that under C<stdio>
 an C<:encoding> also enables C<:utf8>.  See L<PerlIO::encoding>
 for more information.
@@ -232,10 +224,10 @@ To get a binary stream an alternate method is to use:
     open($fh,"whatever")
     binmode($fh);
 
-this has advantage of being backward compatible with how such things have
+this has the advantage of being backward compatible with how such things have
 had to be coded on some platforms for years.
 
-To get an un-buffered stream specify an unbuffered layer (e.g. C<:unix>)
+To get an unbuffered stream specify an unbuffered layer (e.g. C<:unix>)
 in the open call:
 
     open($fh,"<:unix",$path)
@@ -250,7 +242,7 @@ translation for text files then the default layers are :
 (The low level "unix" layer may be replaced by a platform specific low
 level layer.)
 
-Otherwise if C<Configure> found out how to do "fast" IO using system's
+Otherwise if C<Configure> found out how to do "fast" IO using the system's
 stdio, then the default layers are:
 
   unix stdio
@@ -271,7 +263,7 @@ This can be used to see the effect of/bugs in the various layers e.g.
   PERLIO=stdio  ./perl harness
   PERLIO=perlio ./perl harness
 
-For the various value of PERLIO see L<perlrun/PERLIO>.
+For the various values of PERLIO see L<perlrun/PERLIO>.
 
 =head2 Querying the layers of filehandles
 
@@ -285,7 +277,7 @@ system and on the Perl version, and both the compile-time and
 runtime configurations of Perl.
 
 The following table summarizes the default layers on UNIX-like and
-DOS-like platforms and depending on the setting of the C<$ENV{PERLIO}>:
+DOS-like platforms and depending on the setting of C<$ENV{PERLIO}>:
 
  PERLIO     UNIX-like                   DOS-like
  ------     ---------                   --------
@@ -297,8 +289,8 @@ DOS-like platforms and depending on the setting of the C<$ENV{PERLIO}>:
  # [1] "stdio" if Configure found out how to do "fast stdio" (depends
  # on the stdio implementation) and in Perl 5.8, otherwise "unix perlio"
 
-By default the layers from the input side of the filehandle is
-returned, to get the output side use the optional C<output> argument:
+By default the layers from the input side of the filehandle are
+returned; to get the output side, use the optional C<output> argument:
 
    my @layers = PerlIO::get_layers($fh, output => 1);
 
@@ -314,10 +306,10 @@ You are supposed to use open() and binmode() to manipulate the stack.
 
 B<Implementation details follow, please close your eyes.>
 
-The arguments to layers are by default returned in parenthesis after
+The arguments to layers are by default returned in parentheses after
 the name of the layer, and certain layers (like C<utf8>) are not real
-layers but instead flags on real layers: to get all of these returned
-separately use the optional C<details> argument:
+layers but instead flags on real layers; to get all of these returned
+separately, use the optional C<details> argument:
 
    my @layer_and_args_and_flags = PerlIO::get_layers($fh, details => 1);
 

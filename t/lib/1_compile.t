@@ -19,14 +19,10 @@ my @Core_Modules = grep /\S/, <DATA>;
 chomp @Core_Modules;
 
 if (eval { require Socket }) {
-  push @Core_Modules, qw(Net::Domain);
   # Two Net:: modules need the Convert::EBCDIC if in EBDCIC.
   if (ord("A") != 193 || eval { require Convert::EBCDIC }) {
       push @Core_Modules, qw(Net::Cmd Net::POP3);
   }
-}
-if(eval { require B }) {
-  push @Core_Modules, qw(B::C B::CC B::Stackobj);
 }
 
 @Core_Modules = sort @Core_Modules;
@@ -70,10 +66,6 @@ sub compile_module {
 
 # These modules have no tests of their own.
 # Keep up to date with
-# http://www.pobox.com/~schwern/cgi-bin/perl-qa-wiki.cgi?UntestedModules
+# http://perl-qa.hexten.net/wiki/index.php/Untested_Core_Modules
 # and vice-versa.  The list should only shrink.
 __DATA__
-ByteLoader
-CPAN::FirstTime
-DynaLoader
-Pod::Plainer

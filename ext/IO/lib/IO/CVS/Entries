@@ -1,9 +1,9 @@
-/Dir.pm/1.1.1.2/Fri Jun 30 22:38:56 2006//
-/File.pm/1.1.1.2/Fri Jun 30 22:38:56 2006//
-/Handle.pm/1.1.1.2/Fri Jun 30 22:38:56 2006//
-/Pipe.pm/1.1.1.2/Fri Jun 30 22:38:56 2006//
-/Poll.pm/1.1.1.2/Fri Jun 30 22:38:57 2006//
-/Seekable.pm/1.1.1.2/Fri Jun 30 22:38:57 2006//
-/Select.pm/1.1.1.2/Fri Jun 30 22:38:57 2006//
-/Socket.pm/1.1.1.3/Sun Apr 29 20:12:19 2007//
+/Dir.pm/-1.1.1.2///
+/File.pm/-1.1.1.2///
+/Handle.pm/-1.1.1.2///
+/Pipe.pm/-1.1.1.2///
+/Poll.pm/-1.1.1.2///
+/Seekable.pm/-1.1.1.2///
+/Select.pm/-1.1.1.2///
+/Socket.pm/-1.1.1.3///
 D/Socket////

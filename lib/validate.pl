@@ -1,4 +1,4 @@
-;# $RCSfile: validate.pl,v $$Revision: 1.7 $$Date: 2003/12/03 03:02:36 $
+warn "Legacy library @{[(caller(0))[6]]} will be removed from the Perl core distribution in the next major release. Please install it from the CPAN distribution Perl4::CoreLibs. It is being used at @{[(caller)[1]]}, line @{[(caller)[2]]}.\n";
 
 ;# The validate routine takes a single multiline string consisting of
 ;# lines containing a filename plus a file test to try on it.  (The

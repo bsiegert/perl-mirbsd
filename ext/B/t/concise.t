@@ -1,23 +1,16 @@
 #!./perl
 
 BEGIN {
-    if ($ENV{PERL_CORE}){
-	chdir('t') if -d 't';
-	@INC = ('.', '../lib');
-    } else {
-	unshift @INC, 't';
-	push @INC, "../../t";
-    }
+    unshift @INC, 't';
     require Config;
     if (($Config::Config{'extensions'} !~ /\bB\b/) ){
         print "1..0 # Skip -- Perl configured without B module\n";
         exit 0;
     }
     require 'test.pl';		# we use runperl from 'test.pl', so can't use Test::More
-    sub diag { print "# @_\n" } # but this is still handy
 }
 
-plan tests => 149;
+plan tests => 159;
 
 require_ok("B::Concise");
 
@@ -99,7 +92,7 @@ SKIP: {
 my @stylespec;
 $@='';
 eval { add_style ('junk_B' => @stylespec) };
-like ($@, 'expecting 3 style-format args',
+like ($@, qr/expecting 3 style-format args/,
     "add_style rejects insufficient args");
 
 @stylespec = (0,0,0); # right length, invalid values
@@ -201,10 +194,11 @@ SKIP: {
 
 	sub defd_empty {};
 	($res,$err) = render('-basic', \&defd_empty);
-	is(scalar split(/\n/, $res), 3,
+	my @lines = split(/\n/, $res);
+	is(scalar @lines, 3,
 	   "'sub defd_empty {}' seen as 3 liner");
 
-	is(1, $res =~ /leavesub/ && $res =~ /nextstate/,
+	is(1, $res =~ /leavesub/ && $res =~ /(next|db)state/,
 	   "'sub defd_empty {}' seen as 2 ops: leavesub,nextstate");
 
 	($res,$err) = render('-basic', \&not_even_declared);
@@ -386,5 +380,72 @@ $out = runperl ( switches => ["-MO=Concise,Config::AUTOLOAD"],
 like($out, qr/Config::AUTOLOAD exists in stash, but has no START/,
     "coderef properly undefined");
 
-__END__
+# test -stash and -src rendering
+# todo: stderr=1 puts '-e syntax OK' into $out,
+# conceivably fouling one of the lines that are tested
+$out = runperl ( switches => ["-MO=Concise,-stash=B::Concise,-src"],
+		 prog => '-e 1', stderr => 1 );
 
+like($out, qr/FUNC: \*B::Concise::concise_cv_obj/,
+     "stash rendering of B::Concise includes Concise::concise_cv_obj");
+
+like($out, qr/FUNC: \*B::Concise::walk_output/,
+     "stash rendering includes Concise::walk_output");
+
+like($out, qr/\# 4\d\d: \s+ \$l->concise\(\$level\);/,
+     "src-line rendering works");
+
+$out = runperl ( switches => ["-MStorable", "-MO=Concise,-stash=Storable,-src"],
+		 prog => '-e 1', stderr => 1 );
+
+like($out, qr/FUNC: \*Storable::BIN_MAJOR/,
+     "stash rendering includes constant sub: PAD_FAKELEX_MULTI");
+
+like($out, qr/BIN_MAJOR is a constant sub, optimized to a IV/,
+     "stash rendering identifies it as constant");
+
+$out = runperl ( switches => ["-MO=Concise,-stash=ExtUtils::Mksymlists,-src,-exec"],
+		 prog => '-e 1', stderr => 1 );
+
+like($out, qr/FUNC: \*ExtUtils::Mksymlists::_write_vms/,
+     "stash rendering loads package as needed");
+
+$out = runperl ( switches => ["-MO=Concise,-stash=Data::Dumper,-src,-exec"],
+		 prog => '-e 1', stderr => 1 );
+
+like($out, qr/FUNC: \*Data::Dumper::format_refaddr/,
+     "stash rendering loads package as needed");
+
+my $prog = q{package FOO; sub bar { print q{bar} } package main; FOO::bar(); };
+
+# this would fail if %INC used for -stash test
+$out = runperl ( switches => ["-MO=Concise,-src,-stash=FOO,-main"],
+		 prog => $prog, stderr => 1 );
+
+like($out, qr/FUNC: \*FOO::bar/,
+     "stash rendering works on inlined package");
+
+# Test that consecutive nextstate ops are not nulled out when PERLDBf_NOOPT
+# is set.
+# XXX Does this test belong here?
+
+$out = runperl ( switches => ["-MO=Concise"],
+		 prog => 'BEGIN{$^P = 0x04} 1 if 0; print',
+		 stderr => 1 );
+like $out, qr/nextstate.*nextstate/s,
+  'nulling of nextstate-nextstate happeneth not when $^P | PERLDBf_NOOPT';
+
+
+# A very basic test for -tree output
+$out =
+ runperl(
+  switches => ["-MO=Concise,-tree"], prog => 'print', stderr => 1
+ );
+ok index $out=~s/\r\n/\n/gr=~s/gvsv\(\*_\)/gvsv[*_]/r, <<'end'=~s/\r\n/\n/gr =>>= 0, '-tree output';
+<6>leave[1 ref]-+-<1>enter
+                |-<2>nextstate(main 1 -e:1)
+                `-<5>print-+-<3>pushmark
+                           `-ex-rv2sv---<4>gvsv[*_]
+end
+
+__END__

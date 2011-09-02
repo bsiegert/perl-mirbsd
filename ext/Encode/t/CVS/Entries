@@ -1,40 +1,40 @@
-/Aliases.t/1.1.1.2/Fri Jun 30 22:37:54 2006//
-/CJKT.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/Encode.t/1.1.1.2/Fri Jun 30 22:37:54 2006//
-/Encoder.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/Mod_EUCJP.pm/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/Unicode.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/at-cn.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/at-tw.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/big5-eten.enc/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/big5-eten.utf/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/big5-hkscs.enc/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/big5-hkscs.utf/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/enc_data.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/enc_eucjp.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/enc_module.enc/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/enc_module.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/enc_utf8.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/encoding.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/fallback.t/1.1.1.2/Fri Jun 30 22:37:57 2006//
-/gb2312.enc/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/gb2312.utf/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/grow.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/gsm0338.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/guess.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/jisx0201.enc/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/jisx0201.utf/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/jisx0208.enc/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/jisx0208.utf/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/jisx0212.enc/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/jisx0212.utf/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/jperl.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/ksc5601.enc/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/ksc5601.utf/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/mime-header.t/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/mime_header_iso2022jp.t/1.1.1.1/Fri Jun 30 22:38:00 2006//
-/perlio.t/1.1.1.2/Fri Jun 30 22:38:00 2006//
-/rt.pl/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/unibench.pl/1.1.1.1/Sat Feb  5 17:22:45 2005//
-/utf8strict.t/1.1.1.1/Fri Jun 30 22:38:00 2006//
+/Aliases.t/-1.1.1.2///
+/CJKT.t/-1.1.1.1///
+/Encode.t/-1.1.1.2///
+/Encoder.t/-1.1.1.1///
+/Mod_EUCJP.pm/-1.1.1.1///
+/Unicode.t/-1.1.1.1///
+/at-cn.t/-1.1.1.1///
+/at-tw.t/-1.1.1.1///
+/big5-eten.enc/-1.1.1.1///
+/big5-eten.utf/-1.1.1.1///
+/big5-hkscs.enc/-1.1.1.1///
+/big5-hkscs.utf/-1.1.1.1///
+/enc_data.t/-1.1.1.1///
+/enc_eucjp.t/-1.1.1.1///
+/enc_module.enc/-1.1.1.1///
+/enc_module.t/-1.1.1.1///
+/enc_utf8.t/-1.1.1.1///
+/encoding.t/-1.1.1.1///
+/fallback.t/-1.1.1.2///
+/gb2312.enc/-1.1.1.1///
+/gb2312.utf/-1.1.1.1///
+/grow.t/-1.1.1.1///
+/gsm0338.t/-1.1.1.1///
+/guess.t/-1.1.1.1///
+/jisx0201.enc/-1.1.1.1///
+/jisx0201.utf/-1.1.1.1///
+/jisx0208.enc/-1.1.1.1///
+/jisx0208.utf/-1.1.1.1///
+/jisx0212.enc/-1.1.1.1///
+/jisx0212.utf/-1.1.1.1///
+/jperl.t/-1.1.1.1///
+/ksc5601.enc/-1.1.1.1///
+/ksc5601.utf/-1.1.1.1///
+/mime-header.t/-1.1.1.1///
+/mime_header_iso2022jp.t/-1.1.1.1///
+/perlio.t/-1.1.1.2///
+/rt.pl/-1.1.1.1///
+/unibench.pl/-1.1.1.1///
+/utf8strict.t/-1.1.1.1///
 D

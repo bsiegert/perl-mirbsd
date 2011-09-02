@@ -1,95 +1,100 @@
 /3b1.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /3b1cc/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/README.hints/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/aix.sh/1.1.1.2/Fri Jun 30 22:40:35 2006//
-/aix_3.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/aix_4.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
+/README.hints/1.1.1.1/Result of merge//
+/aix.sh/1.1.1.2/Result of merge//
+/aix_3.sh/1.1.1.1/Result of merge//
+/aix_4.sh/1.1.1.1/Result of merge//
 /altos486.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /amigaos.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/apollo.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
+/apollo.sh/-1.1.1.1///
 /atheos.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /aux_3.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/beos.sh/1.1.1.2/Fri Jun 30 22:40:36 2006//
+/beos.sh/1.1.1.2/Result of merge//
 /broken-db.msg/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/bsdos.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
+/bsdos.sh/1.1.1.1/Result of merge//
+/catamount.sh/1.1.131.1/Fri Sep  2 20:17:38 2011//
 /convexos.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /cxux.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/cygwin.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/darwin.sh/1.1.1.2/Fri Jun 30 22:40:37 2006//
-/dcosx.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/dec_osf.sh/1.1.1.2/Fri Jun 30 22:40:37 2006//
-/dgux.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
+/cygwin.sh/1.1.1.1/Result of merge//
+/darwin.sh/1.1.1.2/Result of merge//
+/dcosx.sh/1.1.1.1/Result of merge//
+/dec_osf.sh/1.1.1.2/Result of merge//
+/dgux.sh/1.1.1.1/Result of merge//
 /dos_djgpp.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
+/dragonfly.sh/1.1.131.1/Fri Sep  2 20:17:38 2011//
 /dynix.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /dynixptx.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/epix.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
+/epix.sh/1.1.1.1/Result of merge//
 /esix4.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /fps.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/freebsd.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
+/freebsd.sh/1.1.1.1/Result of merge//
 /genix.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /gnu.sh/1.1.1.2/Fri Jun 30 22:40:38 2006//
 /gnukfreebsd.sh/1.1.1.1/Fri Jun 30 22:40:39 2006//
 /gnuknetbsd.sh/1.1.1.1/Fri Jun 30 22:40:39 2006//
 /greenhills.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/hpux.sh/1.1.1.2/Fri Jun 30 22:40:39 2006//
+/haiku.sh/1.1.131.1/Fri Sep  2 20:17:38 2011//
+/hpux.sh/1.1.1.2/Result of merge//
 /i386.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /interix.sh/1.1.1.1/Fri Jun 30 22:40:39 2006//
 /irix_4.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /irix_5.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/irix_6.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
+/irix_6.sh/1.1.1.1/Result of merge//
 /irix_6_0.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /irix_6_1.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/isc.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
+/isc.sh/1.1.1.1/Result of merge//
 /isc_2.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/linux.sh/1.1.1.2/Fri Jun 30 22:40:40 2006//
+/linux.sh/1.1.1.2/Result of merge//
 /lynxos.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/machten.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/machten_2.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/mint.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
+/machten.sh/-1.1.1.1///
+/machten_2.sh/-1.1.1.1///
+/midnightbsd.sh/1.1.131.1/Fri Sep  2 20:17:39 2011//
+/mint.sh/-1.1.1.1///
 /mips.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /mirbsd.sh/1.4/Sat Dec 13 23:47:43 2008//
 /mpc.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /mpeix.sh/1.1.1.2/Fri Jun 30 22:40:41 2006//
 /ncr_tower.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/netbsd.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
+/netbsd.sh/1.1.1.1/Result of merge//
 /newsos4.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/next_3.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
+/next_3.sh/1.1.1.1/Result of merge//
 /next_3_0.sh/1.1.1.2/Fri Jun 30 22:40:42 2006//
 /next_4.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
 /nonstopux.sh/1.1.1.1/Sat Feb  5 17:23:08 2005//
-/openbsd.sh/1.1.1.3/Sat Dec 13 22:18:50 2008//
+/openbsd.sh/1.1.1.3/Result of merge+Fri Sep  2 20:29:34 2011//
 /opus.sh/1.1.1.1/Sat Feb  5 17:23:11 2005//
-/os2.sh/1.1.1.1/Sat Feb  5 17:23:11 2005//
-/os390.sh/1.1.1.1/Sat Feb  5 17:23:11 2005//
+/os2.sh/1.1.1.1/Result of merge//
+/os390.sh/1.1.1.1/Result of merge//
 /os400.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/posix-bc.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/powerux.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/qnx.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
+/posix-bc.sh/1.1.1.1/Result of merge//
+/powerux.sh/1.1.1.1/Result of merge//
+/qnx.sh/1.1.1.1/Result of merge//
 /rhapsody.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/sco.sh/1.1.1.2/Fri Jun 30 22:40:44 2006//
+/riscos.sh/1.1.131.1/Fri Sep  2 20:17:39 2011//
+/sco.sh/1.1.1.2/Result of merge//
 /sco_2_3_0.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
 /sco_2_3_1.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
 /sco_2_3_2.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
 /sco_2_3_3.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
 /sco_2_3_4.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/solaris_2.sh/1.1.1.2/Fri Jun 30 22:40:45 2006//
+/solaris_2.sh/1.1.1.2/Result of merge//
 /stellar.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
 /sunos_4_0.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/sunos_4_1.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
+/sunos_4_1.sh/1.1.1.1/Result of merge//
 /super-ux.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/svr4.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/svr5.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/t001.c/1.1.1.1/Sat Feb  5 17:23:12 2005//
+/svr4.sh/1.1.1.1/Result of merge//
+/svr5.sh/1.1.1.1/Result of merge//
+/t001.c/1.1.1.1/Result of merge//
 /ti1500.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
 /titanos.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/ultrix_4.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/umips.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
+/ultrix_4.sh/1.1.1.1/Result of merge//
+/umips.sh/1.1.1.1/Result of merge//
 /unicos.sh/1.1.1.2/Fri Jun 30 22:40:46 2006//
 /unicosmk.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
 /unisysdynix.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
 /utekv.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/uts.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/uwin.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
-/vmesa.sh/1.1.1.2/Fri Jun 30 22:40:47 2006//
-/vos.sh/1.1.1.1/Sat Feb  5 17:23:12 2005//
+/uts.sh/1.1.1.1/Result of merge//
+/uwin.sh/1.1.1.1/Result of merge//
+/vmesa.sh/1.1.1.2/Result of merge//
+/vos.sh/1.1.1.1/Result of merge//
 D

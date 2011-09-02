@@ -173,7 +173,7 @@ information you may find useful.
 
 In a sense, perl (the C program) is a good example of embedding Perl
 (the language), so I'll demonstrate embedding with I<miniperlmain.c>,
-included in the source distribution.  Here's a bastardized, nonportable
+included in the source distribution.  Here's a bastardized, non-portable
 version of I<miniperlmain.c> containing the essentials of embedding:
 
     #include <EXTERN.h>               /* from the Perl distribution     */
@@ -196,11 +196,20 @@ version of I<miniperlmain.c> containing the essentials of embedding:
 
 Notice that we don't use the C<env> pointer.  Normally handed to
 C<perl_parse> as its final argument, C<env> here is replaced by
-C<NULL>, which means that the current environment will be used.  The macros
-PERL_SYS_INIT3() and PERL_SYS_TERM() provide system-specific tune up 
-of the C runtime environment necessary to run Perl interpreters; since
-PERL_SYS_INIT3() may change C<env>, it may be more appropriate to provide
-C<env> as an argument to perl_parse().
+C<NULL>, which means that the current environment will be used.
+
+The macros PERL_SYS_INIT3() and PERL_SYS_TERM() provide system-specific
+tune up of the C runtime environment necessary to run Perl interpreters;
+they should only be called once regardless of how many interpreters you
+create or destroy. Call PERL_SYS_INIT3() before you create your first
+interpreter, and PERL_SYS_TERM() after you free your last interpreter.
+
+Since PERL_SYS_INIT3() may change C<env>, it may be more appropriate to
+provide C<env> as an argument to perl_parse().
+
+Also notice that no matter what arguments you pass to perl_parse(),
+PERL_SYS_INIT3() must be invoked on the C main() argc, argv and env and
+only once.
 
 Now compile this program (I'll call it I<interp.c>) into an executable:
 
@@ -313,7 +322,6 @@ the first, a C<float> from the second, and a C<char *> from the third.
 
    main (int argc, char **argv, char **env)
    {
-       STRLEN n_a;
        char *embedding[] = { "", "-e", "0" };
 
        PERL_SYS_INIT3(&argc,&argv,&env);
@@ -326,15 +334,15 @@ the first, a C<float> from the second, and a C<char *> from the third.
 
        /** Treat $a as an integer **/
        eval_pv("$a = 3; $a **= 2", TRUE);
-       printf("a = %d\n", SvIV(get_sv("a", FALSE)));
+       printf("a = %d\n", SvIV(get_sv("a", 0)));
 
        /** Treat $a as a float **/
        eval_pv("$a = 3.14; $a **= 2", TRUE);
-       printf("a = %f\n", SvNV(get_sv("a", FALSE)));
+       printf("a = %f\n", SvNV(get_sv("a", 0)));
 
        /** Treat $a as a string **/
        eval_pv("$a = 'rekcaH lreP rehtonA tsuJ'; $a = reverse($a);", TRUE);
-       printf("a = %s\n", SvPV(get_sv("a", FALSE), n_a));
+       printf("a = %s\n", SvPV_nolen(get_sv("a", 0)));
 
        perl_destruct(my_perl);
        perl_free(my_perl);
@@ -352,14 +360,13 @@ I<SvPV()> to create a string:
    a = Just Another Perl Hacker
 
 In the example above, we've created a global variable to temporarily
-store the computed value of our eval'd expression.  It is also
+store the computed value of our eval'ed expression.  It is also
 possible and in most cases a better strategy to fetch the return value
 from I<eval_pv()> instead.  Example:
 
    ...
-   STRLEN n_a;
    SV *val = eval_pv("reverse 'rekcaH lreP rehtonA tsuJ'", TRUE);
-   printf("%s\n", SvPV(val,n_a));
+   printf("%s\n", SvPV_nolen(val));
    ...
 
 This way, we avoid namespace pollution by not creating global
@@ -406,7 +413,7 @@ been wrapped here):
  {
      dSP;
      SV* retval;
-     STRLEN n_a;
+
 
      PUSHMARK(SP);
      eval_sv(sv, G_SCALAR);
@@ -416,7 +423,7 @@ been wrapped here):
      PUTBACK;
 
      if (croak_on_error && SvTRUE(ERRSV))
- 	croak(SvPVx(ERRSV, n_a));
+ 	croak(SvPVx_nolen(ERRSV));
 
      return retval;
  }
@@ -430,11 +437,10 @@ been wrapped here):
 
  I32 match(SV *string, char *pattern)
  {
-     SV *command = NEWSV(1099, 0), *retval;
-     STRLEN n_a;
+     SV *command = newSV(0), *retval;
 
      sv_setpvf(command, "my $string = '%s'; $string =~ %s",
- 	      SvPV(string,n_a), pattern);
+ 	      SvPV_nolen(string), pattern);
 
      retval = my_eval_sv(command, TRUE);
      SvREFCNT_dec(command);
@@ -452,16 +458,15 @@ been wrapped here):
 
  I32 substitute(SV **string, char *pattern)
  {
-     SV *command = NEWSV(1099, 0), *retval;
-     STRLEN n_a;
+     SV *command = newSV(0), *retval;
 
      sv_setpvf(command, "$string = '%s'; ($string =~ %s)",
- 	      SvPV(*string,n_a), pattern);
+ 	      SvPV_nolen(*string), pattern);
 
      retval = my_eval_sv(command, TRUE);
      SvREFCNT_dec(command);
 
-     *string = get_sv("string", FALSE);
+     *string = get_sv("string", 0);
      return SvIV(retval);
  }
 
@@ -475,18 +480,17 @@ been wrapped here):
 
  I32 matches(SV *string, char *pattern, AV **match_list)
  {
-     SV *command = NEWSV(1099, 0);
+     SV *command = newSV(0);
      I32 num_matches;
-     STRLEN n_a;
 
      sv_setpvf(command, "my $string = '%s'; @array = ($string =~ %s)",
- 	      SvPV(string,n_a), pattern);
+ 	      SvPV_nolen(string), pattern);
 
      my_eval_sv(command, TRUE);
      SvREFCNT_dec(command);
 
-     *match_list = get_av("array", FALSE);
-     num_matches = av_len(*match_list) + 1; /** assume $[ is 0 **/
+     *match_list = get_av("array", 0);
+     num_matches = av_len(*match_list) + 1;
 
      return num_matches;
  }
@@ -497,7 +501,6 @@ been wrapped here):
      AV *match_list;
      I32 num_matches, i;
      SV *text;
-     STRLEN n_a;
 
      PERL_SYS_INIT3(&argc,&argv,&env);
      my_perl = perl_alloc();
@@ -505,7 +508,7 @@ been wrapped here):
      perl_parse(my_perl, NULL, 3, embedding, NULL);
      PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
 
-     text = NEWSV(1099,0);
+     text = newSV(0);
      sv_setpv(text, "When he is at a convenience store and the "
 	"bill comes to some amount like 76 cents, Maynard is "
 	"aware that there is something he *should* do, something "
@@ -532,7 +535,7 @@ been wrapped here):
      printf("matches: m/(wi..)/g found %d matches...\n", num_matches);
 
      for (i = 0; i < num_matches; i++)
- 	printf("match: %s\n", SvPV(*av_fetch(match_list, i, FALSE),n_a));
+ 	printf("match: %s\n", SvPV_nolen(*av_fetch(match_list, i, FALSE)));
      printf("\n");
 
      /** Remove all vowels from text **/
@@ -540,7 +543,7 @@ been wrapped here):
      if (num_matches) {
  	printf("substitute: s/[aeiou]//gi...%d substitutions made.\n",
  	       num_matches);
- 	printf("Now text is: %s\n\n", SvPV(text,n_a));
+ 	printf("Now text is: %s\n\n", SvPV_nolen(text));
      }
 
      /** Attempt a substitution **/
@@ -784,7 +787,6 @@ with L<perlfunc/my> whenever possible.
      char *args[] = { "", DO_CLEAN, NULL };
      char filename[BUFFER_SIZE];
      int exitstatus = 0;
-     STRLEN n_a;
 
      PERL_SYS_INIT3(&argc,&argv,&env);
      if((my_perl = perl_alloc()) == NULL) {
@@ -793,6 +795,7 @@ with L<perlfunc/my> whenever possible.
      }
      perl_construct(my_perl);
 
+     PL_origalen = 1; /* don't let $0 assignment update the proctitle or embedding[0] */
      exitstatus = perl_parse(my_perl, NULL, 2, embedding, NULL);
      PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
      if(!exitstatus) {
@@ -809,7 +812,7 @@ with L<perlfunc/my> whenever possible.
 
             /* check $@ */
             if(SvTRUE(ERRSV))
-                fprintf(stderr, "eval error: %s\n", SvPV(ERRSV,n_a));
+                fprintf(stderr, "eval error: %s\n", SvPV_nolen(ERRSV));
         }
      }
 
@@ -851,6 +854,21 @@ This causes problems for applications that never call perl_run. Since
 perl 5.7.2 you can specify C<PL_exit_flags |= PERL_EXIT_DESTRUCT_END>
 to get the new behaviour. This also enables the running of END blocks if
 the perl_parse fails and C<perl_destruct> will return the exit value.
+
+=head2 $0 assignments
+
+When a perl script assigns a value to $0 then the perl runtime will
+try to make this value show up as the program name reported by "ps" by
+updating the memory pointed to by the argv passed to perl_parse() and
+also calling API functions like setproctitle() where available.  This
+behaviour might not be appropriate when embedding perl and can be
+disabled by assigning the value C<1> to the variable C<PL_origalen>
+before perl_parse() is called.
+
+The F<persistent.c> example above is for instance likely to segfault
+when $0 is assigned to if the C<PL_origalen = 1;> assignment is
+removed.  This because perl will try to write to the read only memory
+of the C<embedding[]> strings.
 
 =head2 Maintaining multiple interpreter instances
 
@@ -899,6 +917,8 @@ C<-Dusemultiplicity> option otherwise some interpreter variables may
 not be initialized correctly between consecutive runs and your
 application may crash.
 
+See also L<perlxs/Thread-aware system interfaces>.
+
 Using C<-Dusethreads -Duseithreads> rather than C<-Dusemultiplicity>
 is more appropriate if you intend to run multiple interpreters
 concurrently in different threads, because it enables support for
@@ -910,7 +930,6 @@ Let's give it a try:
  #include <EXTERN.h>
  #include <perl.h>
 
- /* we're going to embed two interpreters */
  /* we're going to embed two interpreters */
 
  #define SAY_HELLO "-e", "print qq(Hi, I'm $^X\n)"
@@ -1050,37 +1069,9 @@ B<ExtUtils::Embed> can also automate writing the I<xs_init> glue code.
 
 Consult L<perlxs>, L<perlguts>, and L<perlapi> for more details.
 
-=head1 Embedding Perl under Win32
-
-In general, all of the source code shown here should work unmodified under
-Windows.
-
-However, there are some caveats about the command-line examples shown.
-For starters, backticks won't work under the Win32 native command shell.
-The ExtUtils::Embed kit on CPAN ships with a script called
-B<genmake>, which generates a simple makefile to build a program from
-a single C source file.  It can be used like this:
-
- C:\ExtUtils-Embed\eg> perl genmake interp.c
- C:\ExtUtils-Embed\eg> nmake
- C:\ExtUtils-Embed\eg> interp -e "print qq{I'm embedded in Win32!\n}"
-
-You may wish to use a more robust environment such as the Microsoft
-Developer Studio.  In this case, run this to generate perlxsi.c:
-
- perl -MExtUtils::Embed -e xsinit
-
-Create a new project and Insert -> Files into Project: perlxsi.c,
-perl.lib, and your own source files, e.g. interp.c.  Typically you'll
-find perl.lib in B<C:\perl\lib\CORE>, if not, you should see the
-B<CORE> directory relative to C<perl -V:archlib>.  The studio will
-also need this path so it knows where to find Perl include files.
-This path can be added via the Tools -> Options -> Directories menu.
-Finally, select Build -> Build interp.exe and you're ready to go.
-
 =head1 Hiding Perl_
 
-If you completely hide the short forms forms of the Perl public API,
+If you completely hide the short forms of the Perl public API,
 add -DPERL_NO_SHORT_NAMES to the compilation flags.  This means that
 for example instead of writing
 
@@ -1090,8 +1081,8 @@ you will have to write the explicit full form
 
     Perl_warn(aTHX_ "%d bottles of beer on the wall", bottlecount);
 
-(See L<perlguts/Background and PERL_IMPLICIT_CONTEXT for the explanation
-of the C<aTHX_>.> )  Hiding the short forms is very useful for avoiding
+(See L<perlguts/"Background and PERL_IMPLICIT_CONTEXT"> for the explanation
+of the C<aTHX_>. )  Hiding the short forms is very useful for avoiding
 all sorts of nasty (C preprocessor or otherwise) conflicts with other
 software packages (Perl defines about 2400 APIs with these short names,
 take or leave few hundred, so there certainly is room for conflict.)

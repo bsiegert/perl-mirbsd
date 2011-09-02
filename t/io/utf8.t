@@ -3,21 +3,20 @@
 BEGIN {
     chdir 't' if -d 't';
     @INC = '../lib';
-    unless (find PerlIO::Layer 'perlio') {
-	print "1..0 # Skip: not perlio\n";
-	exit 0;
-    }
+    require './test.pl';
+    skip_all_without_perlio();
 }
 
 no utf8; # needed for use utf8 not griping about the raw octets
 
-require "./test.pl";
 
 plan(tests => 55);
 
 $| = 1;
 
-open(F,"+>:utf8",'a');
+my $a_file = tempfile();
+
+open(F,"+>:utf8",$a_file);
 print F chr(0x100).'£';
 cmp_ok( tell(F), '==', 4, tell(F) );
 print F "\n";
@@ -29,16 +28,16 @@ is( getc(F), "\n" );
 seek(F,0,0);
 binmode(F,":bytes");
 my $chr = chr(0xc4);
-if (ord('A') == 193) { $chr = chr(0x8c); } # EBCDIC
+if (ord($a_file) == 193) { $chr = chr(0x8c); } # EBCDIC
 is( getc(F), $chr );
 $chr = chr(0x80);
-if (ord('A') == 193) { $chr = chr(0x41); } # EBCDIC
+if (ord($a_file) == 193) { $chr = chr(0x41); } # EBCDIC
 is( getc(F), $chr );
 $chr = chr(0xc2);
-if (ord('A') == 193) { $chr = chr(0x80); } # EBCDIC
+if (ord($a_file) == 193) { $chr = chr(0x80); } # EBCDIC
 is( getc(F), $chr );
 $chr = chr(0xa3);
-if (ord('A') == 193) { $chr = chr(0x44); } # EBCDIC
+if (ord($a_file) == 193) { $chr = chr(0x44); } # EBCDIC
 is( getc(F), $chr );
 is( getc(F), "\n" );
 seek(F,0,0);
@@ -55,25 +54,25 @@ close(F);
     $a = chr(300); # This *is* UTF-encoded
     $b = chr(130); # This is not.
 
-    open F, ">:utf8", 'a' or die $!;
+    open F, ">:utf8", $a_file or die $!;
     print F $a,"\n";
     close F;
 
-    open F, "<:utf8", 'a' or die $!;
+    open F, "<:utf8", $a_file or die $!;
     $x = <F>;
     chomp($x);
     is( $x, chr(300) );
 
-    open F, "a" or die $!; # Not UTF
+    open F, $a_file or die $!; # Not UTF
     binmode(F, ":bytes");
     $x = <F>;
     chomp($x);
     $chr = chr(196).chr(172);
-    if (ord('A') == 193) { $chr = chr(141).chr(83); } # EBCDIC
+    if (ord($a_file) == 193) { $chr = chr(141).chr(83); } # EBCDIC
     is( $x, $chr );
     close F;
 
-    open F, ">:utf8", 'a' or die $!;
+    open F, ">:utf8", $a_file or die $!;
     binmode(F);  # we write a "\n" and then tell() - avoid CRLF issues.
     binmode(F,":utf8"); # turn UTF-8-ness back on
     print F $a;
@@ -103,7 +102,7 @@ close(F);
 
     close F;
 
-    open F, "a" or die $!; # Not UTF
+    open F, $a_file or die $!; # Not UTF
     binmode(F, ":bytes");
     $x = <F>;
     chomp($x);
@@ -111,16 +110,14 @@ close(F);
     if (ord('A') == 193) { $chr = v141.83.130; } # EBCDIC
     is( $x, $chr, sprintf('(%vd)', $x) );
 
-    open F, "<:utf8", "a" or die $!;
+    open F, "<:utf8", $a_file or die $!;
     $x = <F>;
     chomp($x);
     close F;
     is( $x, chr(300).chr(130), sprintf('(%vd)', $x) );
 
-    open F, ">", "a" or die $!;
-    if (${^OPEN} =~ /:utf8/) {
-        binmode(F, ":bytes:");
-    }
+    open F, ">", $a_file or die $!;
+    binmode(F, ":bytes:");
 
     # Now let's make it suffer.
     my $w;
@@ -134,13 +131,13 @@ close(F);
 }
 
 # Hm. Time to get more evil.
-open F, ">:utf8", "a" or die $!;
+open F, ">:utf8", $a_file or die $!;
 print F $a;
 binmode(F, ":bytes");
 print F chr(130)."\n";
 close F;
 
-open F, "<", "a" or die $!;
+open F, "<", $a_file or die $!;
 binmode(F, ":bytes");
 $x = <F>; chomp $x;
 $chr = v196.172.130;
@@ -148,15 +145,15 @@ if (ord('A') == 193) { $chr = v141.83.130; } # EBCDIC
 is( $x, $chr );
 
 # Right.
-open F, ">:utf8", "a" or die $!;
+open F, ">:utf8", $a_file or die $!;
 print F $a;
 close F;
-open F, ">>", "a" or die $!;
+open F, ">>", $a_file or die $!;
 binmode(F, ":bytes");
 print F chr(130)."\n";
 close F;
 
-open F, "<", "a" or die $!;
+open F, "<", $a_file or die $!;
 binmode(F, ":bytes");
 $x = <F>; chomp $x;
 SKIP: {
@@ -172,7 +169,7 @@ SKIP: {
 	skip("EBCDIC doesn't complain", 2);
     } else {
 	my @warnings;
-	open F, "<:utf8", "a" or die $!;
+	open F, "<:utf8", $a_file or die $!;
 	$x = <F>; chomp $x;
 	local $SIG{__WARN__} = sub { push @warnings, $_[0]; };
 	eval { sprintf "%vd\n", $x };
@@ -182,9 +179,9 @@ SKIP: {
 }
 
 close F;
-unlink('a');
+unlink($a_file);
 
-open F, ">:utf8", "a";
+open F, ">:utf8", $a_file;
 @a = map { chr(1 << ($_ << 2)) } 0..5; # 0x1, 0x10, .., 0x100000
 unshift @a, chr(0); # ... and a null byte in front just for fun
 print F @a;
@@ -193,7 +190,7 @@ close F;
 my $c;
 
 # read() should work on characters, not bytes
-open F, "<:utf8", "a";
+open F, "<:utf8", $a_file;
 $a = 0;
 my $failed;
 for (@a) {
@@ -221,7 +218,7 @@ is($failed, undef);
     local $SIG{__WARN__} = sub { $@ = shift };
 
     undef $@;
-    open F, ">a";
+    open F, ">$a_file";
     binmode(F, ":bytes");
     print F chr(0x100);
     close(F);
@@ -229,33 +226,33 @@ is($failed, undef);
     like( $@, 'Wide character in print' );
 
     undef $@;
-    open F, ">:utf8", "a";
+    open F, ">:utf8", $a_file;
     print F chr(0x100);
     close(F);
 
-    isnt( defined $@ );
+    isnt( defined $@, !0 );
 
     undef $@;
-    open F, ">a";
+    open F, ">$a_file";
     binmode(F, ":utf8");
     print F chr(0x100);
     close(F);
 
-    isnt( defined $@ );
+    isnt( defined $@, !0 );
 
     no warnings 'utf8';
 
     undef $@;
-    open F, ">a";
+    open F, ">$a_file";
     print F chr(0x100);
     close(F);
 
-    isnt( defined $@ );
+    isnt( defined $@, !0 );
 
     use warnings 'utf8';
 
     undef $@;
-    open F, ">a";
+    open F, ">$a_file";
     binmode(F, ":bytes");
     print F chr(0x100);
     close(F);
@@ -264,9 +261,9 @@ is($failed, undef);
 }
 
 {
-    open F, ">:bytes","a"; print F "\xde"; close F;
+    open F, ">:bytes",$a_file; print F "\xde"; close F;
 
-    open F, "<:bytes", "a";
+    open F, "<:bytes", $a_file;
     my $b = chr 0x100;
     $b .= <F>;
     is( $b, chr(0x100).chr(0xde), "21395 '.= <>' utf8 vs. bytes" );
@@ -274,9 +271,9 @@ is($failed, undef);
 }
 
 {
-    open F, ">:utf8","a"; print F chr 0x100; close F;
+    open F, ">:utf8",$a_file; print F chr 0x100; close F;
 
-    open F, "<:utf8", "a";
+    open F, "<:utf8", $a_file;
     my $b = "\xde";
     $b .= <F>;
     is( $b, chr(0xde).chr(0x100), "21395 '.= <>' bytes vs. utf8" );
@@ -292,12 +289,12 @@ is($failed, undef);
     for my $u (@a) {
 	for my $v (@a) {
 	    # print "# @$u - @$v\n";
-	    open F, ">a";
+	    open F, ">$a_file";
 	    binmode(F, ":" . $u->[1]);
 	    print F chr($u->[0]);
 	    close F;
 
-	    open F, "<a";
+	    open F, "<$a_file";
 	    binmode(F, ":" . $u->[1]);
 
 	    my $s = chr($v->[0]);
@@ -314,7 +311,7 @@ is($failed, undef);
 
 {
     # [perl #23428] Somethings rotten in unicode semantics
-    open F, ">a";
+    open F, ">$a_file";
     binmode F, ":utf8";
     syswrite(F, $a = chr(0x100));
     close F;
@@ -330,7 +327,7 @@ is($failed, undef);
     use warnings 'utf8';
     undef $@;
     local $SIG{__WARN__} = sub { $@ = shift };
-    open F, ">a";
+    open F, ">$a_file";
     binmode F;
     my ($chrE4, $chrF6) = (chr(0xE4), chr(0xF6));
     if (ord('A') == 193)	# EBCDIC
@@ -338,7 +335,7 @@ is($failed, undef);
     print F "foo", $chrE4, "\n";
     print F "foo", $chrF6, "\n";
     close F;
-    open F, "<:utf8", "a";
+    open F, "<:utf8", $a_file;
     undef $@;
     my $line = <F>;
     my ($chrE4, $chrF6) = ("E4", "F6");
@@ -350,9 +347,4 @@ is($failed, undef);
     like( $@, qr/utf8 "\\x$chrF6" does not map to Unicode .+ <F> line 2/,
 	  "<:utf8 rcatline must warn about bad utf8");
     close F;
-}
-
-END {
-    1 while unlink "a";
-    1 while unlink "b";
 }

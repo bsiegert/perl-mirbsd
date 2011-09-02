@@ -192,7 +192,7 @@ esac'
 	case "`uname -s`" in
 	# Without the -mabi=64 gcc in 64-bit IRIX has problems passing
 	# and returning small structures.  This affects inet_*() and semctl().
-	# See http://reality.sgi.com/ariel/freeware/gcc-2.8.1-notes.html
+	# See http://groups.google.com/group/comp.sys.sgi.admin/msg/3ad8353bc4ce3cb0
 	# for more information.  Reported by Lionel Cons <lionel.cons@cern.ch>.
 	IRIX64)	ccflags="$ccflags -mabi=64"
 		ldflags="$ldflags -mabi=64 -L/usr/lib64"
@@ -334,6 +334,20 @@ case "`$cc -version 2>&1`" in
     test -z "$op_cflags" && op_cflags="$op_cflags optimize=\"\$optimize -O2\""
     test -z "$opmini_cflags" && echo "opmini_cflags=\"optimize=\\\"\$optimize -O2\\\"\"" >> config.sh
     test -z "$opmini_cflags" && opmini_cflags="optimize=\"\$optimize -O2\""
+    ;;
+esac
+
+
+# Workaround [perl #33849]: perl 5.8.6 fails to build on IRIX 6.5 due to
+# bizarre preprocessor bug:  cc -E - unfortunately goes into K&R mode, but
+# cc -E file.c doesn't.  Force a wrapper to always get the ANSI mode.
+# (We only need to do this for cc, not for gcc.  ccversion is computed above.)
+case "$ccversion" in
+'')  ;; # gcc.  Do nothing.
+*)  # Inside this call-back unit, we are down in the UU/ subdirectory,
+    # but Configure will look for cppstdin one level up.
+    cd ..; cppstdin=`pwd`/cppstdin; cd UU
+    cpprun="$cppstdin"
     ;;
 esac
 

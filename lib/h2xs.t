@@ -31,8 +31,28 @@ $ExtUtils::Manifest::Quiet=1;
 my $up = File::Spec->updir();
 
 my $extracted_program = '../utils/h2xs'; # unix, nt, ...
-if ($^O eq 'VMS') { $extracted_program = '[-.utils]h2xs.com'; }
-if ($^O eq 'MacOS') { $extracted_program = '::utils:h2xs'; }
+
+my $Is_VMS_traildot = 0;
+if ($^O eq 'VMS') {
+    $extracted_program = '[-.utils]h2xs.com';
+
+    # We have to know if VMS is in UNIX mode.  In UNIX mode, trailing dots
+    # should not be present.  There are actually two settings that control this.
+
+    $Is_VMS_traildot = 1;
+    my $unix_rpt = 0;
+    my $drop_dot = 0;
+    if (eval 'require VMS::Feature') {
+        $unix_rpt = VMS::Feature::current('filename_unix_report');
+        $drop_dot = VMS::Feature::current('readdir_dropdotnotype');
+    } else {
+        my $unix_report = $ENV{'DECC$FILENAME_UNIX_REPORT'} || '';
+        $unix_rpt = $unix_report =~ /^[ET1]/i; 
+        my $drop_dot_notype = $ENV{'DECC$READDIR_DROPDOTNOTYPE'} || '';
+        $drop_dot = $drop_dot_notype =~ /^[ET1]/i;
+    }
+    $Is_VMS_traildot = 0 if $drop_dot && unix_rpt;
+}
 if (!(-e $extracted_program)) {
     print "1..0 # Skip: $extracted_program was not built\n";
     exit 0;
@@ -44,18 +64,12 @@ if (!(-e $extracted_program)) {
 my $dupe = '2>&1';
 # ok on unix, nt, The extra \" are for VMS
 my $lib = '"-I../lib" "-I../../lib"';
-# The >&1 would create a file named &1 on MPW (STDERR && STDOUT are
-# already merged).
-if ($^O eq 'MacOS') {
-    $dupe = '';
-    # -x overcomes MPW $Config{startperl} anomaly
-    $lib = '-x -I::lib: -I:::lib:';
-}
 # $name should differ from system header file names and must
 # not already be found in the t/ subdirectory for perl.
 my $name = 'h2xst';
 my $header = "$name.h";
 my $thisversion = sprintf "%vd", $^V;
+$thisversion =~ s/^v//;
 
 # If this test has failed previously a copy may be left.
 rmtree($name);
@@ -167,11 +181,6 @@ while (my ($args, $version, $expectation) = splice @tests, 0, 3) {
   cmp_ok ($?, "==", 0, "running $prog ");
   $result = join("",@result);
 
-  # accomodate MPW # comment character prependage
-  if ($^O eq 'MacOS') {
-    $result =~ s/#\s*//gs;
-  }
-
   #print "# expectation is >$expectation<\n";
   #print "# result is >$result<\n";
   # Was the output the list of files that were expected?
@@ -181,12 +190,10 @@ while (my ($args, $version, $expectation) = splice @tests, 0, 3) {
   find (sub {$got{$File::Find::name}++ unless -d $_}, $name);
 
   foreach ($expectation =~ /Writing\s+(\S+)/gm) {
-    if ($^O eq 'MacOS') {
-      $_ = ':' . join(':',split(/\//,$_));
-      $_ =~ s/$name:t:1.t/$name:t\/1.t/; # is this an h2xs bug?
-    }
     if ($^O eq 'VMS') {
-      $_ .= '.' unless $_ =~ m/\./;
+      if ($Is_VMS_traildot) {
+          $_ .= '.' unless $_ =~ m/\./;
+      }
       $_ = lc($_) unless exists $got{$_};
     }
     ok (-e $_, "check for $_") and delete $got{$_};

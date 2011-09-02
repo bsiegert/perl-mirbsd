@@ -26,7 +26,7 @@ be read I<as is>: either as F<README.amiga>, or F<pod/perlamiga.pod>.
 A recent version of perl for the Amiga can be found at the Geek Gadgets
 section of the Aminet:
 
-      http://www.aminet.net/~aminet/dev/gg/index.html
+      http://www.aminet.net/~aminet/dev/gg
 
 =cut
 
@@ -67,7 +67,7 @@ Contents
 You need the Unix emulation for AmigaOS, whose most important part is
 B<ixemul.library>. For a minimum setup, get the latest versions
 of the following packages from the Aminet archives
-( http://www.aminet.net/~aminet/ ):
+( L<http://www.aminet.net/~aminet/> ):
 
 	ixemul-bin
 	ixemul-env-bin

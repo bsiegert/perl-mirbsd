@@ -28,14 +28,15 @@ $startsh
 # Note that the text lines /^Summary of/ .. /^\s*$/ are copied into Config.pm.
 cat <<'!NO!SUBS!'
 Summary of my $package (revision $revision $version_patchlevel_string) configuration:
+  $git_commit_id_title $git_commit_id$git_ancestor_line
   Platform:
     osname=$osname, osvers=$osvers, archname=$archname
     uname='$myuname'
     config_args='$config_args'
     hint=$hint, useposix=$useposix, d_sigaction=$d_sigaction
-    usethreads=$usethreads use5005threads=$use5005threads useithreads=$useithreads usemultiplicity=$usemultiplicity
-    useperlio=$useperlio d_sfio=$d_sfio uselargefiles=$uselargefiles usesocks=$usesocks
-    use64bitint=$use64bitint use64bitall=$use64bitall uselongdouble=$uselongdouble
+    useithreads=$useithreads, usemultiplicity=$usemultiplicity
+    useperlio=$useperlio, d_sfio=$d_sfio, uselargefiles=$uselargefiles, usesocks=$usesocks
+    use64bitint=$use64bitint, use64bitall=$use64bitall, uselongdouble=$uselongdouble
     usemymalloc=$usemymalloc, bincompat5005=undef
   Compiler:
     cc='$cc', ccflags ='$ccflags',

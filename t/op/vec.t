@@ -6,12 +6,12 @@ BEGIN {
 }
 
 require "test.pl";
-plan( tests => 31 );
+plan( tests => 32 );
 
 my $Is_EBCDIC = (ord('A') == 193) ? 1 : 0;
 
 is(vec($foo,0,1), 0);
-is(length($foo), 0);
+is(length($foo), undef);
 vec($foo,0,1) = 1;
 is(length($foo), 1);
 is(unpack('C',$foo), 1);
@@ -43,16 +43,16 @@ ok("$foo $bar $baz" eq "1 2 3");
 # error cases
 
 $x = eval { vec $foo, 0, 3 };
-like($@, /^Illegal number of bits in vec/);
+like($@, qr/^Illegal number of bits in vec/);
 $@ = undef;
 $x = eval { vec $foo, 0, 0 };
-like($@, /^Illegal number of bits in vec/);
+like($@, qr/^Illegal number of bits in vec/);
 $@ = undef;
 $x = eval { vec $foo, 0, -13 };
-like($@, /^Illegal number of bits in vec/);
+like($@, qr/^Illegal number of bits in vec/);
 $@ = undef;
 $x = eval { vec($foo, -1, 4) = 2 };
-like($@, /^Illegal number of bits in vec/);
+like($@, qr/^Negative offset to vec in lvalue context/);
 $@ = undef;
 ok(! vec('abcd', 7, 8));
 
@@ -95,3 +95,15 @@ is($foo, "\x61\x62\x63\x34\x65\x66");
     $r[$_] = \ vec $s, $_, 1 for (0, 1);
     ok(!(${ $r[0] } != 0 || ${ $r[1] } != 1)); 
 }
+
+
+my $destroyed;
+{ package Class; DESTROY { ++$destroyed; } }
+
+$destroyed = 0;
+{
+    my $x = '';
+    vec($x,0,1) = 0;
+    $x = bless({}, 'Class');
+}
+is($destroyed, 1, 'Timely scalar destruction with lvalue vec');

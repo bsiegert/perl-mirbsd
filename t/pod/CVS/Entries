@@ -1,35 +1,35 @@
-/emptycmd.t/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/emptycmd.xr/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/find.t/1.1.1.2/Fri Jun 30 22:47:02 2006//
-/for.t/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/for.xr/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/headings.t/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/headings.xr/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/include.t/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/include.xr/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/included.t/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/included.xr/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/lref.t/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/lref.xr/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/multiline_items.t/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/multiline_items.xr/1.1.1.1/Sat Feb  5 17:24:02 2005//
-/nested_items.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/nested_items.xr/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/nested_seqs.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/nested_seqs.xr/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/oneline_cmds.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/oneline_cmds.xr/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/plainer.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/pod2usage.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/pod2usage.xr/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/pod2usage2.t/1.1.1.1/Fri Jun 30 22:47:05 2006//
-/poderrs.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/poderrs.xr/1.1.1.2/Fri Jun 30 22:47:05 2006//
-/podselect.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/podselect.xr/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/special_seqs.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/special_seqs.xr/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/testcmp.pl/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/testp2pt.pl/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/testpchk.pl/1.1.1.1/Sat Feb  5 17:24:06 2005//
+/emptycmd.t/-1.1.1.1///
+/emptycmd.xr/-1.1.1.1///
+/find.t/-1.1.1.2///
+/for.t/-1.1.1.1///
+/for.xr/-1.1.1.1///
+/headings.t/-1.1.1.1///
+/headings.xr/-1.1.1.1///
+/include.t/-1.1.1.1///
+/include.xr/-1.1.1.1///
+/included.t/-1.1.1.1///
+/included.xr/-1.1.1.1///
+/lref.t/-1.1.1.1///
+/lref.xr/-1.1.1.1///
+/multiline_items.t/-1.1.1.1///
+/multiline_items.xr/-1.1.1.1///
+/nested_items.t/-1.1.1.1///
+/nested_items.xr/-1.1.1.1///
+/nested_seqs.t/-1.1.1.1///
+/nested_seqs.xr/-1.1.1.1///
+/oneline_cmds.t/-1.1.1.1///
+/oneline_cmds.xr/-1.1.1.1///
+/plainer.t/-1.1.1.1///
+/pod2usage.t/-1.1.1.1///
+/pod2usage.xr/-1.1.1.1///
+/pod2usage2.t/-1.1.1.1///
+/poderrs.t/-1.1.1.1///
+/poderrs.xr/-1.1.1.2///
+/podselect.t/-1.1.1.1///
+/podselect.xr/-1.1.1.1///
+/special_seqs.t/-1.1.1.1///
+/special_seqs.xr/-1.1.1.1///
+/testcmp.pl/-1.1.1.1///
+/testp2pt.pl/-1.1.1.1///
+/testpchk.pl/-1.1.1.1///
 D/testpods////

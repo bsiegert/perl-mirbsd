@@ -66,7 +66,7 @@ main, but we decided it was more useful for package writers to be able
 to use leading underscore to indicate private variables and method names.
 However, variables and functions named with a single C<_>, such as
 $_ and C<sub _>, are still forced into the package C<main>.  See also
-L<perlvar/"Technical Note on the Syntax of Variable Names">.
+L<perlvar/"The Syntax of Variable Names">.
 
 C<eval>ed strings are compiled in the package in which the eval() was
 compiled.  (Assignments to C<$SIG{}>, however, assume the signal
@@ -94,18 +94,9 @@ C<%main::>, or C<%::> for short.  Likewise the symbol table for the nested
 package mentioned earlier is named C<%OUTER::INNER::>.
 
 The value in each entry of the hash is what you are referring to when you
-use the C<*name> typeglob notation.  In fact, the following have the same
-effect, though the first is more efficient because it does the symbol
-table lookups at compile time:
+use the C<*name> typeglob notation.
 
     local *main::foo    = *main::bar;
-    local $main::{foo}  = $main::{bar};
-
-(Be sure to note the B<vast> difference between the second line above
-and C<local $main::foo = $main::bar>. The former is accessing the hash
-C<%main::>, which is the symbol table of package C<main>. The latter is
-simply assigning scalar C<$bar> in package C<main> to scalar C<$foo> of
-the same package.)
 
 You can use this to print out all the variables in a package, for
 instance.  The standard but antiquated F<dumpvar.pl> library and
@@ -143,7 +134,7 @@ refer to the same scalar value. This means that the following code:
     }
 
 Would print '1', because C<$foo> holds a reference to the I<original>
-C<$bar> -- the one that was stuffed away by C<local()> and which will be
+C<$bar>. The one that was stuffed away by C<local()> and which will be
 restored when the block ends. Because variables are accessed through the
 typeglob, you can use C<*foo = *bar> to create an alias which can be
 localized. (But be aware that this means you can't have a separate
@@ -258,12 +249,12 @@ rather than:
 This also has implications for the use of the SUPER:: qualifier
 (see L<perlobj>).
 
-=head2 BEGIN, CHECK, INIT and END
-X<BEGIN> X<CHECK> X<INIT> X<END>
+=head2 BEGIN, UNITCHECK, CHECK, INIT and END
+X<BEGIN> X<UNITCHECK> X<CHECK> X<INIT> X<END>
 
-Four specially named code blocks are executed at the beginning and at the end
-of a running Perl program.  These are the C<BEGIN>, C<CHECK>, C<INIT>, and
-C<END> blocks.
+Five specially named code blocks are executed at the beginning and at
+the end of a running Perl program.  These are the C<BEGIN>,
+C<UNITCHECK>, C<CHECK>, C<INIT>, and C<END> blocks.
 
 These code blocks can be prefixed with C<sub> to give the appearance of a
 subroutine (although this is not considered good style).  One should note
@@ -276,15 +267,11 @@ these code blocks by name.
 A C<BEGIN> code block is executed as soon as possible, that is, the moment
 it is completely defined, even before the rest of the containing file (or
 string) is parsed.  You may have multiple C<BEGIN> blocks within a file (or
-eval'ed string) -- they will execute in order of definition.  Because a C<BEGIN>
+eval'ed string); they will execute in order of definition.  Because a C<BEGIN>
 code block executes immediately, it can pull in definitions of subroutines
 and such from other files in time to be visible to the rest of the compile
 and run time.  Once a C<BEGIN> has run, it is immediately undefined and any
 code it used is returned to Perl's memory pool.
-
-It should be noted that C<BEGIN> code blocks B<are> executed inside string
-C<eval()>'s.  The C<CHECK> and C<INIT> code blocks are B<not> executed inside
-a string eval, which e.g. can be a problem in a mod_perl environment.
 
 An C<END> code block is executed as late as possible, that is, after
 perl has finished running the program and just before the interpreter
@@ -307,17 +294,38 @@ value of the program.  Beware of changing C<$?> by accident (e.g. by
 running something via C<system>).
 X<$?>
 
-C<CHECK> and C<INIT> code blocks are useful to catch the transition between
-the compilation phase and the execution phase of the main program.
+Inside of a C<END> block, the value of C<${^GLOBAL_PHASE}> will be
+C<"END">.
+
+C<UNITCHECK>, C<CHECK> and C<INIT> code blocks are useful to catch the
+transition between the compilation phase and the execution phase of
+the main program.
+
+C<UNITCHECK> blocks are run just after the unit which defined them has
+been compiled.  The main program file and each module it loads are
+compilation units, as are string C<eval>s, code compiled using the
+C<(?{ })> construct in a regex, calls to C<do FILE>, C<require FILE>,
+and code after the C<-e> switch on the command line.
+
+C<BEGIN> and C<UNITCHECK> blocks are not directly related to the phase of
+the interpreter.  They can be created and executed during any phase.
 
 C<CHECK> code blocks are run just after the B<initial> Perl compile phase ends
 and before the run time begins, in LIFO order.  C<CHECK> code blocks are used
 in the Perl compiler suite to save the compiled state of the program.
 
+Inside of a C<CHECK> block, the value of C<${^GLOBAL_PHASE}> will be
+C<"CHECK">.
+
 C<INIT> blocks are run just before the Perl runtime begins execution, in
-"first in, first out" (FIFO) order. For example, the code generators
-documented in L<perlcc> make use of C<INIT> blocks to initialize and
-resolve pointers to XSUBs.
+"first in, first out" (FIFO) order.
+
+Inside of an C<INIT> block, the value of C<${^GLOBAL_PHASE}> will be C<"INIT">.
+
+The C<CHECK> and C<INIT> blocks in code compiled by C<require>, string C<do>,
+or string C<eval> will not be executed if they occur after the end of the
+main compilation phase; that can be a problem in mod_perl and other persistent
+environments which use those functions to load code at runtime.
 
 When you use the B<-n> and B<-p> switches to Perl, C<BEGIN> and
 C<END> work just as they do in B<awk>, as a degenerate case.
@@ -331,26 +339,32 @@ The B<begincheck> program makes it all clear, eventually:
 
   # begincheck
 
-  print         " 8. Ordinary code runs at runtime.\n";
+  print         "10. Ordinary code runs at runtime.\n";
 
-  END { print   "14.   So this is the end of the tale.\n" }
-  INIT { print  " 5. INIT blocks run FIFO just before runtime.\n" }
-  CHECK { print " 4.   So this is the fourth line.\n" }
+  END { print   "16.   So this is the end of the tale.\n" }
+  INIT { print  " 7. INIT blocks run FIFO just before runtime.\n" }
+  UNITCHECK {
+    print       " 4.   And therefore before any CHECK blocks.\n"
+  }
+  CHECK { print " 6.   So this is the sixth line.\n" }
 
-  print         " 9.   It runs in order, of course.\n";
+  print         "11.   It runs in order, of course.\n";
 
   BEGIN { print " 1. BEGIN blocks run FIFO during compilation.\n" }
-  END { print   "13.   Read perlmod for the rest of the story.\n" }
-  CHECK { print " 3. CHECK blocks run LIFO at compilation's end.\n" }
-  INIT { print  " 6.   Run this again, using Perl's -c switch.\n" }
+  END { print   "15.   Read perlmod for the rest of the story.\n" }
+  CHECK { print " 5. CHECK blocks run LIFO after all compilation.\n" }
+  INIT { print  " 8.   Run this again, using Perl's -c switch.\n" }
 
-  print         "10.   This is anti-obfuscated code.\n";
+  print         "12.   This is anti-obfuscated code.\n";
 
-  END { print   "12. END blocks run LIFO at quitting time.\n" }
+  END { print   "14. END blocks run LIFO at quitting time.\n" }
   BEGIN { print " 2.   So this line comes out second.\n" }
-  INIT { print  " 7.   You'll see the difference right away.\n" }
+  UNITCHECK {
+   print " 3. UNITCHECK blocks run LIFO after each file is compiled.\n"
+  }
+  INIT { print  " 9.   You'll see the difference right away.\n" }
 
-  print         "11.   It merely _looks_ like it should be confusing.\n";
+  print         "13.   It merely _looks_ like it should be confusing.\n";
 
   __END__
 
@@ -392,7 +406,7 @@ create a file called F<Some/Module.pm> and start with this template:
         # set the version for version checking
         $VERSION     = 1.00;
         # if using RCS/CVS, this may be preferred
-        $VERSION = sprintf "%d.%03d", q$Revision: 1.10 $ =~ /(\d+)/g;
+        $VERSION = sprintf "%d.%03d", q$Revision: 1.1 $ =~ /(\d+)/g;
 
         @ISA         = qw(Exporter);
         @EXPORT      = qw(&func1 &func2 &func4);
@@ -557,7 +571,7 @@ like for example handle the cloning of non-Perl data, if necessary.
 C<CLONE> will be called once as a class method for every package that has it
 defined (or inherits it).  It will be called in the context of the new thread,
 so all modifications are made in the new area.  Currently CLONE is called with
-no parameters other than the invocant package name, but code should not assume
+no parameters other than the invocand package name, but code should not assume
 that this will remain unchanged, as it is likely that in future extra parameters
 will be passed in to give more information about the state of cloning.
 
@@ -569,14 +583,17 @@ Like C<CLONE>, C<CLONE_SKIP> is called once per package; however, it is
 called just before cloning starts, and in the context of the parent
 thread. If it returns a true value, then no objects of that class will
 be cloned; or rather, they will be copied as unblessed, undef values.
+For example: if in the parent there are two references to a single blessed
+hash, then in the child there will be two references to a single undefined
+scalar value instead.
 This provides a simple mechanism for making a module threadsafe; just add
-C<sub CLONE_SKIP { 1 }> at the top of the class, and C<DESTROY()> will be
+C<sub CLONE_SKIP { 1 }> at the top of the class, and C<DESTROY()> will
 now only be called once per object. Of course, if the child thread needs
 to make use of the objects, then a more sophisticated approach is
 needed.
 
 Like C<CLONE>, C<CLONE_SKIP> is currently called with no parameters other
-than the invocant package name, although that may change. Similarly, to
+than the invocand package name, although that may change. Similarly, to
 allow for future expansion, the return value should be a single C<0> or
 C<1> value.
 

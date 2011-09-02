@@ -26,16 +26,18 @@ esac
 
 echo "Extracting x2p/Makefile (with variable substitutions)"
 rm -f Makefile
+
+# The .PL extractions use the Cwd extension.  For statically-built
+# perls, we need perl, not just miniperl.
+case "$usedl" in
+    define) perl="../miniperl" ;;
+    *)      perl="../perl" ;;
+esac
+
 cat >Makefile <<!GROK!THIS!
-# $RCSfile: Makefile.SH,v $$Revision: 1.10 $$Date: 2006/03/28 19:23:15 $
+# $RCSfile: Makefile.SH,v $$Revision: 4.1 $$Date: 92/08/07 18:29:07 $
 #
-# $Log: Makefile.SH,v $
-# Revision 1.10  2006/03/28 19:23:15  millert
-# merge in perl 5.8.8
-#
-# Revision 1.9  2003/12/03 03:02:53  millert
-# Resolve conflicts for perl 5.8.2, remove old files, and add OpenBSD-specific scaffolding
-#
+# $Log:	Makefile.SH,v $
 
 CC = $cc
 BYACC = $byacc
@@ -53,7 +55,7 @@ SHELL = $sh
 
 # These variables may need to be manually set for non-Unix systems.
 AR = $ar
-EXE_EXT = $_ext
+EXE_EXT = $_exe
 LIB_EXT = $_a
 OBJ_EXT = $_o
 PATH_SEP = $p_
@@ -67,6 +69,9 @@ TRNL = '$trnl'
 OPTIMIZE = $optimize
 
 .SUFFIXES: .c \$(OBJ_EXT)
+
+RUN = $run
+PERL = $perl
 
 !GROK!THIS!
 
@@ -109,9 +114,6 @@ lintflags = -phbvxac
 all: $(public) $(private) $(util)
 	@echo " "
 
-compile: all
-	$(REALPERL) -I../lib ../utils/perlcc -I .. -L .. $(plextract) -v -log ../compilelog;  
-
 a2p$(EXE_EXT): $(obj) a2p$(OBJ_EXT)
 	$(CC) -o a2p $(LDFLAGS) $(obj) a2p$(OBJ_EXT) $(libs)
 
@@ -131,6 +133,9 @@ run_byacc:	FORCE
 	    -e 's/^yynewerror://' \
 	    -e 's/^    goto yynewerror;//' \
 	    -e 's|^static char yysccsid\(.*\)|/* static char yysccsid\1 */|' \
+	    -e 's/^\(char \*yyname\[\]\)/const \1/' \
+	    -e 's/^\(char \*yyrule\[\]\)/const \1/' \
+	    -e 's/^\(    register\) \(char \*yys;\)/\1 const \2/' \
 	    < y.tab.c > a2p.c
 
 FORCE:
@@ -146,6 +151,8 @@ a2p$(OBJ_EXT): a2p.c a2py.c a2p.h EXTERN.h util.h INTERN.h \
 
 clean:
 	rm -f a2p$(EXE_EXT) psed *$(OBJ_EXT) $(plexe) $(plc) $(plm)
+
+distclean: veryclean
 
 realclean: clean
 	-rmdir .depending
@@ -175,10 +182,8 @@ hlist:
 shlist:
 	echo $(sh) | tr ' ' $(TRNL) >.shlist
 
-# These should be automatically generated
-
 $(plextract):
-	../miniperl -I../lib $@.PL
+	$(RUN) $(PERL) -I../lib $@.PL
 
 find2perl: find2perl.PL
 

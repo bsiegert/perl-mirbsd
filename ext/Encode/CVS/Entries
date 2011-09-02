@@ -1,13 +1,13 @@
-/AUTHORS/1.1.1.2/Fri Jun 30 22:37:44 2006//
-/Changes/1.1.1.2/Fri Jun 30 22:37:45 2006//
-/Encode.pm/1.1.1.2/Fri Jun 30 22:37:45 2006//
-/Encode.xs/1.1.1.2/Fri Jun 30 22:37:46 2006//
-/MANIFEST/1.1.1.2/Fri Jun 30 22:37:46 2006//
-/META.yml/1.1.1.2/Fri Jun 30 22:37:46 2006//
-/Makefile.PL/1.1.1.1/Sat Feb  5 17:22:44 2005//
-/README/1.1.1.1/Sat Feb  5 17:22:44 2005//
-/encengine.c/1.1.1.1/Sat Feb  5 17:22:44 2005//
-/encoding.pm/1.1.1.2/Fri Jun 30 22:37:47 2006//
+/AUTHORS/-1.1.1.2///
+/Changes/-1.1.1.2///
+/Encode.pm/-1.1.1.2///
+/Encode.xs/-1.1.1.2///
+/MANIFEST/-1.1.1.2///
+/META.yml/-1.1.1.2///
+/Makefile.PL/-1.1.1.1///
+/README/-1.1.1.1///
+/encengine.c/-1.1.1.1///
+/encoding.pm/-1.1.1.2///
 D/Byte////
 D/CN////
 D/EBCDIC////

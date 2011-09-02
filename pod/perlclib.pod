@@ -104,7 +104,7 @@ There is no equivalent to C<fgets>; one should use C<sv_gets> instead:
     p = realloc(p, n)           	Renew(p, n, t)
     memcpy(dst, src, n)         	Copy(src, dst, n, t)
     memmove(dst, src, n)        	Move(src, dst, n, t)
-    memcpy/*(struct foo *)      	StructCopy(src, dst, t)
+    memcpy(dst, src, sizeof(t))		StructCopy(src, dst, t)
     memset(dst, 0, n * sizeof(t))	Zero(dst, n, t)
     memzero(dst, 0)			Zero(dst, n, char)
     free(p)             	        Safefree(p)
@@ -138,9 +138,12 @@ pattern into it that should be illegal as pointers (and floating point
 numbers), and also hopefully surprising enough as integers, so that
 any code attempting to use the data without forethought will break
 sooner rather than later.  Poisoning can be done using the Poison()
-macro, which has similar arguments as Zero():
+macros, which have similar arguments to Zero():
 
-    Poison(dst, n, t)
+    PoisonWith(dst, n, t, b)    scribble memory with byte b
+    PoisonNew(dst, n, t)        equal to PoisonWith(dst, n, t, 0xAB)
+    PoisonFree(dst, n, t)       equal to PoisonWith(dst, n, t, 0xEF)
+    Poison(dst, n, t)           equal to PoisonFree(dst, n, t)
 
 =head2 Character Class Tests
 
@@ -173,9 +176,9 @@ table, C<c> is a C<char>, and C<u> is a Unicode codepoint.
 
     atof(s)                     Atof(s)
     atol(s)                     Atol(s)
-    strtod(s, *p)               Nothing.  Just don't use it.
-    strtol(s, *p, n)            Strtol(s, *p, n)
-    strtoul(s, *p, n)           Strtoul(s, *p, n)
+    strtod(s, &p)               Nothing.  Just don't use it.
+    strtol(s, &p, n)            Strtol(s, &p, n)
+    strtoul(s, &p, n)           Strtoul(s, &p, n)
 
 Notice also the C<grok_bin>, C<grok_hex>, and C<grok_oct> functions in
 F<numeric.c> for converting strings representing numbers in the respective
@@ -205,5 +208,5 @@ For C<signal>/C<sigaction>, use C<rsignal(signo, handler)>.
 
 =head1 SEE ALSO
 
-C<perlapi>, C<perlapio>, C<perlguts>
+L<perlapi>, L<perlapio>, L<perlguts>
 

@@ -3,12 +3,12 @@
 BEGIN {
     chdir 't' if -d 't';
     @INC = qw(. ../lib);
+    require 'test.pl';
 }
 
-require 'test.pl';
 use strict qw(refs subs);
 
-plan (74);
+plan(217);
 
 # Test glob operations.
 
@@ -120,15 +120,92 @@ is (join(':',@{$spring2{"foo"}}), "1:2:3:4");
     is ($called, 1);
 }
 
+# Test references to return values of operators (TARGs/PADTMPs)
+{
+    my @refs;
+    for("a", "b") {
+        push @refs, \"$_"
+    }
+    is join(" ", map $$_, @refs), "a b", 'refgen+PADTMP';
+}
+
 $subrefref = \\&mysub2;
 is ($$subrefref->("GOOD"), "good");
 sub mysub2 { lc shift }
 
+# Test REGEXP assignment
+
+SKIP: {
+    skip_if_miniperl("no dynamic loading on miniperl, so can't load re", 5);
+    require re;
+    my $x = qr/x/;
+    my $str = "$x"; # regex stringification may change
+
+    my $y = $$x;
+    is ($y, $str, "bare REGEXP stringifies correctly");
+    ok (eval { "x" =~ $y }, "bare REGEXP matches correctly");
+    
+    my $z = \$y;
+    ok (re::is_regexp($z), "new ref to REXEXP passes is_regexp");
+    is ($z, $str, "new ref to REGEXP stringifies correctly");
+    ok (eval { "x" =~ $z }, "new ref to REGEXP matches correctly");
+}
+{
+    my ($x, $str);
+    {
+        my $y = qr/x/;
+        $str = "$y";
+        $x = $$y;
+    }
+    is ($x, $str, "REGEXP keeps a ref to its mother_re");
+    ok (eval { "x" =~ $x }, "REGEXP with mother_re still matches");
+}
+
 # Test the ref operator.
 
-is (ref $subref, 'CODE');
-is (ref $ref, 'ARRAY');
-is (ref $refref, 'HASH');
+sub PVBM () { 'foo' }
+{ my $dummy = index 'foo', PVBM }
+
+my $pviv = 1; "$pviv";
+my $pvnv = 1.0; "$pvnv";
+my $x;
+
+# we don't test
+#   tied lvalue => SCALAR, as we haven't tested tie yet
+#   BIND, 'cos we can't create them yet
+#   REGEXP, 'cos that requires overload or Scalar::Util
+#   LVALUE ref, 'cos I can't work out how to create one :)
+
+for (
+    [ 'undef',          SCALAR  => \undef               ],
+    [ 'constant IV',    SCALAR  => \1                   ],
+    [ 'constant NV',    SCALAR  => \1.0                 ],
+    [ 'constant PV',    SCALAR  => \'f'                 ],
+    [ 'scalar',         SCALAR  => \$x                  ],
+    [ 'PVIV',           SCALAR  => \$pviv               ],
+    [ 'PVNV',           SCALAR  => \$pvnv               ],
+    [ 'PVMG',           SCALAR  => \$0                  ],
+    [ 'PVBM',           SCALAR  => \PVBM                ],
+    [ 'vstring',        VSTRING => \v1                  ],
+    [ 'ref',            REF     => \\1                  ],
+    [ 'lvalue',         LVALUE  => \substr($x, 0, 0)    ],
+    [ 'named array',    ARRAY   => \@ary                ],
+    [ 'anon array',     ARRAY   => [ 1 ]                ],
+    [ 'named hash',     HASH    => \%whatever           ],
+    [ 'anon hash',      HASH    => { a => 1 }           ],
+    [ 'named sub',      CODE    => \&mysub,             ],
+    [ 'anon sub',       CODE    => sub { 1; }           ],
+    [ 'glob',           GLOB    => \*foo                ],
+    [ 'format',         FORMAT  => *STDERR{FORMAT}      ],
+) {
+    my ($desc, $type, $ref) = @$_;
+    is (ref $ref, $type, "ref() for ref to $desc");
+    like ("$ref", qr/^$type\(0x[0-9a-f]+\)$/, "stringify for ref to $desc");
+}
+
+is (ref *STDOUT{IO}, 'IO::File', 'IO refs are blessed into IO::File');
+like (*STDOUT{IO}, qr/^IO::File=IO\(0x[0-9a-f]+\)$/,
+    'stringify for IO refs');
 
 # Test anonymous hash syntax.
 
@@ -300,6 +377,26 @@ curr_test($test + 2);
     print "# good, didn't recurse\n";
 }
 
+# test that DESTROY is called on all objects during global destruction,
+# even those without hard references [perl #36347]
+
+$TODO = 'bug #36347';
+is(
+  runperl(
+   stderr => 1, prog => 'sub DESTROY { print qq-aaa\n- } bless \$a[0]'
+  ),
+ "aaa\n", 'DESTROY called on array elem'
+);
+is(
+  runperl(
+   stderr => 1,
+   prog => '{ bless \my@x; *a=sub{@x}}sub DESTROY { print qq-aaa\n- }'
+  ),
+ "aaa\n",
+ 'DESTROY called on closure variable'
+);
+$TODO = undef;
+
 # test if refgen behaves with autoviv magic
 {
     my @a;
@@ -365,7 +462,7 @@ is ($?, 0, 'coredump on typeglob = (SvRV && !SvROK)');
 # "Attempt to free unreferenced scalar" warnings
 
 is (runperl(
-    prog => 'use Symbol;my $x=bless \gensym,"t"; print;*$$x=$x',
+    prog => 'use Symbol;my $x=bless \gensym,q{t}; print;*$$x=$x',
     stderr => 1
 ), '', 'freeing self-referential typeglob');
 
@@ -373,10 +470,282 @@ is (runperl(
 # REGEX pad had already been freed (ithreads build only). The
 # object is required to trigger the early freeing of GV refs to to STDOUT
 
-like (runperl(
-    prog => '$x=bless[]; sub IO::Handle::DESTROY{$_="bad";s/bad/ok/;print}',
-    stderr => 1
-      ), qr/^(ok)+$/, 'STDOUT destructor');
+TODO: {
+    local $TODO = "works but output through pipe is mangled" if $^O eq 'VMS';
+    like (runperl(
+        prog => '$x=bless[]; sub IO::Handle::DESTROY{$_=q{bad};s/bad/ok/;print}',
+        stderr => 1
+          ), qr/^(ok)+$/, 'STDOUT destructor');
+}
+
+TODO: {
+    no strict 'refs';
+    $name8 = chr 163;
+    $name_utf8 = $name8 . chr 256;
+    chop $name_utf8;
+
+    is ($$name8, undef, 'Nothing before we start');
+    is ($$name_utf8, undef, 'Nothing before we start');
+    $$name8 = "Pound";
+    is ($$name8, "Pound", 'Accessing via 8 bit symref works');
+    local $TODO = "UTF8 mangled in symrefs";
+    is ($$name_utf8, "Pound", 'Accessing via UTF8 symref works');
+}
+
+TODO: {
+    no strict 'refs';
+    $name_utf8 = $name = chr 9787;
+    utf8::encode $name_utf8;
+
+    is (length $name, 1, "Name is 1 char");
+    is (length $name_utf8, 3, "UTF8 representation is 3 chars");
+
+    is ($$name, undef, 'Nothing before we start');
+    is ($$name_utf8, undef, 'Nothing before we start');
+    $$name = "Face";
+    is ($$name, "Face", 'Accessing via Unicode symref works');
+    local $TODO = "UTF8 mangled in symrefs";
+    is ($$name_utf8, undef,
+	'Accessing via the UTF8 byte sequence gives nothing');
+}
+
+{
+    no strict 'refs';
+    $name1 = "\0Chalk";
+    $name2 = "\0Cheese";
+
+    isnt ($name1, $name2, "They differ");
+
+    is ($$name1, undef, 'Nothing before we start (scalars)');
+    is ($$name2, undef, 'Nothing before we start');
+    $$name1 = "Yummy";
+    is ($$name1, "Yummy", 'Accessing via the correct name works');
+    is ($$name2, undef,
+	'Accessing via a different NUL-containing name gives nothing');
+    # defined uses a different code path
+    ok (defined $$name1, 'defined via the correct name works');
+    ok (!defined $$name2,
+	'defined via a different NUL-containing name gives nothing');
+
+    is ($name1->[0], undef, 'Nothing before we start (arrays)');
+    is ($name2->[0], undef, 'Nothing before we start');
+    $name1->[0] = "Yummy";
+    is ($name1->[0], "Yummy", 'Accessing via the correct name works');
+    is ($name2->[0], undef,
+	'Accessing via a different NUL-containing name gives nothing');
+    ok (defined $name1->[0], 'defined via the correct name works');
+    ok (!defined$name2->[0],
+	'defined via a different NUL-containing name gives nothing');
+
+    my (undef, $one) = @{$name1}[2,3];
+    my (undef, $two) = @{$name2}[2,3];
+    is ($one, undef, 'Nothing before we start (array slices)');
+    is ($two, undef, 'Nothing before we start');
+    @{$name1}[2,3] = ("Very", "Yummy");
+    (undef, $one) = @{$name1}[2,3];
+    (undef, $two) = @{$name2}[2,3];
+    is ($one, "Yummy", 'Accessing via the correct name works');
+    is ($two, undef,
+	'Accessing via a different NUL-containing name gives nothing');
+    ok (defined $one, 'defined via the correct name works');
+    ok (!defined $two,
+	'defined via a different NUL-containing name gives nothing');
+
+    is ($name1->{PWOF}, undef, 'Nothing before we start (hashes)');
+    is ($name2->{PWOF}, undef, 'Nothing before we start');
+    $name1->{PWOF} = "Yummy";
+    is ($name1->{PWOF}, "Yummy", 'Accessing via the correct name works');
+    is ($name2->{PWOF}, undef,
+	'Accessing via a different NUL-containing name gives nothing');
+    ok (defined $name1->{PWOF}, 'defined via the correct name works');
+    ok (!defined $name2->{PWOF},
+	'defined via a different NUL-containing name gives nothing');
+
+    my (undef, $one) = @{$name1}{'SNIF', 'BEEYOOP'};
+    my (undef, $two) = @{$name2}{'SNIF', 'BEEYOOP'};
+    is ($one, undef, 'Nothing before we start (hash slices)');
+    is ($two, undef, 'Nothing before we start');
+    @{$name1}{'SNIF', 'BEEYOOP'} = ("Very", "Yummy");
+    (undef, $one) = @{$name1}{'SNIF', 'BEEYOOP'};
+    (undef, $two) = @{$name2}{'SNIF', 'BEEYOOP'};
+    is ($one, "Yummy", 'Accessing via the correct name works');
+    is ($two, undef,
+	'Accessing via a different NUL-containing name gives nothing');
+    ok (defined $one, 'defined via the correct name works');
+    ok (!defined $two,
+	'defined via a different NUL-containing name gives nothing');
+
+    $name1 = "Left"; $name2 = "Left\0Right";
+    my $glob2 = *{$name2};
+
+    is ($glob1, undef, "We get different typeglobs. In fact, undef");
+
+    *{$name1} = sub {"One"};
+    *{$name2} = sub {"Two"};
+
+    is (&{$name1}, "One");
+    is (&{$name2}, "Two");
+}
+
+# test derefs after list slice
+
+is ( ({foo => "bar"})[0]{foo}, "bar", 'hash deref from list slice w/o ->' );
+is ( ({foo => "bar"})[0]->{foo}, "bar", 'hash deref from list slice w/ ->' );
+is ( ([qw/foo bar/])[0][1], "bar", 'array deref from list slice w/o ->' );
+is ( ([qw/foo bar/])[0]->[1], "bar", 'array deref from list slice w/ ->' );
+is ( (sub {"bar"})[0](), "bar", 'code deref from list slice w/o ->' );
+is ( (sub {"bar"})[0]->(), "bar", 'code deref from list slice w/ ->' );
+
+# deref on empty list shouldn't autovivify
+{
+    local $@;
+    eval { ()[0]{foo} };
+    like ( "$@", "Can't use an undefined value as a HASH reference",
+           "deref of undef from list slice fails" );
+}
+
+# test dereferencing errors
+{
+    format STDERR =
+.
+    my $ref;
+    foreach $ref (*STDOUT{IO}, *STDERR{FORMAT}) {
+	eval q/ $$ref /;
+	like($@, qr/Not a SCALAR reference/, "Scalar dereference");
+	eval q/ @$ref /;
+	like($@, qr/Not an ARRAY reference/, "Array dereference");
+	eval q/ %$ref /;
+	like($@, qr/Not a HASH reference/, "Hash dereference");
+	eval q/ &$ref /;
+	like($@, qr/Not a CODE reference/, "Code dereference");
+    }
+
+    $ref = *STDERR{FORMAT};
+    eval q/ *$ref /;
+    like($@, qr/Not a GLOB reference/, "Glob dereference");
+
+    $ref = *STDOUT{IO};
+    eval q/ *$ref /;
+    is($@, '', "Glob dereference of PVIO is acceptable");
+
+    is($ref, *{$ref}{IO}, "IO slot of the temporary glob is set correctly");
+}
+
+# these will segfault if they fail
+
+my $pvbm = PVBM;
+my $rpvbm = \$pvbm;
+
+ok (!eval { *$rpvbm }, 'PVBM ref is not a GLOB ref');
+ok (!eval { *$pvbm }, 'PVBM is not a GLOB ref');
+ok (!eval { $$pvbm }, 'PVBM is not a SCALAR ref');
+ok (!eval { @$pvbm }, 'PVBM is not an ARRAY ref');
+ok (!eval { %$pvbm }, 'PVBM is not a HASH ref');
+ok (!eval { $pvbm->() }, 'PVBM is not a CODE ref');
+ok (!eval { $rpvbm->foo }, 'PVBM is not an object');
+
+# bug 24254
+is( runperl(stderr => 1, prog => 'map eval qq(exit),1 for 1'), "");
+is( runperl(stderr => 1, prog => 'eval { for (1) { map { die } 2 } };'), "");
+is( runperl(stderr => 1, prog => 'for (125) { map { exit } (213)}'), "");
+my $hushed = $^O eq 'VMS' ? 'use vmsish qw(hushed);' : '';
+is( runperl(stderr => 1, prog => $hushed . 'map die,4 for 3'), "Died at -e line 1.\n");
+is( runperl(stderr => 1, prog => $hushed . 'grep die,4 for 3'), "Died at -e line 1.\n");
+is( runperl(stderr => 1, prog => $hushed . 'for $a (3) {@b=sort {die} 4,5}'), "Died at -e line 1.\n");
+
+# bug 57564
+is( runperl(stderr => 1, prog => 'my $i;for $i (1) { for $i (2) { } }'), "");
+
+# The mechanism for freeing objects in globs used to leave dangling
+# pointers to freed SVs. To test this, we construct this nested structure:
+#    GV => blessed(AV) => RV => GV => blessed(SV)
+# all with a refcnt of 1, and hope that the second GV gets processed first
+# by do_clean_named_objs.  Then when the first GV is processed, it mustn't
+# find anything nasty left by the previous GV processing.
+# The eval is stop things in the main body of the code holding a reference
+# to a GV, and the print at the end seems to bee necessary to ensure
+# the correct freeing order of *x and *y (no, I don't know why - DAPM).
+
+is (runperl(
+	prog => 'eval q[bless \@y; bless \$x; $y[0] = \*x; $z = \*y; ]; '
+		. 'delete $::{x}; delete $::{y}; print qq{ok\n};',
+	stderr => 1),
+    "ok\n", 'freeing freed glob in global destruction');
+
+
+# Test undefined hash references as arguments to %{} in boolean context
+# [perl #81750]
+{
+ no strict 'refs';
+ eval { my $foo; %$foo;             }; ok !$@, '%$undef';
+ eval { my $foo; scalar %$foo;      }; ok !$@, 'scalar %$undef';
+ eval { my $foo; !%$foo;            }; ok !$@, '!%$undef';
+ eval { my $foo; if ( %$foo) {}     }; ok !$@, 'if ( %$undef) {}';
+ eval { my $foo; if (!%$foo) {}     }; ok !$@, 'if (!%$undef) {}';
+ eval { my $foo; unless ( %$foo) {} }; ok !$@, 'unless ( %$undef) {}';
+ eval { my $foo; unless (!%$foo) {} }; ok !$@, 'unless (!%$undef) {}';
+ eval { my $foo; 1 if %$foo;        }; ok !$@, '1 if %$undef';
+ eval { my $foo; 1 if !%$foo;       }; ok !$@, '1 if !%$undef';
+ eval { my $foo; 1 unless %$foo;    }; ok !$@, '1 unless %$undef;';
+ eval { my $foo; 1 unless ! %$foo;  }; ok !$@, '1 unless ! %$undef';
+ eval { my $foo;  %$foo ? 1 : 0;    }; ok !$@, ' %$undef ? 1 : 0';
+ eval { my $foo; !%$foo ? 1 : 0;    }; ok !$@, '!%$undef ? 1 : 0';
+}
+
+# RT #88330
+# Make sure that a leaked thinggy with multiple weak references to
+# it doesn't trigger a panic with multiple rounds of global cleanup
+# (Perl_sv_clean_all).
+
+SKIP: {
+    skip_if_miniperl('no Scalar::Util under miniperl', 4);
+
+    local $ENV{PERL_DESTRUCT_LEVEL} = 2;
+
+    # we do all permutations of array/hash, 1ref/2ref, to account
+    # for the different way backref magic is stored
+
+    fresh_perl_is(<<'EOF', 'ok', { stderr => 1 }, 'array with 1 weak ref');
+use Scalar::Util qw(weaken);
+my $r = [];
+Internals::SvREFCNT(@$r, 9);
+my $r1 = $r;
+weaken($r1);
+print "ok";
+EOF
+
+    fresh_perl_is(<<'EOF', 'ok', { stderr => 1 }, 'array with 2 weak refs');
+use Scalar::Util qw(weaken);
+my $r = [];
+Internals::SvREFCNT(@$r, 9);
+my $r1 = $r;
+weaken($r1);
+my $r2 = $r;
+weaken($r2);
+print "ok";
+EOF
+
+    fresh_perl_is(<<'EOF', 'ok', { stderr => 1 }, 'hash with 1 weak ref');
+use Scalar::Util qw(weaken);
+my $r = {};
+Internals::SvREFCNT(%$r, 9);
+my $r1 = $r;
+weaken($r1);
+print "ok";
+EOF
+
+    fresh_perl_is(<<'EOF', 'ok', { stderr => 1 }, 'hash with 2 weak refs');
+use Scalar::Util qw(weaken);
+my $r = {};
+Internals::SvREFCNT(%$r, 9);
+my $r1 = $r;
+weaken($r1);
+my $r2 = $r;
+weaken($r2);
+print "ok";
+EOF
+
+}
 
 # Bit of a hack to make test.pl happy. There are 3 more tests after it leaves.
 $test = curr_test();

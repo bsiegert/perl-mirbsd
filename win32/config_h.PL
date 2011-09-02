@@ -2,13 +2,14 @@
 BEGIN { warn "Running ".__FILE__."\n" };
 BEGIN 
  {
-  require "../lib/Config.pm";
-  die "../Config.pm:$@" if $@;
+  require "Config.pm";
+  die "Config.pm:$@" if $@;
   Config::->import;
  }
 use File::Compare qw(compare);
 use File::Copy qw(copy);
-my $name = $0;
+use File::Basename qw(fileparse);
+my ($name, $dir) = fileparse($0);
 $name =~ s#^(.*)\.PL$#../$1.SH#;
 my %opt;
 while (@ARGV && $ARGV[0] =~ /^([\w_]+)=(.*)$/)
@@ -18,6 +19,7 @@ while (@ARGV && $ARGV[0] =~ /^([\w_]+)=(.*)$/)
  }
 
 $opt{CONFIG_H} ||= 'config.h';
+$opt{CORE_DIR} ||= '../lib/CORE';
 
 warn "Writing $opt{CONFIG_H}\n";
 
@@ -30,9 +32,9 @@ $patchlevel = qq["$patchlevel"];
 open(SH,"<$name") || die "Cannot open $name:$!";
 while (<SH>)
  {
-  last if /^sed/;
+  last if /^\s*sed/;
  }
-($term,$file,$pat) = /^sed\s+<<(\S+)\s+>(\S+)\s+(.*)$/;
+($term,$file,$pat) = /^\s*sed\s+<<(\S+)\s+>(\S+)\s+(.*)$/;
 
 $file =~ s/^\$(\w+)$/$opt{$1}/g;
 
@@ -61,14 +63,15 @@ while (<SH>)
   munge();
   s/\\\$/\$/g;
   s#/[ *\*]*\*/#/**/#;
+  s#(.)/\*\*/#$1/ **/# if(/^\/\*/); #avoid "/*" inside comments
   if (/^\s*#define\s+(PRIVLIB|SITELIB|VENDORLIB)_EXP/)
    {
-     $_ = "#define ". $1 . "_EXP (win32_get_". lc($1) . "($patchlevel))\t/**/\n";
+     $_ = "#define ". $1 . "_EXP (win32_get_". lc($1) . "(PERL_VERSION_STRING, NULL))\t/**/\n";
    }
   # incpush() handles archlibs, so disable them
   elsif (/^\s*#define\s+(ARCHLIB|SITEARCH|VENDORARCH)_EXP/)
    {
-     $_ = "/*#define ". $1 . "_EXP \"\"\t/**/\n";
+     $_ = "/*#define ". $1 . "_EXP \"\"\t/ **/\n";
    }
   print H;
  }
@@ -76,9 +79,9 @@ close(H);
 close(SH);
 
 
-chmod(0666,"../lib/CORE/config.h");
-copy("$file.new","../lib/CORE/config.h") || die "Cannot copy:$!";
-chmod(0444,"../lib/CORE/config.h");
+chmod(0666,"$opt{CORE_DIR}/$opt{CONFIG_H}");
+copy("$file.new","$opt{CORE_DIR}/$opt{CONFIG_H}") || die "Cannot copy:$!";
+chmod(0444,"$opt{CORE_DIR}/$opt{CONFIG_H}");
 
 if (compare("$file.new",$file))
  {

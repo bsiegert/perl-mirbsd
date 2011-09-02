@@ -1,8 +1,8 @@
-/01open.t/1.1.1.2/Fri Jun 30 22:42:06 2006//
-/02maxopen.t/1.1.1.1/Sat Feb  5 17:23:24 2005//
-/03append.t/1.1.1.1/Sat Feb  5 17:23:24 2005//
-/04twoarg.t/1.1.1.2/Fri Jun 30 22:42:07 2006//
-/05override.t/1.1.1.1/Sat Feb  5 17:23:24 2005//
-/06export.t/1.1.1.1/Fri Jun 30 22:42:07 2006//
-/07noimport.t/1.1.1.1/Fri Jun 30 22:42:07 2006//
+/01open.t/-1.1.1.2///
+/02maxopen.t/-1.1.1.1///
+/03append.t/-1.1.1.1///
+/04twoarg.t/-1.1.1.2///
+/05override.t/-1.1.1.1///
+/06export.t/-1.1.1.1///
+/07noimport.t/-1.1.1.1///
 D

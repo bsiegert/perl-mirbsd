@@ -1,26 +1,26 @@
-/Makefile.PL/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/Notes/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/Queue.pmx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/README/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/README.threads/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/Semaphore.pmx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/Thread.xs/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/create.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/die.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/die2.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/io.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/join.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/join2.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/list.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/lock.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/queue.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/specific.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/sync.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/sync2.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/thr5005.t/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/typemap/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/unsync.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/unsync2.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/unsync3.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
-/unsync4.tx/1.1.1.1/Sat Feb  5 17:23:04 2005//
+/Makefile.PL/-1.1.1.1///
+/Notes/-1.1.1.1///
+/Queue.pmx/-1.1.1.1///
+/README/-1.1.1.1///
+/README.threads/-1.1.1.1///
+/Semaphore.pmx/-1.1.1.1///
+/Thread.xs/-1.1.1.1///
+/create.tx/-1.1.1.1///
+/die.tx/-1.1.1.1///
+/die2.tx/-1.1.1.1///
+/io.tx/-1.1.1.1///
+/join.tx/-1.1.1.1///
+/join2.tx/-1.1.1.1///
+/list.tx/-1.1.1.1///
+/lock.tx/-1.1.1.1///
+/queue.tx/-1.1.1.1///
+/specific.tx/-1.1.1.1///
+/sync.tx/-1.1.1.1///
+/sync2.tx/-1.1.1.1///
+/thr5005.t/-1.1.1.1///
+/typemap/-1.1.1.1///
+/unsync.tx/-1.1.1.1///
+/unsync2.tx/-1.1.1.1///
+/unsync3.tx/-1.1.1.1///
+/unsync4.tx/-1.1.1.1///
 D/Thread////

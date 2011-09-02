@@ -3,12 +3,12 @@ use 5.006;
 use strict;
 use warnings;
 use warnings::register;
-our $VERSION = '1.10';
+our $VERSION = '1.19';
 require Exporter;
 require Cwd;
 
 #
-# Modified to ensure sub-directory traversal order is not inverded by stack
+# Modified to ensure sub-directory traversal order is not inverted by stack
 # push and pops.  That is remains in the same order as in the directory file,
 # or user pre-processing (EG:sorted).
 #
@@ -56,7 +56,7 @@ C<&wanted> function on each file or subdirectory in the directory.
   finddepth(\&wanted,  @directories);
   finddepth(\%options, @directories);
 
-C<finddepth()> works just like C<find()> except that is invokes the
+C<finddepth()> works just like C<find()> except that it invokes the
 C<&wanted> function for a directory I<after> invoking it for the
 directory's contents.  It does a postorder traversal instead of a
 preorder traversal, working from the bottom of the directory tree up
@@ -78,13 +78,14 @@ Here are the possible keys for the hash:
 =item C<wanted>
 
 The value should be a code reference.  This code reference is
-described in L<The wanted function> below.
+described in L<The wanted function> below. The C<&wanted> subroutine is
+mandatory.
 
 =item C<bydepth>
 
 Reports the name of a directory only AFTER all its entries
 have been reported.  Entry point C<finddepth()> is a shortcut for
-specifying C<<{ bydepth => 1 }>> in the first argument of C<find()>.
+specifying C<< { bydepth => 1 } >> in the first argument of C<find()>.
 
 =item C<preprocess>
 
@@ -215,7 +216,8 @@ through a collection of variables.
 
 =back
 
-Don't modify these variables.
+The above variables have all been localized and may be changed without
+affecting data outside of the wanted function.
 
 For example, when examining the file F</some/path/foo.ext> you will have:
 
@@ -240,7 +242,7 @@ table below summarizes all variants:
               /etc/x             /etc              /etc/x
 
 
-When <follow> or <follow_fast> are in effect, there is
+When C<follow> or C<follow_fast> are in effect, there is
 also a C<$File::Find::fullname>.  The function may set
 C<$File::Find::prune> to prune the tree unless C<bydepth> was
 specified.  Unless C<follow> or C<follow_fast> is specified, for
@@ -322,81 +324,6 @@ in an unknown directory.
 
 =back
 
-=head1 NOTES
-
-=over 4
-
-=item *
-
-Mac OS (Classic) users should note a few differences:
-
-=over 4
-
-=item *
-
-The path separator is ':', not '/', and the current directory is denoted
-as ':', not '.'. You should be careful about specifying relative pathnames.
-While a full path always begins with a volume name, a relative pathname
-should always begin with a ':'.  If specifying a volume name only, a
-trailing ':' is required.
-
-=item *
-
-C<$File::Find::dir> is guaranteed to end with a ':'. If C<$_>
-contains the name of a directory, that name may or may not end with a
-':'. Likewise, C<$File::Find::name>, which contains the complete
-pathname to that directory, and C<$File::Find::fullname>, which holds
-the absolute pathname of that directory with all symbolic links resolved,
-may or may not end with a ':'.
-
-=item *
-
-The default C<untaint_pattern> (see above) on Mac OS is set to
-C<qr|^(.+)$|>. Note that the parentheses are vital.
-
-=item *
-
-The invisible system file "Icon\015" is ignored. While this file may
-appear in every directory, there are some more invisible system files
-on every volume, which are all located at the volume root level (i.e.
-"MacintoshHD:"). These system files are B<not> excluded automatically.
-Your filter may use the following code to recognize invisible files or
-directories (requires Mac::Files):
-
- use Mac::Files;
-
- # invisible() --  returns 1 if file/directory is invisible,
- # 0 if it's visible or undef if an error occurred
-
- sub invisible($) {
-   my $file = shift;
-   my ($fileCat, $fileInfo);
-   my $invisible_flag =  1 << 14;
-
-   if ( $fileCat = FSpGetCatInfo($file) ) {
-     if ($fileInfo = $fileCat->ioFlFndrInfo() ) {
-       return (($fileInfo->fdFlags & $invisible_flag) && 1);
-     }
-   }
-   return undef;
- }
-
-Generally, invisible files are system files, unless an odd application
-decides to use invisible files for its own purposes. To distinguish
-such files from system files, you have to look at the B<type> and B<creator>
-file attributes. The MacPerl built-in functions C<GetFileInfo(FILE)> and
-C<SetFileInfo(CREATOR, TYPE, FILES)> offer access to these attributes
-(see MacPerl.pm for details).
-
-Files that appear on the desktop actually reside in an (hidden) directory
-named "Desktop Folder" on the particular disk volume. Note that, although
-all desktop files appear to be on the same "virtual" desktop, each disk
-volume actually maintains its own "Desktop Folder" directory.
-
-=back
-
-=back
-
 =head1 BUGS AND CAVEATS
 
 Despite the name of the C<finddepth()> function, both C<find()> and
@@ -409,6 +336,10 @@ File::Find used to produce incorrect results if called recursively.
 During the development of perl 5.8 this bug was fixed.
 The first fixed version of File::Find was 1.01.
 
+=head1 SEE ALSO
+
+find, find2perl.
+
 =cut
 
 our @ISA = qw(Exporter);
@@ -417,7 +348,7 @@ our @EXPORT = qw(find finddepth);
 
 use strict;
 my $Is_VMS;
-my $Is_MacOS;
+my $Is_Win32;
 
 require File::Basename;
 require File::Spec;
@@ -442,89 +373,30 @@ sub contract_name {
     my $abs_name= $cdir . $fn;
 
     if (substr($fn,0,3) eq '../') {
-       1 while $abs_name =~ s!/[^/]*/\.\./!/!;
+       1 while $abs_name =~ s!/[^/]*/\.\./+!/!;
     }
 
     return $abs_name;
-}
-
-# return the absolute name of a directory or file
-sub contract_name_Mac {
-    my ($cdir,$fn) = @_;
-    my $abs_name;
-
-    if ($fn =~ /^(:+)(.*)$/) { # valid pathname starting with a ':'
-
-	my $colon_count = length ($1);
-	if ($colon_count == 1) {
-	    $abs_name = $cdir . $2;
-	    return $abs_name;
-	}
-	else {
-	    # need to move up the tree, but
-	    # only if it's not a volume name
-	    for (my $i=1; $i<$colon_count; $i++) {
-		unless ($cdir =~ /^[^:]+:$/) { # volume name
-		    $cdir =~ s/[^:]+:$//;
-		}
-		else {
-		    return undef;
-		}
-	    }
-	    $abs_name = $cdir . $2;
-	    return $abs_name;
-	}
-
-    }
-    else {
-
-	# $fn may be a valid path to a directory or file or (dangling)
-	# symlink, without a leading ':'
-	if ( (-e $fn) || (-l $fn) ) {
-	    if ($fn =~ /^[^:]+:/) { # a volume name like DataHD:*
-		return $fn; # $fn is already an absolute path
-	    }
-	    else {
-		$abs_name = $cdir . $fn;
-		return $abs_name;
-	    }
-	}
-	else { # argh!, $fn is not a valid directory/file
-	     return undef;
-	}
-    }
 }
 
 sub PathCombine($$) {
     my ($Base,$Name) = @_;
     my $AbsName;
 
-    if ($Is_MacOS) {
-	# $Name is the resolved symlink (always a full path on MacOS),
-	# i.e. there's no need to call contract_name_Mac()
-	$AbsName = $Name;
-
-	# (simple) check for recursion
-	if ( ( $Base =~ /^$AbsName/) && (-d $AbsName) ) { # recursion
-	    return undef;
-	}
+    if (substr($Name,0,1) eq '/') {
+	$AbsName= $Name;
     }
     else {
-	if (substr($Name,0,1) eq '/') {
-	    $AbsName= $Name;
-	}
-	else {
-	    $AbsName= contract_name($Base,$Name);
-	}
+	$AbsName= contract_name($Base,$Name);
+    }
 
-	# (simple) check for recursion
-	my $newlen= length($AbsName);
-	if ($newlen <= length($Base)) {
-	    if (($newlen == length($Base) || substr($Base,$newlen,1) eq '/')
-		&& $AbsName eq substr($Base,0,$newlen))
-	    {
-		return undef;
-	    }
+    # (simple) check for recursion
+    my $newlen= length($AbsName);
+    if ($newlen <= length($Base)) {
+	if (($newlen == length($Base) || substr($Base,$newlen,1) eq '/')
+	    && $AbsName eq substr($Base,0,$newlen))
+	{
+	    return undef;
 	}
     }
     return $AbsName;
@@ -602,6 +474,20 @@ sub _find_opt {
     local *_ = \my $a;
 
     my $cwd            = $wanted->{bydepth} ? Cwd::fastcwd() : Cwd::getcwd();
+    if ($Is_VMS) {
+	# VMS returns this by default in VMS format which just doesn't
+	# work for the rest of this module.
+	$cwd = VMS::Filespec::unixpath($cwd);
+
+	# Apparently this is not expected to have a trailing space.
+	# To attempt to make VMS/UNIX conversions mostly reversable,
+	# a trailing slash is needed.  The run-time functions ignore the
+	# resulting double slash, but it causes the perl tests to fail.
+        $cwd =~ s#/\z##;
+
+	# This comes up in upper case now, but should be lower.
+	# In the future this could be exact case, no need to change.
+    }
     my $cwd_untainted  = $cwd;
     my $check_t_cwd    = 1;
     $wanted_callback   = $wanted->{wanted};
@@ -609,8 +495,8 @@ sub _find_opt {
     $pre_process       = $wanted->{preprocess};
     $post_process      = $wanted->{postprocess};
     $no_chdir          = $wanted->{no_chdir};
-    $full_check        = $^O eq 'MSWin32' ? 0 : $wanted->{follow};
-    $follow            = $^O eq 'MSWin32' ? 0 :
+    $full_check        = $Is_Win32 ? 0 : $wanted->{follow};
+    $follow            = $Is_Win32 ? 0 :
                              $full_check || $wanted->{follow_fast};
     $follow_skip       = $wanted->{follow_skip};
     $untaint           = $wanted->{untaint};
@@ -632,11 +518,9 @@ sub _find_opt {
 
 	($topdev,$topino,$topmode,$topnlink) = $follow ? stat $top_item : lstat $top_item;
 
-	if ($Is_MacOS) {
-	    $top_item = ":$top_item"
-		if ( (-d _) && ( $top_item !~ /:/ ) );
-	} elsif ($^O eq 'MSWin32') {
-	    $top_item =~ s|/\z|| unless $top_item =~ m|\w:/$|;
+	if ($Is_Win32) {
+	    $top_item =~ s|[/\\]\z||
+	      unless $top_item =~ m{^(?:\w:)?[/\\]$};
 	}
 	else {
 	    $top_item =~ s|/\z|| unless $top_item eq '/';
@@ -646,31 +530,15 @@ sub _find_opt {
 
 	if ($follow) {
 
-	    if ($Is_MacOS) {
-		$cwd = "$cwd:" unless ($cwd =~ /:$/); # for safety
-
-		if ($top_item eq $File::Find::current_dir) {
-		    $abs_dir = $cwd;
-		}
-		else {
-		    $abs_dir = contract_name_Mac($cwd, $top_item);
-		    unless (defined $abs_dir) {
-			warnings::warnif "Can't determine absolute path for $top_item (No such file or directory)\n";
-			next Proc_Top_Item;
-		    }
-		}
-
+	    if (substr($top_item,0,1) eq '/') {
+		$abs_dir = $top_item;
 	    }
-	    else {
-		if (substr($top_item,0,1) eq '/') {
-		    $abs_dir = $top_item;
-		}
-		elsif ($top_item eq $File::Find::current_dir) {
-		    $abs_dir = $cwd;
-		}
-		else {  # care about any  ../
-		    $abs_dir = contract_name("$cwd/",$top_item);
-		}
+	    elsif ($top_item eq $File::Find::current_dir) {
+		$abs_dir = $cwd;
+	    }
+	    else {  # care about any  ../
+		$top_item =~ s/\.dir\z//i if $Is_VMS;
+		$abs_dir = contract_name("$cwd/",$top_item);
 	    }
 	    $abs_dir= Follow_SymLink($abs_dir);
 	    unless (defined $abs_dir) {
@@ -685,6 +553,7 @@ sub _find_opt {
 	    }
 
 	    if (-d _) {
+		$top_item =~ s/\.dir\z//i if $Is_VMS;
 		_find_dir_symlnk($wanted, $abs_dir, $top_item);
 		$Is_Dir= 1;
 	    }
@@ -707,12 +576,7 @@ sub _find_opt {
 
 	unless ($Is_Dir) {
 	    unless (($_,$dir) = File::Basename::fileparse($abs_dir)) {
-		if ($Is_MacOS) {
-		    ($dir,$_) = (':', $top_item); # $File::Find::dir, $_
-		}
-		else {
-		    ($dir,$_) = ('./', $top_item);
-		}
+		($dir,$_) = ('./', $top_item);
 	    }
 
 	    $abs_dir = $dir;
@@ -775,10 +639,19 @@ sub _find_dir($$$) {
     my $tainted = 0;
     my $no_nlink;
 
-    if ($Is_MacOS) {
-	$dir_pref= ($p_dir =~ /:$/) ? $p_dir : "$p_dir:"; # preface
-    } elsif ($^O eq 'MSWin32') {
-	$dir_pref = ($p_dir =~ m|\w:/$| ? $p_dir : "$p_dir/" );
+    if ($Is_Win32) {
+	$dir_pref
+	  = ($p_dir =~ m{^(?:\w:[/\\]?|[/\\])$} ? $p_dir : "$p_dir/" );
+    } elsif ($Is_VMS) {
+
+	#	VMS is returning trailing .dir on directories
+	#	and trailing . on files and symbolic links
+	#	in UNIX syntax.
+	#
+
+	$p_dir =~ s/\.(dir)?$//i unless $p_dir eq '.';
+
+	$dir_pref = ($p_dir =~ m/[\]>]+$/ ? $p_dir : "$p_dir/" );
     }
     else {
 	$dir_pref= ( $p_dir eq '/' ? '/' : "$p_dir/" );
@@ -808,10 +681,6 @@ sub _find_dir($$$) {
     # push the starting directory
     push @Stack,[$CdLvl,$p_dir,$dir_rel,-1]  if  $bydepth;
 
-    if ($Is_MacOS) {
-	$p_dir = $dir_pref;  # ensure trailing ':'
-    }
-
     while (defined $SE) {
 	unless ($bydepth) {
 	    $dir= $p_dir; # $File::Find::dir
@@ -830,32 +699,18 @@ sub _find_dir($$$) {
 		( $udir ) = $dir_rel =~ m|$untaint_pat|;
 		unless (defined $udir) {
 		    if ($untaint_skip == 0) {
-			if ($Is_MacOS) {
-			    die "directory ($p_dir) $dir_rel is still tainted";
-			}
-			else {
-			    die "directory (" . ($p_dir ne '/' ? $p_dir : '') . "/) $dir_rel is still tainted";
-			}
+			die "directory (" . ($p_dir ne '/' ? $p_dir : '') . "/) $dir_rel is still tainted";
 		    } else { # $untaint_skip == 1
 			next;
 		    }
 		}
 	    }
 	    unless (chdir ($Is_VMS && $udir !~ /[\/\[<]+/ ? "./$udir" : $udir)) {
-		if ($Is_MacOS) {
-		    warnings::warnif "Can't cd to ($p_dir) $udir: $!\n";
-		}
-		else {
-		    warnings::warnif "Can't cd to (" .
-			($p_dir ne '/' ? $p_dir : '') . "/) $udir: $!\n";
-		}
+		warnings::warnif "Can't cd to (" .
+		    ($p_dir ne '/' ? $p_dir : '') . "/) $udir: $!\n";
 		next;
 	    }
 	    $CdLvl++;
-	}
-
-	if ($Is_MacOS) {
-	    $dir_name = "$dir_name:" unless ($dir_name =~ /:$/);
 	}
 
 	$dir= $dir_name; # $File::Find::dir
@@ -870,7 +725,7 @@ sub _find_dir($$$) {
 	@filenames = $pre_process->(@filenames) if $pre_process;
 	push @Stack,[$CdLvl,$dir_name,"",-2]   if $post_process;
 
-	# default: use whatever was specifid
+	# default: use whatever was specified
         # (if $nlink >= 2, and $avoid_nlink == 0, this will switch back)
         $no_nlink = $avoid_nlink;
         # if dir has wrong nlink count, force switch to slower stat method
@@ -879,6 +734,14 @@ sub _find_dir($$$) {
 	if ($nlink == 2 && !$no_nlink) {
 	    # This dir has no subdirectories.
 	    for my $FN (@filenames) {
+		if ($Is_VMS) {
+		# Big hammer here - Compensate for VMS trailing . and .dir
+		# No win situation until this is changed, but this
+		# will handle the majority of the cases with breaking the fewest
+
+		    $FN =~ s/\.dir\z//i;
+		    $FN =~ s#\.$## if ($FN ne '.');
+		}
 		next if $FN =~ $File::Find::skip_pattern;
 		
 		$name = $dir_pref . $FN; # $File::Find::name
@@ -931,26 +794,32 @@ sub _find_dir($$$) {
 	    ($Level, $p_dir, $dir_rel, $nlink) = @$SE;
 	    if ($CdLvl > $Level && !$no_chdir) {
 		my $tmp;
-		if ($Is_MacOS) {
-		    $tmp = (':' x ($CdLvl-$Level)) . ':';
+		if ($Is_VMS) {
+		    $tmp = '[' . ('-' x ($CdLvl-$Level)) . ']';
 		}
 		else {
 		    $tmp = join('/',('..') x ($CdLvl-$Level));
 		}
-		die "Can't cd to $dir_name" . $tmp
+		die "Can't cd to $tmp from $dir_name"
 		    unless chdir ($tmp);
 		$CdLvl = $Level;
 	    }
 
-	    if ($Is_MacOS) {
-		# $pdir always has a trailing ':', except for the starting dir,
-		# where $dir_rel eq ':'
-		$dir_name = "$p_dir$dir_rel";
-		$dir_pref = "$dir_name:";
-	    }
-	    elsif ($^O eq 'MSWin32') {
-		$dir_name = ($p_dir =~ m|\w:/$| ? "$p_dir$dir_rel" : "$p_dir/$dir_rel");
+	    if ($Is_Win32) {
+		$dir_name = ($p_dir =~ m{^(?:\w:[/\\]?|[/\\])$}
+		    ? "$p_dir$dir_rel" : "$p_dir/$dir_rel");
 		$dir_pref = "$dir_name/";
+	    }
+	    elsif ($^O eq 'VMS') {
+                if ($p_dir =~ m/[\]>]+$/) {
+                    $dir_name = $p_dir;
+                    $dir_name =~ s/([\]>]+)$/.$dir_rel$1/;
+                    $dir_pref = $dir_name;
+                }
+                else {
+                    $dir_name = "$p_dir/$dir_rel";
+                    $dir_pref = "$dir_name/";
+                }
 	    }
 	    else {
 		$dir_name = ($p_dir eq '/' ? "/$dir_rel" : "$p_dir/$dir_rel");
@@ -964,23 +833,13 @@ sub _find_dir($$$) {
 	    }
 	    elsif ( $nlink < 0 ) {  # must be finddepth, report dirname now
 		$name = $dir_name;
-		if ($Is_MacOS) {
-		    if ($dir_rel eq ':') { # must be the top dir, where we started
-			$name =~ s|:$||; # $File::Find::name
-			$p_dir = "$p_dir:" unless ($p_dir =~ /:$/);
-		    }
-		    $dir = $p_dir; # $File::Find::dir
-		    $_ = ($no_chdir ? $name : $dir_rel); # $_
+		if ( substr($name,-2) eq '/.' ) {
+		    substr($name, length($name) == 2 ? -1 : -2) = '';
 		}
-		else {
-		    if ( substr($name,-2) eq '/.' ) {
-			substr($name, length($name) == 2 ? -1 : -2) = '';
-		    }
-		    $dir = $p_dir;
-		    $_ = ($no_chdir ? $dir_name : $dir_rel );
-		    if ( substr($_,-2) eq '/.' ) {
-			substr($_, length($_) == 2 ? -1 : -2) = '';
-		    }
+		$dir = $p_dir;
+		$_ = ($no_chdir ? $dir_name : $dir_rel );
+		if ( substr($_,-2) eq '/.' ) {
+		    substr($_, length($_) == 2 ? -1 : -2) = '';
 		}
 		{ $wanted_callback->() }; # protect against wild "next"
 	     }
@@ -1015,13 +874,8 @@ sub _find_dir_symlnk($$$) {
     my $tainted = 0;
     my $ok = 1;
 
-    if ($Is_MacOS) {
-	$dir_pref = ($p_dir =~ /:$/) ? "$p_dir" : "$p_dir:";
-	$loc_pref = ($dir_loc =~ /:$/) ? "$dir_loc" : "$dir_loc:";
-    } else {
-	$dir_pref = ( $p_dir   eq '/' ? '/' : "$p_dir/" );
-	$loc_pref = ( $dir_loc eq '/' ? '/' : "$dir_loc/" );
-    }
+    $dir_pref = ( $p_dir   eq '/' ? '/' : "$p_dir/" );
+    $loc_pref = ( $dir_loc eq '/' ? '/' : "$dir_loc/" );
 
     local ($dir, $name, $fullname, $prune, *DIR);
 
@@ -1049,10 +903,6 @@ sub _find_dir_symlnk($$$) {
     }
 
     push @Stack,[$dir_loc,$updir_loc,$p_dir,$dir_rel,-1]  if  $bydepth;
-
-    if ($Is_MacOS) {
-	$p_dir = $dir_pref; # ensure trailing ':'
-    }
 
     while (defined $SE) {
 
@@ -1096,10 +946,6 @@ sub _find_dir_symlnk($$$) {
 	    }
 	}
 
-	if ($Is_MacOS) {
-	    $dir_name = "$dir_name:" unless ($dir_name =~ /:$/);
-	}
-
 	$dir = $dir_name; # $File::Find::dir
 
 	# Get the list of files in the current directory.
@@ -1111,6 +957,14 @@ sub _find_dir_symlnk($$$) {
 	closedir(DIR);
 
 	for my $FN (@filenames) {
+	    if ($Is_VMS) {
+	    # Big hammer here - Compensate for VMS trailing . and .dir
+	    # No win situation until this is changed, but this
+	    # will handle the majority of the cases with breaking the fewest.
+
+		$FN =~ s/\.dir\z//i;
+		$FN =~ s#\.$## if ($FN ne '.');
+	    }
 	    next if $FN =~ $File::Find::skip_pattern;
 
 	    # follow symbolic links / do an lstat
@@ -1118,7 +972,7 @@ sub _find_dir_symlnk($$$) {
 
 	    # ignore if invalid symlink
 	    unless (defined $new_loc) {
-	        if ($dangling_symlinks) {
+	        if (!defined -l _ && $dangling_symlinks) {
 	            if (ref $dangling_symlinks eq 'CODE') {
 	                $dangling_symlinks->($FN, $dir_pref);
 	            } else {
@@ -1134,6 +988,12 @@ sub _find_dir_symlnk($$$) {
 	    }
 
 	    if (-d _) {
+		if ($Is_VMS) {
+		    $FN =~ s/\.dir\z//i;
+		    $FN =~ s#\.$## if ($FN ne '.');
+		    $new_loc =~ s/\.dir\z//i;
+		    $new_loc =~ s#\.$## if ($new_loc ne '.');
+		}
 		push @Stack,[$new_loc,$updir_loc,$dir_name,$FN,1];
 	    }
 	    else {
@@ -1148,18 +1008,9 @@ sub _find_dir_symlnk($$$) {
     continue {
 	while (defined($SE = pop @Stack)) {
 	    ($dir_loc, $updir_loc, $p_dir, $dir_rel, $byd_flag) = @$SE;
-	    if ($Is_MacOS) {
-		# $p_dir always has a trailing ':', except for the starting dir,
-		# where $dir_rel eq ':'
-		$dir_name = "$p_dir$dir_rel";
-		$dir_pref = "$dir_name:";
-		$loc_pref = ($dir_loc =~ /:$/) ? $dir_loc : "$dir_loc:";
-	    }
-	    else {
-		$dir_name = ($p_dir eq '/' ? "/$dir_rel" : "$p_dir/$dir_rel");
-		$dir_pref = "$dir_name/";
-		$loc_pref = "$dir_loc/";
-	    }
+	    $dir_name = ($p_dir eq '/' ? "/$dir_rel" : "$p_dir/$dir_rel");
+	    $dir_pref = "$dir_name/";
+	    $loc_pref = "$dir_loc/";
 	    if ( $byd_flag < 0 ) {  # must be finddepth, report dirname now
 		unless ($no_chdir || ($dir_rel eq $File::Find::current_dir)) {
 		    unless (chdir $updir_loc) { # $updir_loc (parent dir) is always untainted
@@ -1169,23 +1020,13 @@ sub _find_dir_symlnk($$$) {
 		}
 		$fullname = $dir_loc; # $File::Find::fullname
 		$name = $dir_name; # $File::Find::name
-		if ($Is_MacOS) {
-		    if ($dir_rel eq ':') { # must be the top dir, where we started
-			$name =~ s|:$||; # $File::Find::name
-			$p_dir = "$p_dir:" unless ($p_dir =~ /:$/);
-		    }
-		    $dir = $p_dir; # $File::Find::dir
-		     $_ = ($no_chdir ? $name : $dir_rel); # $_
+		if ( substr($name,-2) eq '/.' ) {
+		    substr($name, length($name) == 2 ? -1 : -2) = ''; # $File::Find::name
 		}
-		else {
-		    if ( substr($name,-2) eq '/.' ) {
-			substr($name, length($name) == 2 ? -1 : -2) = ''; # $File::Find::name
-		    }
-		    $dir = $p_dir; # $File::Find::dir
-		    $_ = ($no_chdir ? $dir_name : $dir_rel); # $_
-		    if ( substr($_,-2) eq '/.' ) {
-			substr($_, length($_) == 2 ? -1 : -2) = '';
-		    }
+		$dir = $p_dir; # $File::Find::dir
+		$_ = ($no_chdir ? $dir_name : $dir_rel); # $_
+		if ( substr($_,-2) eq '/.' ) {
+		    substr($_, length($_) == 2 ? -1 : -2) = '';
 		}
 
 		lstat($_); # make sure file tests with '_' work
@@ -1203,6 +1044,9 @@ sub _find_dir_symlnk($$$) {
 sub wrap_wanted {
     my $wanted = shift;
     if ( ref($wanted) eq 'HASH' ) {
+        unless( exists $wanted->{wanted} and ref( $wanted->{wanted} ) eq 'CODE' ) {
+            die 'no &wanted subroutine given';
+        }
 	if ( $wanted->{follow} || $wanted->{follow_fast}) {
 	    $wanted->{follow_skip} = 1 unless defined $wanted->{follow_skip};
 	}
@@ -1213,8 +1057,11 @@ sub wrap_wanted {
 	}
 	return $wanted;
     }
-    else {
+    elsif( ref( $wanted ) eq 'CODE' ) {
 	return { wanted => $wanted };
+    }
+    else {
+       die 'no &wanted subroutine given';
     }
 }
 
@@ -1238,11 +1085,8 @@ if ($^O eq 'VMS') {
     $Is_VMS = 1;
     $File::Find::dont_use_nlink  = 1;
 }
-elsif ($^O eq 'MacOS') {
-    $Is_MacOS = 1;
-    $File::Find::dont_use_nlink  = 1;
-    $File::Find::skip_pattern    = qr/^Icon\015\z/;
-    $File::Find::untaint_pattern = qr|^(.+)$|;
+elsif ($^O eq 'MSWin32') {
+    $Is_Win32 = 1;
 }
 
 # this _should_ work properly on all platforms
@@ -1250,7 +1094,7 @@ elsif ($^O eq 'MacOS') {
 $File::Find::current_dir = File::Spec->curdir || '.';
 
 $File::Find::dont_use_nlink = 1
-    if $^O eq 'os2' || $^O eq 'dos' || $^O eq 'amigaos' || $^O eq 'MSWin32' ||
+    if $^O eq 'os2' || $^O eq 'dos' || $^O eq 'amigaos' || $Is_Win32 ||
        $^O eq 'interix' || $^O eq 'cygwin' || $^O eq 'epoc' || $^O eq 'qnx' ||
 	   $^O eq 'nto';
 

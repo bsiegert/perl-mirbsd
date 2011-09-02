@@ -8,8 +8,17 @@
 #	./Configure -des -Dopenbsd_distribution=defined
 #
 
-# OpenBSD has a better malloc than perl...
-test "$usemymalloc" || usemymalloc='n'
+# In OpenBSD > 3.7, use perl's malloc [perl #75742]
+case "$osvers" in
+3.[89]*|[4-9]*)
+    test "$usemymalloc" || usemymalloc=y
+    ;;
+esac
+
+# malloc wrap works
+case "$usemallocwrap" in
+'') usemallocwrap='define' ;;
+esac
 
 # Currently, vfork(2) is not a real win over fork(2).
 usevfork="$undef"
@@ -35,7 +44,11 @@ esac
 #
 ARCH=`arch | sed 's/^OpenBSD.//'`
 case "${ARCH}-${osvers}" in
+<<<<<<< openbsd.sh
 alpha-2.[0-8]|mips-2.[0-8]|powerpc-2.[0-7]|m88k-*|hppa-3.[0-5]|vax-*)
+=======
+alpha-2.[0-8]|mips-2.[0-8]|powerpc-2.[0-7]|m88k-*|hppa-*|vax-*)
+>>>>>>> 1.1.131.1
 	test -z "$usedl" && usedl=$undef
 	;;
 *)
@@ -75,14 +88,6 @@ case "$osvers" in
 	;;
 esac
 
-# malloc wrap causes problems on m68k
-if [ X"$usemallocwrap" = X"" ]; then
-	case "${ARCH}" in
-	m68k) usemallocwrap="$undef" ;;
-	*)    usemallocwrap="define" ;;
-	esac
-fi
-
 # OpenBSD doesn't need libcrypt but many folks keep a stub lib
 # around for old NetBSD binaries.
 libswanted=`echo $libswanted | sed 's/ crypt / /'`
@@ -92,12 +97,12 @@ d_suidsafe=$define
 
 # cc is gcc so we can do better than -O
 # Allow a command-line override, such as -Doptimize=-g
-case "${ARCH}-${osvers}" in
-hppa-3.3|m88k-2.*|m88k-3.[0-3])
-   test "$optimize" || optimize='-O0'
+case ${ARCH} in
+m88k)
+   optimize='-O0'
    ;;
-m88k-3.4)
-   test "$optimize" || optimize='-O1'
+hppa)
+   optimize='-O0'
    ;;
 *)
    test "$optimize" || optimize='-O2'
@@ -121,8 +126,8 @@ $define|true|[yY]*)
 	;;
 	esac
 	case "$osvers" in
-	[012].*|3.[0-5])
-        	# Broken up to OpenBSD 3.6, fixed in OpenBSD 3.7
+	[012].*|3.[0-6])
+        	# Broken at least up to OpenBSD 3.6, we'll see about 3.7
 		d_getservbyname_r=$undef ;;
 	esac
 esac

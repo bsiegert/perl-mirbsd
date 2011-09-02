@@ -10,7 +10,7 @@
  * 9th August 1994    - Changed to use IV
  * 10th August 1994   - Tim Bunce: Added RTLD_LAZY, switchable debugging,
  *                      basic FreeBSD support, removed ClearError
- * 29th Feburary 2000 - Alan Burlison: Added functionality to close dlopen'd
+ * 29th February 2000 - Alan Burlison: Added functionality to close dlopen'd
  *                      files when the interpreter exits
  *
  */
@@ -115,6 +115,8 @@
    the first parameter if the error may contain any % characters.
 
 */
+
+#define PERL_NO_GET_CONTEXT
 
 #include "EXTERN.h"
 #include "perl.h"
@@ -246,13 +248,14 @@ void
 dl_install_xsub(perl_name, symref, filename="$Package")
     char *		perl_name
     void *		symref 
-    char *		filename
+    const char *	filename
     CODE:
     DLDEBUG(2,PerlIO_printf(Perl_debug_log, "dl_install_xsub(name=%s, symref=%"UVxf")\n",
 		perl_name, PTR2UV(symref)));
-    ST(0) = sv_2mortal(newRV((SV*)newXS(perl_name,
-					DPTR2FPTR(XSUBADDR_t, symref),
-					filename)));
+    ST(0) = sv_2mortal(newRV((SV*)newXS_flags(perl_name,
+					      DPTR2FPTR(XSUBADDR_t, symref),
+					      filename, NULL,
+					      XS_DYNAMIC_FILENAME)));
 
 
 char *
@@ -262,5 +265,20 @@ dl_error()
     RETVAL = dl_last_error ;
     OUTPUT:
     RETVAL
+
+#if defined(USE_ITHREADS)
+
+void
+CLONE(...)
+    CODE:
+    MY_CXT_CLONE;
+
+    /* MY_CXT_CLONE just does a memcpy on the whole structure, so to avoid
+     * using Perl variables that belong to another thread, we create our 
+     * own for this thread.
+     */
+    MY_CXT.x_dl_last_error = newSVpvn("", 0);
+
+#endif
 
 # end.

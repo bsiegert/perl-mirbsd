@@ -151,14 +151,15 @@ There is a special array within each package called @ISA, which says
 where else to look for a method if you can't find it in the current
 package.  This is how Perl implements inheritance.  Each element of the
 @ISA array is just the name of another package that happens to be a
-class package.  The classes are searched (depth first) for missing
-methods in the order that they occur in @ISA.  The classes accessible
+class package.  The classes are searched for missing methods in
+depth-first, left-to-right order by default (see L<mro> for alternative
+search order and other in-depth information).  The classes accessible
 through @ISA are known as base classes of the current class.
 
 All classes implicitly inherit from class C<UNIVERSAL> as their
 last base class.  Several commonly used methods are automatically
-supplied in the UNIVERSAL class; see L<"Default UNIVERSAL methods"> for
-more details.
+supplied in the UNIVERSAL class; see L<"Default UNIVERSAL methods"> or
+L<UNIVERSAL|UNIVERSAL> for more details.
 X<UNIVERSAL> X<base class> X<class, base>
 
 If a missing method is found in a base class, it is cached
@@ -312,6 +313,19 @@ The right side of the arrow typically is the method name, but a simple
 scalar variable containing either the method name or a subroutine 
 reference can also be used.
 
+If the right side of the arrow is a scalar containing a reference
+to a subroutine, then this is equivalent to calling the referenced
+subroutine directly with the class name or object on the left side
+of the arrow as its first argument. No lookup is done and there is
+no requirement that the subroutine be defined in any package related
+to the class name or object on the left side of the arrow.
+
+For example, the following calls to $display are equivalent:
+
+    my $display = sub { my $self = shift; ... };
+    $fred->$display("Height", "Weight");
+    $display->($fred, "Height", "Weight");
+
 =head2 Indirect Object Syntax
 X<indirect object syntax> X<invocation, indirect> X<indirect>
 
@@ -336,8 +350,8 @@ Usually Perl gets it right, but when it doesn't you get a function
 call compiled as a method, or vice versa.  This can introduce subtle bugs
 that are hard to detect.
 
-For example, a call to a method C<new> in indirect notation -- as C++
-programmers are wont to make -- can be miscompiled into a subroutine
+For example, a call to a method C<new> in indirect notation (as C++
+programmers are wont to make) can be miscompiled into a subroutine
 call if there's already a C<new> function in scope.  You'd end up
 calling the current package's C<new> as a subroutine, rather than the
 desired class's method.  The compiler tries to cheat by remembering
@@ -391,31 +405,18 @@ X<isa>
 
 C<isa> returns I<true> if its object is blessed into a subclass of C<CLASS>
 
-You can also call C<UNIVERSAL::isa> as a subroutine with two arguments.  Of
-course, this will do the wrong thing if someone has overridden C<isa> in a
-class, so don't do it.
+=item DOES(ROLE)
+X<DOES>
 
-If you need to determine whether you've received a valid invocant, use the
-C<blessed> function from L<Scalar::Util>:
-X<invocant> X<blessed>
-
-    if (blessed($ref) && $ref->isa( 'Some::Class')) {
-        # ...
-    }
-
-C<blessed> returns the name of the package the argument has been
-blessed into, or C<undef>.
+C<DOES> returns I<true> if its object claims to perform the role C<ROLE>.  By
+default, this is equivalent to C<isa>.
 
 =item can(METHOD)
 X<can>
 
 C<can> checks to see if its object has a method called C<METHOD>,
 if it does then a reference to the sub is returned, if it does not then
-I<undef> is returned.
-
-C<UNIVERSAL::can> can also be called as a subroutine with two arguments.  It'll
-always return I<undef> if its first argument isn't an object or a class name.
-The same caveats for calling C<UNIVERSAL::isa> directly apply here, too.
+C<undef> is returned.
 
 =item VERSION( [NEED] )
 X<VERSION>
@@ -423,23 +424,14 @@ X<VERSION>
 C<VERSION> returns the version number of the class (package).  If the
 NEED argument is given then it will check that the current version (as
 defined by the $VERSION variable in the given package) not less than
-NEED; it will die if this is not the case.  This method is normally
-called as a class method.  This method is called automatically by the
-C<VERSION> form of C<use>.
+NEED; it will die if this is not the case.  This method is called automatically
+by the C<VERSION> form of C<use>.
 
-    use A 1.2 qw(some imported subs);
+    use Package 1.2 qw(some imported subs);
     # implies:
-    A->VERSION(1.2);
+    Package->VERSION(1.2);
 
 =back
-
-B<NOTE:> C<can> directly uses Perl's internal code for method lookup, and
-C<isa> uses a very similar method and cache-ing strategy. This may cause
-strange effects if the Perl code dynamically changes @ISA in any package.
-
-You may add other methods to the UNIVERSAL class via Perl or XS code.
-You do not need to C<use UNIVERSAL> to make these methods
-available to your program (and you should not do so).
 
 =head2 Destructors
 X<destructor> X<DESTROY>
@@ -467,6 +459,15 @@ the current one returns.  This can be used for clean delegation of
 object destruction, or for ensuring that destructors in the base classes
 of your choosing get called.  Explicitly calling DESTROY is also possible,
 but is usually never needed.
+
+DESTROY is subject to AUTOLOAD lookup, just like any other method. Hence, if
+your class has an AUTOLOAD method, but does not need any DESTROY actions,
+you probably want to provide a DESTROY method anyway, to prevent an
+expensive call to AUTOLOAD each time an object is freed. As this technique
+makes empty DESTROY methods common, the implementation is optimised so that
+a DESTROY method that is an empty or constant subroutine, and hence could
+have no side effects anyway, is not actually called.
+X<AUTOLOAD> X<DESTROY>
 
 Do not confuse the previous discussion with how objects I<CONTAINED> in the current
 one are destroyed.  Such objects will be freed and destroyed automatically
@@ -575,7 +576,7 @@ destructed.  Plain refs are only garbage-collected if the destruct level
 is greater than 0.  You can test the higher levels of global destruction
 by setting the PERL_DESTRUCT_LEVEL environment variable, presuming
 C<-DDEBUGGING> was enabled during perl build time.
-See L<perlhack/PERL_DESTRUCT_LEVEL> for more information.
+See L<perlhacktips/PERL_DESTRUCT_LEVEL> for more information.
 
 A more complete garbage collection strategy will be implemented
 at a future date.

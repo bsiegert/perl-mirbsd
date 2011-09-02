@@ -1,30 +1,48 @@
 package FindExt;
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 use strict;
 use warnings;
 
 my $no = join('|',qw(GDBM_File ODBM_File NDBM_File DB_File
-		     Syslog SysV Langinfo));
+                     VMS VMS-DCLsym VMS-Stdio Sys-Syslog IPC-SysV I18N-Langinfo));
 $no = qr/^(?:$no)$/i;
 
-my %ext;
-my $ext;
-my %static;
+sub apply_config {
+    my ($config) = @_;
+    my @no;
 
-sub getcwd {
-    $ENV{'PWD'} = Win32::GetCwd();
-    $ENV{'PWD'} =~ s:\\:/:g ;
-    return $ENV{'PWD'};
+    # duplicates logic from Configure (mostly)
+    push @no, "DB_File" unless $config->{i_db};
+    push @no, "GDBM_File" unless $config->{i_gdbm};
+    push @no, "I18N-Langinfo" unless $config->{i_langinfo} && $config->{i_nl_langinfo};
+    push @no, "IPC-SysV" unless $config->{d_msg} || $config->{d_sem} || $config->{d_shm};
+    push @no, "NDBM_File" unless $config->{d_ndbm};
+    push @no, "ODBM_File"
+      unless ($config->{i_dbm} || $config->{i_rpcsvcdbm}) && !$config->{d_cplusplus};
+    push @no, "VMS.*" unless $^O eq "VMS";
+    push @no, "Win32.*" unless $^O eq "MSWin32" || $^O eq "cygwin";
+
+    $no = join('|', @no);
+    $no = qr/^(?:$no)$/i;
 }
 
-sub set_static_extensions
-{
+my %ext;
+my %static;
+
+sub set_static_extensions {
     # adjust results of scan_ext, and also save
     # statics in case scan_ext hasn't been called yet.
+    # if '*' is passed then all XS extensions are static
+    # (with possible exclusions)
     %static = ();
-    for (@_) {
+    my @list = @_;
+    if (@_ and $_[0] eq '*') {
+	my %excl = map {$_=>1} map {m/^!(.*)$/} @_[1 .. $#_];
+	@list = grep {!exists $excl{$_}} keys %ext;
+    }
+    for (@list) {
         $static{$_} = 1;
         $ext{$_} = 'static' if $ext{$_} && $ext{$_} eq 'dynamic';
     }
@@ -32,77 +50,79 @@ sub set_static_extensions
 
 sub scan_ext
 {
- my $here = getcwd();
- my $dir  = shift;
- chdir($dir) || die "Cannot cd to $dir\n";
- ($ext = getcwd()) =~ s,/,\\,g;
- find_ext('');
- chdir($here) || die "Cannot cd to $here\n";
- my @ext = extensions();
+    my $dir  = shift;
+    find_ext("$dir/");
+    extensions();
 }
 
-sub dynamic_ext
-{
- return sort grep $ext{$_} eq 'dynamic',keys %ext;
+sub _ext_eq {
+    my $key = shift;
+    sub {
+        sort grep $ext{$_} eq $key, keys %ext;
+    }
 }
 
-sub static_ext
-{
- return sort grep $ext{$_} eq 'static',keys %ext;
+*dynamic_ext = _ext_eq('dynamic');
+*static_ext = _ext_eq('static');
+*nonxs_ext = _ext_eq('nonxs');
+
+sub _ext_ne {
+    my $key = shift;
+    sub {
+        sort grep $ext{$_} ne $key, keys %ext;
+    }
 }
 
-sub nonxs_ext
-{
- return sort grep $ext{$_} eq 'nonxs',keys %ext;
-}
-
-sub extensions
-{
- return sort grep $ext{$_} ne 'known',keys %ext;
-}
-
-sub known_extensions
-{
- # faithfully copy Configure in not including nonxs extensions for the nonce
- return sort grep $ext{$_} ne 'nonxs',keys %ext;
-}
+*extensions = _ext_ne('known');
+# faithfully copy Configure in not including nonxs extensions for the nonce
+*known_extensions = _ext_ne('nonxs');
 
 sub is_static
 {
  return $ext{$_[0]} eq 'static'
 }
 
-# Function to recursively find available extensions, ignoring DynaLoader
-# NOTE: recursion limit of 10 to prevent runaway in case of symlink madness
+sub has_xs_or_c {
+    my $dir = shift;
+    opendir my $dh, $dir or die "opendir $dir: $!";
+    while (defined (my $item = readdir $dh)) {
+        return 1 if $item =~ /\.xs$/;
+        return 1 if $item =~ /\.c$/;
+    }
+    return 0;
+}
+
+# Function to find available extensions, ignoring DynaLoader
 sub find_ext
 {
-    opendir my $dh, '.';
-    my @items = grep { !/^\.\.?$/ } readdir $dh;
-    closedir $dh;
-    for my $xxx (@items) {
-        if ($xxx ne "DynaLoader") {
-            if (-f "$xxx/$xxx.xs") {
-                $ext{"$_[0]$xxx"} = $static{"$_[0]$xxx"} ? 'static' : 'dynamic';
-            } elsif (-f "$xxx/Makefile.PL") {
-                $ext{"$_[0]$xxx"} = 'nonxs';
-            } else {
-                if (-d $xxx && @_ < 10) {
-                    chdir $xxx;
-                    find_ext("$_[0]$xxx/", @_);
-                    chdir "..";
-                }
-            }
-            $ext{"$_[0]$xxx"} = 'known' if $ext{"$_[0]$xxx"} && $xxx =~ $no;
+    my $ext_dir = shift;
+    opendir my $dh, "$ext_dir";
+    while (defined (my $item = readdir $dh)) {
+        next if $item =~ /^\.\.?$/;
+        next if $item eq "DynaLoader";
+        next unless -d "$ext_dir$item";
+        my $this_ext = $item;
+        my $leaf = $item;
+
+        $this_ext =~ s!-!/!g;
+        $leaf =~ s/.*-//;
+
+	# Temporary hack to cope with smokers that are not clearing directories:
+        next if $ext{$this_ext};
+
+        if (has_xs_or_c("$ext_dir$item")) {
+            $ext{$this_ext} = $static{$this_ext} ? 'static' : 'dynamic';
+        } else {
+            $ext{$this_ext} = 'nonxs';
         }
-    }
-
-# Special case:  Add in threads/shared since it is not picked up by the
-# recursive find above (and adding in general recursive finding breaks
-# SDBM_File/sdbm).  A.D.  10/25/2001.
-
-    if (!$_[0] && -d "threads/shared") {
-        $ext{"threads/shared"} = 'dynamic';
+        $ext{$this_ext} = 'known' if $ext{$this_ext} && $item =~ $no;
     }
 }
 
 1;
+# Local variables:
+# cperl-indent-level: 4
+# indent-tabs-mode: nil
+# End:
+#
+# ex: set ts=8 sts=4 sw=4 et:

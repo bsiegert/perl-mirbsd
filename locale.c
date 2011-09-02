@@ -1,7 +1,7 @@
 /*    locale.c
  *
- *    Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999,
- *    2000, 2001, 2002, 2003, 2005, by Larry Wall and others
+ *    Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
+ *    2002, 2003, 2005, 2006, 2007, 2008 by Larry Wall and others
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
@@ -9,13 +9,15 @@
  */
 
 /*
- * A Elbereth Gilthoniel,
- * silivren penna míriel
- * o menel aglar elenath!
- * Na-chaered palan-díriel
- * o galadhremmin ennorath,
- * Fanuilos, le linnathon
- * nef aear, si nef aearon!
+ *      A Elbereth Gilthoniel,
+ *      silivren penna míriel
+ *      o menel aglar elenath!
+ *      Na-chaered palan-díriel
+ *      o galadhremmin ennorath,
+ *      Fanuilos, le linnathon
+ *      nef aear, si nef aearon!
+ *
+ *     [p.238 of _The Lord of the Rings_, II/i: "Many Meetings"]
  */
 
 /* utility functions for handling locale-specific stuff like what
@@ -44,7 +46,7 @@
  * (1) "xx_YY" if the first argument of setlocale() is not LC_ALL
  * (2) "xa_YY xb_YY ..." if the first argument of setlocale() is LC_ALL
  *     (the space-separated values represent the various sublocales,
- *      in some unspecificed order)
+ *      in some unspecified order)
  *
  * In some platforms it has a form like "LC_SOMETHING=Lang_Country.866\n",
  * which is harmful for further use of the string in setlocale().
@@ -53,8 +55,10 @@
 STATIC char *
 S_stdize_locale(pTHX_ char *locs)
 {
-    const char *s = strchr(locs, '=');
+    const char * const s = strchr(locs, '=');
     bool okay = TRUE;
+
+    PERL_ARGS_ASSERT_STDIZE_LOCALE;
 
     if (s) {
 	const char * const t = strchr(s, '.');
@@ -81,14 +85,14 @@ void
 Perl_set_numeric_radix(pTHX)
 {
 #ifdef USE_LOCALE_NUMERIC
+    dVAR;
 # ifdef HAS_LOCALECONV
-    struct lconv* lc;
+    const struct lconv* const lc = localeconv();
 
-    lc = localeconv();
     if (lc && lc->decimal_point) {
 	if (lc->decimal_point[0] == '.' && lc->decimal_point[1] == 0) {
 	    SvREFCNT_dec(PL_numeric_radix_sv);
-	    PL_numeric_radix_sv = Nullsv;
+	    PL_numeric_radix_sv = NULL;
 	}
 	else {
 	    if (PL_numeric_radix_sv)
@@ -98,7 +102,7 @@ Perl_set_numeric_radix(pTHX)
 	}
     }
     else
-	PL_numeric_radix_sv = Nullsv;
+	PL_numeric_radix_sv = NULL;
 # endif /* HAS_LOCALECONV */
 #endif /* USE_LOCALE_NUMERIC */
 }
@@ -107,9 +111,10 @@ Perl_set_numeric_radix(pTHX)
  * Set up for a new numeric locale.
  */
 void
-Perl_new_numeric(pTHX_ char *newnum)
+Perl_new_numeric(pTHX_ const char *newnum)
 {
 #ifdef USE_LOCALE_NUMERIC
+    dVAR;
 
     if (! newnum) {
 	Safefree(PL_numeric_name);
@@ -135,6 +140,7 @@ void
 Perl_set_numeric_standard(pTHX)
 {
 #ifdef USE_LOCALE_NUMERIC
+    dVAR;
 
     if (! PL_numeric_standard) {
 	setlocale(LC_NUMERIC, "C");
@@ -150,6 +156,7 @@ void
 Perl_set_numeric_local(pTHX)
 {
 #ifdef USE_LOCALE_NUMERIC
+    dVAR;
 
     if (! PL_numeric_local) {
 	setlocale(LC_NUMERIC, PL_numeric_name);
@@ -165,10 +172,13 @@ Perl_set_numeric_local(pTHX)
  * Set up for a new ctype locale.
  */
 void
-Perl_new_ctype(pTHX_ char *newctype)
+Perl_new_ctype(pTHX_ const char *newctype)
 {
 #ifdef USE_LOCALE_CTYPE
+    dVAR;
     int i;
+
+    PERL_ARGS_ASSERT_NEW_CTYPE;
 
     for (i = 0; i < 256; i++) {
 	if (isUPPER_LC(i))
@@ -180,16 +190,19 @@ Perl_new_ctype(pTHX_ char *newctype)
     }
 
 #endif /* USE_LOCALE_CTYPE */
+    PERL_ARGS_ASSERT_NEW_CTYPE;
     PERL_UNUSED_ARG(newctype);
+    PERL_UNUSED_CONTEXT;
 }
 
 /*
  * Set up for a new collation locale.
  */
 void
-Perl_new_collate(pTHX_ char *newcoll)
+Perl_new_collate(pTHX_ const char *newcoll)
 {
 #ifdef USE_LOCALE_COLLATE
+    dVAR;
 
     if (! newcoll) {
 	if (PL_collation_name) {
@@ -242,6 +255,7 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
      */
 
 #if defined(USE_LOCALE)
+    dVAR;
 
 #ifdef USE_LOCALE_CTYPE
     char *curctype   = NULL;
@@ -253,10 +267,10 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
     char *curnum     = NULL;
 #endif /* USE_LOCALE_NUMERIC */
 #ifdef __GLIBC__
-    char *language   = PerlEnv_getenv("LANGUAGE");
+    char * const language   = PerlEnv_getenv("LANGUAGE");
 #endif
-    char *lc_all     = PerlEnv_getenv("LC_ALL");
-    char *lang       = PerlEnv_getenv("LANG");
+    char * const lc_all     = PerlEnv_getenv("LC_ALL");
+    char * const lang       = PerlEnv_getenv("LANG");
     bool setlocale_failure = FALSE;
 
 #ifdef LOCALE_ENVIRON_REQUIRED
@@ -277,28 +291,31 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
     }
     if (!setlocale_failure) {
 #ifdef USE_LOCALE_CTYPE
+	Safefree(curctype);
 	if (! (curctype =
 	       setlocale(LC_CTYPE,
 			 (!done && (lang || PerlEnv_getenv("LC_CTYPE")))
-				    ? "" : Nullch)))
+				    ? "" : NULL)))
 	    setlocale_failure = TRUE;
 	else
 	    curctype = savepv(curctype);
 #endif /* USE_LOCALE_CTYPE */
 #ifdef USE_LOCALE_COLLATE
+	Safefree(curcoll);
 	if (! (curcoll =
 	       setlocale(LC_COLLATE,
 			 (!done && (lang || PerlEnv_getenv("LC_COLLATE")))
-				   ? "" : Nullch)))
+				   ? "" : NULL)))
 	    setlocale_failure = TRUE;
 	else
 	    curcoll = savepv(curcoll);
 #endif /* USE_LOCALE_COLLATE */
 #ifdef USE_LOCALE_NUMERIC
+	Safefree(curnum);
 	if (! (curnum =
 	       setlocale(LC_NUMERIC,
 			 (!done && (lang || PerlEnv_getenv("LC_NUMERIC")))
-				  ? "" : Nullch)))
+				  ? "" : NULL)))
 	    setlocale_failure = TRUE;
 	else
 	    curnum = savepv(curnum);
@@ -316,18 +333,21 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
 
     if (!setlocale_failure) {
 #ifdef USE_LOCALE_CTYPE
+	Safefree(curctype);
 	if (! (curctype = setlocale(LC_CTYPE, "")))
 	    setlocale_failure = TRUE;
 	else
 	    curctype = savepv(curctype);
 #endif /* USE_LOCALE_CTYPE */
 #ifdef USE_LOCALE_COLLATE
+	Safefree(curcoll);
 	if (! (curcoll = setlocale(LC_COLLATE, "")))
 	    setlocale_failure = TRUE;
 	else
 	    curcoll = savepv(curcoll);
 #endif /* USE_LOCALE_COLLATE */
 #ifdef USE_LOCALE_NUMERIC
+	Safefree(curnum);
 	if (! (curnum = setlocale(LC_NUMERIC, "")))
 	    setlocale_failure = TRUE;
 	else
@@ -337,7 +357,7 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
 
     if (setlocale_failure) {
 	char *p;
-	bool locwarn = (printwarn > 1 ||
+	const bool locwarn = (printwarn > 1 ||
 			(printwarn &&
 			 (!(p = PerlEnv_getenv("PERL_BADLANG")) || atoi(p))));
 
@@ -448,13 +468,16 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
 #endif /* ! LC_ALL */
 
 #ifdef USE_LOCALE_CTYPE
-	curctype = savepv(setlocale(LC_CTYPE, Nullch));
+	Safefree(curctype);
+	curctype = savepv(setlocale(LC_CTYPE, NULL));
 #endif /* USE_LOCALE_CTYPE */
 #ifdef USE_LOCALE_COLLATE
-	curcoll = savepv(setlocale(LC_COLLATE, Nullch));
+	Safefree(curcoll);
+	curcoll = savepv(setlocale(LC_COLLATE, NULL));
 #endif /* USE_LOCALE_COLLATE */
 #ifdef USE_LOCALE_NUMERIC
-	curnum = savepv(setlocale(LC_NUMERIC, Nullch));
+	Safefree(curnum);
+	curnum = savepv(setlocale(LC_NUMERIC, NULL));
 #endif /* USE_LOCALE_NUMERIC */
     }
     else {
@@ -499,23 +522,23 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
 	 codeset = nl_langinfo(CODESET);
 #endif
 	 if (codeset)
-	      utf8locale = (ibcmp(codeset,  "UTF-8", 5) == 0 ||
- 			    ibcmp(codeset,  "UTF8",  4) == 0);
+	      utf8locale = (foldEQ(codeset, STR_WITH_LEN("UTF-8"))
+			    || foldEQ(codeset, STR_WITH_LEN("UTF8") ));
 #if defined(USE_LOCALE)
 	 else { /* nl_langinfo(CODESET) is supposed to correctly
 		 * interpret the locale environment variables,
 		 * but just in case it fails, let's do this manually. */ 
 	      if (lang)
-		   utf8locale = (ibcmp(lang,     "UTF-8", 5) == 0 ||
-			         ibcmp(lang,     "UTF8",  4) == 0);
+		   utf8locale = (foldEQ(lang, STR_WITH_LEN("UTF-8"))
+				 || foldEQ(lang, STR_WITH_LEN("UTF8") ));
 #ifdef USE_LOCALE_CTYPE
 	      if (curctype)
-		   utf8locale = (ibcmp(curctype,     "UTF-8", 5) == 0 ||
-			         ibcmp(curctype,     "UTF8",  4) == 0);
+		   utf8locale = (foldEQ(curctype, STR_WITH_LEN("UTF-8"))
+				 || foldEQ(curctype, STR_WITH_LEN("UTF8") ));
 #endif
 	      if (lc_all)
-		   utf8locale = (ibcmp(lc_all,   "UTF-8", 5) == 0 ||
-			         ibcmp(lc_all,   "UTF8",  4) == 0);
+		   utf8locale = (foldEQ(lc_all, STR_WITH_LEN("UTF-8"))
+				 || foldEQ(lc_all, STR_WITH_LEN("UTF8") ));
 	 }
 #endif /* USE_LOCALE */
 	 if (utf8locale)
@@ -525,8 +548,10 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
        This is an alternative to using the -C command line switch
        (the -C if present will override this). */
     {
-	 char *p = PerlEnv_getenv("PERL_UNICODE");
+	 const char *p = PerlEnv_getenv("PERL_UNICODE");
 	 PL_unicode = p ? parse_unicode_opts(&p) : 0;
+	 if (PL_unicode & PERL_UNICODE_UTF8CACHEASSERT_FLAG)
+	     PL_utf8cache = -1;
     }
 #endif
 
@@ -542,13 +567,6 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
     return ok;
 }
 
-/* Backwards compatibility. */
-int
-Perl_init_i18nl14n(pTHX_ int printwarn)
-{
-    return init_i18nl10n(printwarn);
-}
-
 #ifdef USE_LOCALE_COLLATE
 
 /*
@@ -562,8 +580,11 @@ Perl_init_i18nl14n(pTHX_ int printwarn)
 char *
 Perl_mem_collxfrm(pTHX_ const char *s, STRLEN len, STRLEN *xlen)
 {
+    dVAR;
     char *xbuf;
     STRLEN xAlloc, xin, xout; /* xalloc is a reserved word in VC */
+
+    PERL_ARGS_ASSERT_MEM_COLLXFRM;
 
     /* the first sizeof(collationix) bytes are used by sv_collxfrm(). */
     /* the +1 is for the terminating NUL. */
@@ -576,11 +597,11 @@ Perl_mem_collxfrm(pTHX_ const char *s, STRLEN len, STRLEN *xlen)
     *(U32*)xbuf = PL_collation_ix;
     xout = sizeof(PL_collation_ix);
     for (xin = 0; xin < len; ) {
-	SSize_t xused;
+	Size_t xused;
 
 	for (;;) {
 	    xused = strxfrm(xbuf + xout, s + xin, xAlloc - xout);
-	    if (xused == -1)
+	    if (xused >= PERL_INT_MAX)
 		goto bad;
 	    if ((STRLEN)xused < xAlloc - xout)
 		break;

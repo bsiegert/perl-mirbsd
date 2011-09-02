@@ -9,9 +9,8 @@ require 5.006;
 our $Debug = 0;
 our $ExportLevel = 0;
 our $Verbose ||= 0;
-our $VERSION = '5.58';
+our $VERSION = '5.64_03';
 our (%Cache);
-$Carp::Internal{Exporter} = 1;
 
 sub as_heavy {
   require Exporter::Heavy;
@@ -36,9 +35,12 @@ sub import {
   }
 
   # We *need* to treat @{"$pkg\::EXPORT_FAIL"} since Carp uses it :-(
-  my($exports, $fail) = (\@{"$pkg\::EXPORT"}, \@{"$pkg\::EXPORT_FAIL"});
+  my $exports = \@{"$pkg\::EXPORT"};
+  # But, avoid creating things if they don't exist, which saves a couple of
+  # hundred bytes per package processed.
+  my $fail = ${$pkg . '::'}{EXPORT_FAIL} && \@{"$pkg\::EXPORT_FAIL"};
   return export $pkg, $callpkg, @_
-    if $Verbose or $Debug or @$fail > 1;
+    if $Verbose or $Debug or $fail && @$fail > 1;
   my $export_cache = ($Cache{$pkg} ||= {});
   my $args = @_ or @_ = @$exports;
 
@@ -52,7 +54,7 @@ sub import {
   # We bomb out of the loop with last as soon as heavy is set.
   if ($args or $fail) {
     ($heavy = (/\W/ or $args and not exists $export_cache->{$_}
-               or @$fail and $_ eq $fail->[0])) and last
+               or $fail and @$fail and $_ eq $fail->[0])) and last
                  foreach (@_);
   } else {
     ($heavy = /\W/) and last
@@ -60,7 +62,7 @@ sub import {
   }
   return export $pkg, $callpkg, ($args ? @_ : ()) if $heavy;
   local $SIG{__WARN__} = 
-	sub {require Carp; &Carp::carp};
+	sub {require Carp; &Carp::carp} if not $SIG{__WARN__};
   # shortcut for the common case of no type character
   *{"$callpkg\::$_"} = \&{"$pkg\::$_"} foreach @_;
 }
@@ -101,7 +103,7 @@ Exporter - Implements default import method for modules
 
 =head1 SYNOPSIS
 
-In module YourModule.pm:
+In module F<YourModule.pm>:
 
   package YourModule;
   require Exporter;
@@ -114,10 +116,13 @@ or
   use Exporter 'import'; # gives you Exporter's import() method directly
   @EXPORT_OK = qw(munge frobnicate);  # symbols to export on request
 
-In other files which wish to use YourModule:
+In other files which wish to use C<YourModule>:
 
-  use ModuleName qw(frobnicate);      # import listed symbols
+  use YourModule qw(frobnicate);      # import listed symbols
   frobnicate ($left, $right)          # calls YourModule::frobnicate
+
+Take a look at L</Good Practices> for some variants
+you will like to use in modern Perl code.
 
 =head1 DESCRIPTION
 
@@ -155,11 +160,11 @@ Do B<not> export method names!
 Do B<not> export anything else by default without a good reason!
 
 Exports pollute the namespace of the module user.  If you must export
-try to use @EXPORT_OK in preference to @EXPORT and avoid short or
+try to use C<@EXPORT_OK> in preference to C<@EXPORT> and avoid short or
 common symbol names to reduce the risk of name clashes.
 
 Generally anything not exported is still accessible from outside the
-module using the ModuleName::item_name (or $blessed_ref-E<gt>method)
+module using the C<YourModule::item_name> (or C<< $blessed_ref->method >>)
 syntax.  By convention you can use a leading underscore on names to
 informally indicate that they are 'internal' and not for public use.
 
@@ -174,7 +179,7 @@ how to make inheritance work.)
 
 As a general rule, if the module is trying to be object oriented
 then export nothing. If it's just a collection of functions then
-@EXPORT_OK anything but use @EXPORT with caution. For function and
+C<@EXPORT_OK> anything but use C<@EXPORT> with caution. For function and
 method names use barewords in preference to names prefixed with
 ampersands for the export lists.
 
@@ -187,19 +192,19 @@ them to load your module and import its symbols:
 
 =over 4
 
-=item C<use ModuleName;>
+=item C<use YourModule;>
 
-This imports all the symbols from ModuleName's @EXPORT into the namespace
+This imports all the symbols from YourModule's C<@EXPORT> into the namespace
 of the C<use> statement.
 
-=item C<use ModuleName ();>
+=item C<use YourModule ();>
 
 This causes perl to load your module but does not import any symbols.
 
-=item C<use ModuleName qw(...);>
+=item C<use YourModule qw(...);>
 
 This imports only the symbols listed by the caller into their namespace.
-All listed symbols must be in your @EXPORT or @EXPORT_OK, else an error
+All listed symbols must be in your C<@EXPORT> or C<@EXPORT_OK>, else an error
 occurs. The advanced export features of Exporter are accessed like this,
 but with list entries that are syntactically distinct from symbol names.
 
@@ -228,7 +233,7 @@ is treated as though preceded by :DEFAULT. If you just want to import
 extra names in addition to the default set you will still need to
 include :DEFAULT explicitly.
 
-e.g., Module.pm defines:
+e.g., F<Module.pm> defines:
 
     @EXPORT      = qw(A1 A2 A3 A4 A5);
     @EXPORT_OK   = qw(B1 B2 B3 B4 B5);
@@ -261,9 +266,9 @@ method looks like:
 
     MyPackage->export_to_level($where_to_export, $package, @what_to_export);
 
-where $where_to_export is an integer telling how far up the calling stack
-to export your symbols, and @what_to_export is an array telling what
-symbols *to* export (usually this is @_).  The $package argument is
+where C<$where_to_export> is an integer telling how far up the calling stack
+to export your symbols, and C<@what_to_export> is an array telling what
+symbols *to* export (usually this is C<@_>).  The C<$package> argument is
 currently unused.
 
 For example, suppose that you have a module, A, which already has an
@@ -279,7 +284,7 @@ import function:
 	$A::b = 1;     # not a very useful import method
     }
 
-and you want to Export symbol $A::b back to the module that called 
+and you want to Export symbol C<$A::b> back to the module that called 
 package A. Since Exporter relies on the import method to work, via 
 inheritance, as it stands Exporter::import() will never get called. 
 Instead, say the following:
@@ -302,7 +307,7 @@ Note: Be careful not to modify C<@_> at all before you call export_to_level
 
 =head2 Exporting without inheriting from Exporter
 
-By including Exporter in your @ISA you inherit an Exporter's import() method
+By including Exporter in your C<@ISA> you inherit an Exporter's import() method
 but you also inherit several other helper methods which you probably don't
 want. To avoid this you can do
 
@@ -311,19 +316,22 @@ want. To avoid this you can do
 
 which will export Exporter's own import() method into YourModule.
 Everything will work as before but you won't need to include Exporter in
-@YourModule::ISA.
+C<@YourModule::ISA>.
+
+Note: This feature was introduced in version 5.57
+of Exporter, released with perl 5.8.3.
 
 =head2 Module Version Checking
 
 The Exporter module will convert an attempt to import a number from a
-module into a call to $module_name-E<gt>require_version($value). This can
+module into a call to C<< $module_name->require_version($value) >>. This can
 be used to validate that the version of the module being used is
 greater than or equal to the required version.
 
-The Exporter module supplies a default require_version method which
-checks the value of $VERSION in the exporting module.
+The Exporter module supplies a default C<require_version> method which
+checks the value of C<$VERSION> in the exporting module.
 
-Since the default require_version method treats the $VERSION number as
+Since the default C<require_version> method treats the C<$VERSION> number as
 a simple numeric value it will regard version 1.10 as lower than
 1.9. For this reason it is strongly recommended that you use numbers
 with at least two decimal places, e.g., 1.09.
@@ -344,37 +352,37 @@ with a list of the failed symbols:
 
   @failed_symbols = $module_name->export_fail(@failed_symbols);
 
-If the export_fail method returns an empty list then no error is
+If the C<export_fail> method returns an empty list then no error is
 recorded and all the requested symbols are exported. If the returned
 list is not empty then an error is generated for each symbol and the
-export fails. The Exporter provides a default export_fail method which
+export fails. The Exporter provides a default C<export_fail> method which
 simply returns the list unchanged.
 
-Uses for the export_fail method include giving better error messages
+Uses for the C<export_fail> method include giving better error messages
 for some symbols and performing lazy architectural checks (put more
-symbols into @EXPORT_FAIL by default and then take them out if someone
+symbols into C<@EXPORT_FAIL> by default and then take them out if someone
 actually tries to use them and an expensive check shows that they are
 usable on that platform).
 
 =head2 Tag Handling Utility Functions
 
-Since the symbols listed within %EXPORT_TAGS must also appear in either
-@EXPORT or @EXPORT_OK, two utility functions are provided which allow
-you to easily add tagged sets of symbols to @EXPORT or @EXPORT_OK:
+Since the symbols listed within C<%EXPORT_TAGS> must also appear in either
+C<@EXPORT> or C<@EXPORT_OK>, two utility functions are provided which allow
+you to easily add tagged sets of symbols to C<@EXPORT> or C<@EXPORT_OK>:
 
   %EXPORT_TAGS = (foo => [qw(aa bb cc)], bar => [qw(aa cc dd)]);
 
   Exporter::export_tags('foo');     # add aa, bb and cc to @EXPORT
   Exporter::export_ok_tags('bar');  # add aa, cc and dd to @EXPORT_OK
 
-Any names which are not tags are added to @EXPORT or @EXPORT_OK
+Any names which are not tags are added to C<@EXPORT> or C<@EXPORT_OK>
 unchanged but will trigger a warning (with C<-w>) to avoid misspelt tags
-names being silently added to @EXPORT or @EXPORT_OK. Future versions
+names being silently added to C<@EXPORT> or C<@EXPORT_OK>. Future versions
 may make this a fatal error.
 
 =head2 Generating combined tags
 
-If several symbol categories exist in %EXPORT_TAGS, it's usually
+If several symbol categories exist in C<%EXPORT_TAGS>, it's usually
 useful to create the utility ":all" to simplify "use" statements.
 
 The simplest way to do this is:
@@ -390,7 +398,7 @@ The simplest way to do this is:
       grep {!$seen{$_}++} @{$EXPORT_TAGS{$_}} foreach keys %EXPORT_TAGS;
   }
 
-CGI.pm creates an ":all" tag which contains some (but not really
+F<CGI.pm> creates an ":all" tag which contains some (but not really
 all) of its categories.  That could be done with one small
 change:
 
@@ -404,7 +412,7 @@ change:
         foreach qw/html2 html3 netscape form cgi internal/;
   }
 
-Note that the tag names in %EXPORT_TAGS don't have the leading ':'.
+Note that the tag names in C<%EXPORT_TAGS> don't have the leading ':'.
 
 =head2 C<AUTOLOAD>ed Constants
 
@@ -437,4 +445,143 @@ If you are writing a package that C<AUTOLOAD>s, consider forcing
 an C<AUTOLOAD> for any constants explicitly imported by other packages
 or which are usually used when your package is C<use>d.
 
+=head1 Good Practices
+
+=head2 Declaring C<@EXPORT_OK> and Friends
+
+When using C<Exporter> with the standard C<strict> and C<warnings>
+pragmas, the C<our> keyword is needed to declare the package
+variables C<@EXPORT_OK>, C<@EXPORT>, C<@ISA>, etc.
+
+  our @ISA = qw(Exporter);
+  our @EXPORT_OK = qw(munge frobnicate);
+
+If backward compatibility for Perls under 5.6 is important,
+one must write instead a C<use vars> statement.
+
+  use vars qw(@ISA @EXPORT_OK);
+  @ISA = qw(Exporter);
+  @EXPORT_OK = qw(munge frobnicate);
+
+=head2 Playing Safe
+
+There are some caveats with the use of runtime statements
+like C<require Exporter> and the assignment to package
+variables, which can very subtle for the unaware programmer.
+This may happen for instance with mutually recursive
+modules, which are affected by the time the relevant
+constructions are executed.
+
+The ideal (but a bit ugly) way to never have to think
+about that is to use C<BEGIN> blocks. So the first part
+of the L</SYNOPSIS> code could be rewritten as:
+
+  package YourModule;
+
+  use strict;
+  use warnings;
+
+  our (@ISA, @EXPORT_OK);
+  BEGIN {
+     require Exporter;
+     @ISA = qw(Exporter);
+     @EXPORT_OK = qw(munge frobnicate);  # symbols to export on request
+  }
+
+The C<BEGIN> will assure that the loading of F<Exporter.pm>
+and the assignments to C<@ISA> and C<@EXPORT_OK> happen
+immediately, leaving no room for something to get awry
+or just plain wrong.
+
+With respect to loading C<Exporter> and inheriting, there
+are alternatives with the use of modules like C<base> and C<parent>.
+
+  use base qw( Exporter );
+  # or
+  use parent qw( Exporter );
+
+Any of these statements are nice replacements for
+C<BEGIN { require Exporter; @ISA = qw(Exporter); }>
+with the same compile-time effect. The basic difference
+is that C<base> code interacts with declared C<fields>
+while C<parent> is a streamlined version of the older
+C<base> code to just establish the IS-A relationship.
+
+For more details, see the documentation and code of
+L<base> and L<parent>.
+
+Another thorough remedy to that runtime vs. 
+compile-time trap is to use L<Exporter::Easy>,
+which is a wrapper of Exporter that allows all
+boilerplate code at a single gulp in the
+use statement.
+
+   use Exporter::Easy (
+       OK => [ qw(munge frobnicate) ],
+   );
+   # @ISA setup is automatic
+   # all assignments happen at compile time
+
+=head2 What not to Export
+
+You have been warned already in L</Selecting What To Export>
+to not export:
+
+=over 4
+
+=item *
+
+method names (because you don't need to
+and that's likely to not do what you want),
+
+=item *
+
+anything by default (because you don't want to surprise your users...
+badly)
+
+=item *
+
+anything you don't need to (because less is more)
+
+=back
+
+There's one more item to add to this list. Do B<not>
+export variable names. Just because C<Exporter> lets you
+do that, it does not mean you should.
+
+  @EXPORT_OK = qw( $svar @avar %hvar ); # DON'T!
+
+Exporting variables is not a good idea. They can
+change under the hood, provoking horrible
+effects at-a-distance, that are too hard to track
+and to fix. Trust me: they are not worth it.
+
+To provide the capability to set/get class-wide
+settings, it is best instead to provide accessors
+as subroutines or class methods instead.
+
+=head1 SEE ALSO
+
+C<Exporter> is definitely not the only module with
+symbol exporter capabilities. At CPAN, you may find
+a bunch of them. Some are lighter. Some
+provide improved APIs and features. Peek the one
+that fits your needs. The following is
+a sample list of such modules.
+
+    Exporter::Easy
+    Exporter::Lite
+    Exporter::Renaming
+    Exporter::Tidy
+    Sub::Exporter / Sub::Installer
+    Perl6::Export / Perl6::Export::Attrs
+
+=head1 LICENSE
+
+This library is free software. You can redistribute it
+and/or modify it under the same terms as Perl itself.
+
 =cut
+
+
+

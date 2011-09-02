@@ -5,10 +5,12 @@ perllexwarn - Perl Lexical Warnings
 
 =head1 DESCRIPTION
 
-The C<use warnings> pragma is a replacement for both the command line
-flag B<-w> and the equivalent Perl variable, C<$^W>.
+The C<use warnings> pragma enables to control precisely what warnings are
+to be enabled in which parts of a Perl program. It's a more flexible
+alternative for both the command line flag B<-w> and the equivalent Perl
+variable, C<$^W>.
 
-The pragma works just like the existing "strict" pragma.
+This pragma works just like the C<strict> pragma.
 This means that the scope of the warning pragma is limited to the
 enclosing block. It also means that the pragma setting will not
 leak across files (via C<use>, C<require> or C<do>). This allows
@@ -89,7 +91,7 @@ a block of code. You might expect this to be enough to do the trick:
      }
 
 When this code is run with the B<-w> flag, a warning will be produced
-for the C<$a> line -- C<"Reversed += operator">.
+for the C<$a> line:  C<"Reversed += operator">.
 
 The problem is that Perl has both compile-time and run-time warnings. To
 disable compile-time warnings you need to rewrite the code like this:
@@ -175,7 +177,7 @@ will work unchanged.
 
 =item 2.
 
-The B<-w> flag just sets the global C<$^W> variable as in 5.005 -- this
+The B<-w> flag just sets the global C<$^W> variable as in 5.005. This
 means that any legacy code that currently relies on manipulating C<$^W>
 to control warning behavior will still work as is. 
 
@@ -234,6 +236,8 @@ The current hierarchy is:
        |                |
        |                +- unopened
        |
+       +- imprecision
+       |
        +- misc
        |
        +- numeric
@@ -274,6 +278,8 @@ The current hierarchy is:
        |                |
        |                +- digit
        |                |
+       |                +- illegalproto
+       |                |
        |                +- parenthesis
        |                |
        |                +- precedence
@@ -298,11 +304,15 @@ The current hierarchy is:
        |
        +- untie
        |
-       +- utf8
+       +- utf8----------+
+       |                |
+       |                +- surrogate
+       |                |
+       |                +- non_unicode
+       |                |
+       |                +- nonchar
        |
        +- void
-       |
-       +- y2k
 
 Just like the "strict" pragma any of these categories can be combined
 
@@ -397,7 +407,7 @@ Consider the module C<MyMod::Abc> below.
     1;
 
 The call to C<warnings::register> will create a new warnings category
-called "MyMod::abc", i.e. the new category name matches the current
+called "MyMod::Abc", i.e. the new category name matches the current
 package name. The C<open> function in the module will display a warning
 message if it gets given a relative path as a parameter. This warnings
 will only be displayed if the code that uses C<MyMod::Abc> has actually
@@ -503,9 +513,9 @@ C<Derived>.
     use Original;
     use Derived;
     use warnings 'Derived';
-    my $a = new Original;
+    my $a = Original->new();
     $a->doit(1);
-    my $b = new Derived;
+    my $b = Derived->new();
     $a->doit(1);
 
 When this code is run only the C<Derived> object, C<$b>, will generate
@@ -516,20 +526,15 @@ a warning.
 Notice also that the warning is reported at the line where the object is first
 used.
 
-=head1 TODO
+When registering new categories of warning, you can supply more names to
+warnings::register like this:
 
-  perl5db.pl
-    The debugger saves and restores C<$^W> at runtime. I haven't checked
-    whether the debugger will still work with the lexical warnings
-    patch applied.
+    package MyModule;
+    use warnings::register qw(format precision);
 
-  diagnostics.pm
-    I *think* I've got diagnostics to work with the lexical warnings
-    patch, but there were design decisions made in diagnostics to work
-    around the limitations of C<$^W>. Now that those limitations are gone,
-    the module should be revisited.
+    ...
 
-  document calling the warnings::* functions from XS
+    warnings::warnif('MyModule::format', '...');
 
 =head1 SEE ALSO
 

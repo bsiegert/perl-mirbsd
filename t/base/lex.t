@@ -1,13 +1,13 @@
 #!./perl
 
-print "1..55\n";
+print "1..57\n";
 
 $x = 'x';
 
 print "#1	:$x: eq :x:\n";
 if ($x eq 'x') {print "ok 1\n";} else {print "not ok 1\n";}
 
-$x = $#;	# this is the register $#
+$x = $#[0];
 
 if ($x eq '') {print "ok 2\n";} else {print "not ok 2\n";}
 
@@ -69,10 +69,11 @@ print qq
 print q<ok 17
 >;
 
-print <<;   # Yow!
-ok 18
-
-# previous line intentionally left blank.
+print "ok 18 - was the test for the deprecated use of bare << to mean <<\"\"\n";
+#print <<;   # Yow!
+#ok 18
+#
+## previous line intentionally left blank.
 
 print <<E1 eq "foo\n\n" ? "ok 19\n" : "not ok 19\n";
 @{[ <<E2 ]}
@@ -263,3 +264,12 @@ print ((exists $str{xyz::bar} ? "" : "not ")."ok $test\n"); ++$test;
 
 sub foo::::::bar { print "ok $test\n"; $test++ }
 foo::::::bar;
+
+eval "\$x =\xE2foo";
+if ($@ =~ /Unrecognized character \\xE2; marked by <-- HERE after \$x =<-- HERE near column 5/) { print "ok $test\n"; } else { print "not ok $test\n"; }
+$test++;
+
+# Is "[~" scanned correctly?
+@a = (1,2,3);
+print "not " unless($a[~~2] == 3);
+print "ok 57\n";

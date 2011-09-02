@@ -85,7 +85,7 @@ sub reindent($) {
 }
 
 my ($t, $tab, %curargs, $new, $eval_index, $dir, $name, $args, $outfile);
-my ($incl, $incl_type, $next);
+my ($incl, $incl_type, $incl_quote, $next);
 while (defined (my $file = next_file())) {
     if (-l $file and -d $file) {
         link_if_possible($file) if ($opt_l);
@@ -123,7 +123,7 @@ while (defined (my $file = next_file())) {
 
     print OUT
         "require '_h2ph_pre.ph';\n\n",
-        "no warnings 'redefine';\n\n";
+        "no warnings qw(redefine misc);\n\n";
 
     while (defined (local $_ = next_line($file))) {
 	if (s/^\s*\#\s*//) {
@@ -147,23 +147,7 @@ while (defined (my $file = next_file())) {
 		    s/^\s+//;
 		    expr();
 		    $new =~ s/(["\\])/\\$1/g;       #"]);
-		  EMIT:
-		    $new = reindent($new);
-		    $args = reindent($args);
-		    if ($t ne '') {
-			$new =~ s/(['\\])/\\$1/g;   #']);
-			if ($opt_h) {
-			    print OUT $t,
-                            "eval \"\\n#line $eval_index $outfile\\n\" . 'sub $name $proto\{\n$t    ${args}eval q($new);\n$t}' unless defined(\&$name);\n";
-                            $eval_index++;
-			} else {
-			    print OUT $t,
-                            "eval 'sub $name $proto\{\n$t    ${args}eval q($new);\n$t}' unless defined(\&$name);\n";
-			}
-		    } else {
-                      print OUT "unless(defined(\&$name)) {\n    sub $name $proto\{\n\t${args}eval q($new);\n    }\n}\n";
-		    }
-		    %curargs = ();
+		    EMIT($proto);
 		} else {
 		    s/^\s+//;
 		    expr();
@@ -186,9 +170,10 @@ while (defined (my $file = next_file())) {
                       print OUT $t,"unless(defined(\&$name)) {\n    sub $name () {\t",$new,";}\n}\n";
 		    }
 		}
-	    } elsif (/^(include|import|include_next)\s*[<\"](.*)[>\"]/) {
+	    } elsif (/^(include|import|include_next)\s*([<\"])(.*)[>\"]/) {
                 $incl_type = $1;
-                $incl = $2;
+                $incl_quote = $2;
+                $incl = $3;
                 if (($incl_type eq 'include_next') ||
                     ($opt_e && exists($bad_file{$incl}))) {
                     $incl =~ s/\.h$/.ph/;
@@ -221,6 +206,10 @@ while (defined (my $file = next_file())) {
 			   "warn(\$\@) if \$\@;\n");
                 } else {
                     $incl =~ s/\.h$/.ph/;
+                    # copy the prefix in the quote syntax (#include "x.h") case
+                    if ($incl !~ m|/| && $incl_quote eq q{"} && $file =~ m|^(.*)/|) {
+                        $incl = "$1/$incl";
+                    }
 		    print OUT $t,"require '$incl';\n";
                 }
 	    } elsif (/^ifdef\s+(\w+)/) {
@@ -375,7 +364,7 @@ while (defined (my $file = next_file())) {
 	    $new =~ s/&$_\b/\$$_/g for @local_variables;
 	    $new =~ s/(["\\])/\\$1/g;       #"]);
 	    # now that's almost like a macro (we hope)
-	    goto EMIT;
+	    EMIT($proto);
 	}
     }
     $Is_converted{$file} = 1;
@@ -395,8 +384,33 @@ if ($opt_e && (scalar(keys %bad_file) > 0)) {
 
 exit $Exit;
 
+sub EMIT {
+    my $proto = shift;
+
+    $new = reindent($new);
+    $args = reindent($args);
+    if ($t ne '') {
+    $new =~ s/(['\\])/\\$1/g;   #']);
+    if ($opt_h) {
+        print OUT $t,
+                    "eval \"\\n#line $eval_index $outfile\\n\" . 'sub $name $proto\{\n$t    ${args}eval q($new);\n$t}' unless defined(\&$name);\n";
+                    $eval_index++;
+    } else {
+        print OUT $t,
+                    "eval 'sub $name $proto\{\n$t    ${args}eval q($new);\n$t}' unless defined(\&$name);\n";
+    }
+    } else {
+              print OUT "unless(defined(\&$name)) {\n    sub $name $proto\{\n\t${args}eval q($new);\n    }\n}\n";
+    }
+    %curargs = ();
+    return;
+}
+
 sub expr {
-    $new = '"(assembly code)"' and return if /\b__asm__\b/; # freak out.
+    if (/\b__asm__\b/) {	# freak out
+	$new = '"(assembly code)"';
+	return
+    }
     my $joined_args;
     if(keys(%curargs)) {
 	$joined_args = join('|', keys(%curargs));
@@ -412,7 +426,7 @@ sub expr {
 		       # Croak if nv_preserves_uv_bits < 64 ?
 		       $new .=         hex(substr($hex, -8)) +
 			       2**32 * hex(substr($hex,  0, -8));
-		       # The above will produce "errorneus" code
+		       # The above will produce "erroneous" code
 		       # if the hex constant was e.g. inside UINT64_C
 		       # macro, but then again, h2ph is an approximation.
 		   } else {
@@ -504,7 +518,7 @@ sub expr {
 		s/^\s*\((\w),/("$1",/ if $id =~ /^_IO[WR]*$/i;	# cheat
 		$new .= " &$id";
 	    } elsif ($isatype{$id}) {
-		if ($new =~ /{\s*$/) {
+		if ($new =~ /\{\s*$/) {
 		    $new .= "'$id'";
 		} elsif ($new =~ /\(\s*$/ && /^[\s*]*\)/) {
 		    $new =~ s/\(\s*$//;
@@ -513,8 +527,14 @@ sub expr {
 		    $new .= q(').$id.q(');
 		}
 	    } else {
-		if ($inif && $new !~ /defined\s*\($/) {
-		    $new .= '(defined(&' . $id . ') ? &' . $id . ' : 0)';
+		if ($inif) {
+		    if ($new =~ /defined\s*$/) {
+			$new .= '(&' . $id . ')';
+		    } elsif ($new =~ /defined\s*\($/) {
+			$new .= '&' . $id;
+		    } else {
+			$new .= '(defined(&' . $id . ') ? &' . $id . ' : undef)';
+		    }
 		} elsif (/^\[/) {
 		    $new .= " \$$id";
 		} else {
@@ -553,7 +573,7 @@ sub next_line
                 $in =~ s/\?\?</{/g;                         # | ??<|  {|
                 $in =~ s/\?\?>/}/g;                         # | ??>|  }|
             }
-	    if ($in =~ s/^\#ifdef __LANGUAGE_PASCAL__//) {
+	    if ($in =~ /^\#ifdef __LANGUAGE_PASCAL__/) {
 		# Tru64 disassembler.h evilness: mixed C and Pascal.
 		while (<IN>) {
 		    last if /^\#endif/;
@@ -561,8 +581,8 @@ sub next_line
 		$in = "";
 		next READ;
 	    }
-	    # Skip inlined functions in headers
-	    if ($in =~ s/^(extern|static) (__inline__|inline) .*[^;]\s*$//) {
+	    if ($in =~ /^extern inline / && # Inlined assembler.
+		$^O eq 'linux' && $file =~ m!(?:^|/)asm/[^/]+\.h$!) {
 		while (<IN>) {
 		    last if /^}/;
 		}
@@ -724,8 +744,13 @@ sub queue_includes_from
                 $line .= <HEADER>;
             }
 
-            if ($line =~ /^#\s*include\s+<(.*?)>/) {
-                push(@ARGV, $1) unless $Is_converted{$1};
+            if ($line =~ /^#\s*include\s+([<"])(.*?)[>"]/) {
+                my ($delimiter, $new_file) = ($1, $2);
+                # copy the prefix in the quote syntax (#include "x.h") case
+                if ($delimiter eq q{"} && $file =~ m|^(.*)/|) {
+                    $new_file = "$1/$new_file";
+                }
+                push(@ARGV, $new_file) unless $Is_converted{$new_file};
             }
         }
     close HEADER;
@@ -733,7 +758,7 @@ sub queue_includes_from
 
 
 # Determine include directories; $Config{usrinc} should be enough for (all
-# non-GCC?) C compilers, but gcc uses an additional include directory.
+# non-GCC?) C compilers, but gcc uses additional include directories.
 sub inc_dirs
 {
     my $from_gcc    = `LC_ALL=C $Config{cc} -v 2>&1`;
@@ -745,7 +770,7 @@ sub inc_dirs
            $from_gcc = '';
        };
     };
-    length($from_gcc) ? ($from_gcc, $Config{usrinc}) : ($Config{usrinc});
+    length($from_gcc) ? ($from_gcc, $from_gcc . "-fixed", $Config{usrinc}) : ($Config{usrinc});
 }
 
 
@@ -754,7 +779,7 @@ sub inc_dirs
 sub build_preamble_if_necessary
 {
     # Increment $VERSION every time this function is modified:
-    my $VERSION     = 2;
+    my $VERSION     = 3;
     my $preamble    = "$Dest_dir/_h2ph_pre.ph";
 
     # Can we skip building the preamble file?
@@ -772,25 +797,49 @@ sub build_preamble_if_necessary
     my (%define) = _extract_cc_defines();
 
     open  PREAMBLE, ">$preamble" or die "Cannot open $preamble:  $!";
-        print PREAMBLE "# This file was created by h2ph version $VERSION\n";
+	print PREAMBLE "# This file was created by h2ph version $VERSION\n";
 
-        foreach (sort keys %define) {
-            if ($opt_D) {
-                print PREAMBLE "# $_=$define{$_}\n";
-            }
+	foreach (sort keys %define) {
+	    if ($opt_D) {
+		print PREAMBLE "# $_=$define{$_}\n";
+	    }
+	    if ($define{$_} =~ /^\((.*)\)$/) {
+		# parenthesized value:  d=(v)
+		$define{$_} = $1;
+	    }
+	    if (/^(\w+)\((\w)\)$/) {
+		my($macro, $arg) = ($1, $2);
+		my $def = $define{$_};
+		$def =~ s/$arg/\$\{$arg\}/g;
+		print PREAMBLE <<DEFINE;
+unless (defined &$macro) { sub $macro(\$) { my (\$$arg) = \@_; \"$def\" } }
 
-            if ($define{$_} =~ /^(\d+)U?L{0,2}$/i) {
-                print PREAMBLE
-                    "unless (defined &$_) { sub $_() { $1 } }\n\n";
-            } elsif ($define{$_} =~ /^\w+$/) {
-                print PREAMBLE
-                    "unless (defined &$_) { sub $_() { &$define{$_} } }\n\n";
-            } else {
-                print PREAMBLE
-                    "unless (defined &$_) { sub $_() { \"",
-                    quotemeta($define{$_}), "\" } }\n\n";
-            }
-        }
+DEFINE
+	    } elsif
+		($define{$_} =~ /^([+-]?(\d+)?\.\d+([eE][+-]?\d+)?)[FL]?$/) {
+		# float:
+		print PREAMBLE
+		    "unless (defined &$_) { sub $_() { $1 } }\n\n";
+	    } elsif ($define{$_} =~ /^([+-]?\d+)U?L{0,2}$/i) {
+		# integer:
+		print PREAMBLE
+		    "unless (defined &$_) { sub $_() { $1 } }\n\n";
+	    } elsif ($define{$_} =~ /^\w+$/) {
+		my $def = $define{$_};
+		if ($isatype{$def}) {
+		  print PREAMBLE
+		    "unless (defined &$_) { sub $_() { \"$def\" } }\n\n";
+		} else {
+		  print PREAMBLE
+		    "unless (defined &$_) { sub $_() { &$def } }\n\n";
+	        }
+	    } else {
+		print PREAMBLE
+		    "unless (defined &$_) { sub $_() { \"",
+		    quotemeta($define{$_}), "\" } }\n\n";
+	    }
+	}
+	print PREAMBLE "\n1;\n";  # avoid 'did not return a true value' when empty
     close PREAMBLE               or die "Cannot close $preamble:  $!";
 }
 
@@ -802,15 +851,14 @@ sub _extract_cc_defines
 {
     my %define;
     my $allsymbols  = join " ",
-        @Config{'ccsymbols', 'cppsymbols', 'cppccsymbols'};
+	@Config{'ccsymbols', 'cppsymbols', 'cppccsymbols'};
 
     # Split compiler pre-definitions into `key=value' pairs:
-    foreach (split /\s+/, $allsymbols) {
-        /(.+?)=(.+)/ and $define{$1} = $2;
-
-        if ($opt_D) {
-            print STDERR "$_:  $1 -> $2\n";
-        }
+    while ($allsymbols =~ /([^\s]+)=((\\\s|[^\s])+)/g) {
+	$define{$1} = $2;
+	if ($opt_D) {
+	    print STDERR "$_:  $1 -> $2\n";
+	}
     }
 
     return %define;
@@ -860,7 +908,7 @@ If run with no arguments, filters standard input to standard output.
 =item -d destination_dir
 
 Put the resulting B<.ph> files beneath B<destination_dir>, instead of
-beneath the default Perl library location (C<$Config{'installsitsearch'}>).
+beneath the default Perl library location (C<$Config{'installsitearch'}>).
 
 =item -r
 
@@ -945,10 +993,10 @@ installation.
 Doesn't handle complicated expressions built piecemeal, a la:
 
     enum {
-        FIRST_VALUE,
-        SECOND_VALUE,
+	FIRST_VALUE,
+	SECOND_VALUE,
     #ifdef ABC
-        THIRD_VALUE
+	THIRD_VALUE
     #endif
     };
 

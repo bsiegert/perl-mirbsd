@@ -1,13 +1,29 @@
 #!/usr/bin/perl -w
+# 
+# Unconditionally regenerate:
+#
+#    pod/perlintern.pod
+#    pod/perlapi.pod
+#
+# from information stored in
+#
+#    embed.fnc
+#    plus all the .c and .h files listed in MANIFEST
+#
+# Has an optional arg, which is the directory to chdir to before reading
+# MANIFEST and *.[ch].
+#
+# This script is normally invoked as part of 'make all', but is also
+# called from from regen.pl.
+#
+# '=head1' are the only headings looked for.  If the next line after the
+# heading begins with a word character, it is considered to be the first line
+# of documentation that applies to the heading itself.  That is, it is output
+# immediately after the heading, before the first function, and not indented.
+# The next input line that is a pod directive terminates this heading-level
+# documentation.
 
-require 5.003;	# keep this compatible, an old perl is all we may have before
-                # we build the new one
-
-BEGIN {
-  push @INC, 'lib';
-  require 'regen_lib.pl';
-}
-
+use strict;
 
 #
 # See database of global and static function prototypes in embed.fnc
@@ -16,65 +32,59 @@ BEGIN {
 # implicit interpreter context argument.
 #
 
-open IN, "embed.fnc" or die $!;
-
-# walk table providing an array of components in each line to
-# subroutine, printing the result
-sub walk_table (&@) {
-    my $function = shift;
-    my $filename = shift || '-';
-    my $leader = shift;
-    my $trailer = shift;
-    my $F;
-    local *F;
-    if (ref $filename) {	# filehandle
-	$F = $filename;
-    }
-    else {
-	safer_unlink $filename;
-	open F, ">$filename" or die "Can't open $filename: $!";
-	binmode F;
-	$F = \*F;
-    }
-    print $F $leader if $leader;
-    seek IN, 0, 0;		# so we may restart
-    while (<IN>) {
-	chomp;
-	next if /^:/;
-	while (s|\\\s*$||) {
-	    $_ .= <IN>;
-	    chomp;
-	}
-	s/\s+$//;
-	my @args;
-	if (/^\s*(#|$)/) {
-	    @args = $_;
-	}
-	else {
-	    @args = split /\s*\|\s*/, $_;
-	}
-	s/\b(NN|NULLOK)\b\s+//g for @args;
-	print $F $function->(@args);
-    }
-    print $F $trailer if $trailer;
-    unless (ref $filename) {
-	close $F or die "Error closing $filename: $!";
-    }
-}
-
-my %apidocs;
-my %gutsdocs;
-my %docfuncs;
+my %docs;
+my %funcflags;
+my %macro = (
+	     ax => 1,
+	     items => 1,
+	     ix => 1,
+	     svtype => 1,
+	    );
+my %missing;
 
 my $curheader = "Unknown section";
 
 sub autodoc ($$) { # parse a file and extract documentation info
     my($fh,$file) = @_;
-    my($in, $doc, $line);
+    my($in, $doc, $line, $header_doc);
 FUNC:
     while (defined($in = <$fh>)) {
+	if ($in =~ /^#\s*define\s+([A-Za-z_][A-Za-z_0-9]+)\(/ &&
+	    ($file ne 'embed.h' || $file ne 'proto.h')) {
+	    $macro{$1} = $file;
+	    next FUNC;
+	}
         if ($in=~ /^=head1 (.*)/) {
             $curheader = $1;
+
+            # If the next line begins with a word char, then is the start of
+            # heading-level documentation.
+	    if (defined($doc = <$fh>)) {
+                if ($doc !~ /^\w/) {
+                    $in = $doc;
+                    redo FUNC;
+                }
+                $header_doc = $doc;
+                $line++;
+
+                # Continue getting the heading-level documentation until read
+                # in any pod directive (or as a fail-safe, find a closing
+                # comment to this pod in a C language file
+HDR_DOC:
+                while (defined($doc = <$fh>)) {
+                    if ($doc =~ /^=\w/) {
+                        $in = $doc;
+                        redo FUNC;
+                    }
+                    $line++;
+
+                    if ($doc =~ m:^\s*\*/$:) {
+                        warn "=cut missing? $file:$line:$doc";;
+                        last HDR_DOC;
+                    }
+                    $header_doc .= $doc;
+                }
+            }
             next FUNC;
         }
 	$line++;
@@ -94,17 +104,56 @@ DOC:
 		$docs .= $doc;
 	    }
 	    $docs = "\n$docs" if $docs and $docs !~ /^\n/;
+
+	    # Check the consistency of the flags
+	    my ($embed_where, $inline_where);
+	    my ($embed_may_change, $inline_may_change);
+
+	    my $docref = delete $funcflags{$name};
+	    if ($docref and %$docref) {
+		$embed_where = $docref->{flags} =~ /A/ ? 'api' : 'guts';
+		$embed_may_change = $docref->{flags} =~ /M/;
+	    } else {
+		$missing{$name} = $file;
+	    }
 	    if ($flags =~ /m/) {
-		if ($flags =~ /A/) {
-		    $apidocs{$curheader}{$name} = [$flags, $docs, $ret, $file, @args];
+		$inline_where = $flags =~ /A/ ? 'api' : 'guts';
+		$inline_may_change = $flags =~ /x/;
+
+		if (defined $embed_where && $inline_where ne $embed_where) {
+		    warn "Function '$name' inconsistency: embed.fnc says $embed_where, Pod says $inline_where";
 		}
-		else {
-		    $gutsdocs{$curheader}{$name} = [$flags, $docs, $ret, $file, @args];
+
+		if (defined $embed_may_change
+		    && $inline_may_change ne $embed_may_change) {
+		    my $message = "Function '$name' inconsistency: ";
+		    if ($embed_may_change) {
+			$message .= "embed.fnc says 'may change', Pod does not";
+		    } else {
+			$message .= "Pod says 'may change', embed.fnc does not";
+		    }
+		    warn $message;
 		}
+	    } elsif (!defined $embed_where) {
+		warn "Unable to place $name!\n";
+		next;
+	    } else {
+		$inline_where = $embed_where;
+		$flags .= 'x' if $embed_may_change;
+		@args = @{$docref->{args}};
+		$ret = $docref->{retval};
 	    }
-	    else {
-		$docfuncs{$name} = [$flags, $docs, $ret, $file, $curheader, @args];
-	    }
+
+	    $docs{$inline_where}{$curheader}{$name}
+		= [$flags, $docs, $ret, $file, @args];
+
+            # Create a special entry with an empty-string name for the
+            # heading-level documentation.
+	    if (defined $header_doc) {
+                $docs{$inline_where}{$curheader}{""} = $header_doc;
+                undef $header_doc;
+            }
+
 	    if (defined $doc) {
 		if ($doc =~ /^=(?:for|head)/) {
 		    $in = $doc;
@@ -126,6 +175,8 @@ sub docout ($$$) { # output the docs for one function
 removed without notice.\n\n" if $flags =~ /x/;
     $docs .= "NOTE: the perl_ form of this function is deprecated.\n\n"
 	if $flags =~ /p/;
+    $docs .= "NOTE: this function must be explicitly called as Perl_$name with an aTHX_ parameter.\n\n"
+        if $flags =~ /o/;
 
     print $fh "=item $name\nX<$name>\n$docs";
 
@@ -135,12 +186,113 @@ removed without notice.\n\n" if $flags =~ /x/;
 	print $fh "\t\t$name;\n\n";
     } elsif ($flags =~ /n/) { # no args
 	print $fh "\t$ret\t$name\n\n";
+    } elsif ($flags =~ /o/) { # no #define foo Perl_foo
+        print $fh "\t$ret\tPerl_$name";
+        print $fh "(" . (@args ? "pTHX_ " : "pTHX");
+        print $fh join(", ", @args) . ")\n\n";
     } else { # full usage
 	print $fh "\t$ret\t$name";
 	print $fh "(" . join(", ", @args) . ")";
 	print $fh "\n\n";
     }
     print $fh "=for hackers\nFound in file $file\n\n";
+}
+
+sub output {
+    my ($podname, $header, $dochash, $missing, $footer) = @_;
+    my $filename = "pod/$podname.pod";
+    open my $fh, '>', $filename or die "Can't open $filename: $!";
+
+    print $fh <<"_EOH_", $header;
+-*- buffer-read-only: t -*-
+
+!!!!!!!   DO NOT EDIT THIS FILE   !!!!!!!
+This file is built by $0 extracting documentation from the C source
+files.
+
+_EOH_
+
+    my $key;
+    # case insensitive sort, with fallback for determinacy
+    for $key (sort { uc($a) cmp uc($b) || $a cmp $b } keys %$dochash) {
+	my $section = $dochash->{$key}; 
+	print $fh "\n=head1 $key\n\n";
+
+        # Output any heading-level documentation and delete so won't get in
+        # the way later
+        if (exists $section->{""}) {
+            print $fh $section->{""} . "\n";
+            delete $section->{""};
+        }
+	print $fh "=over 8\n\n";
+
+	# Again, fallback for determinacy
+	for my $key (sort { uc($a) cmp uc($b) || $a cmp $b } keys %$section) {
+	    docout($fh, $key, $section->{$key});
+	}
+	print $fh "\n=back\n";
+    }
+
+    if (@$missing) {
+        print $fh "\n=head1 Undocumented functions\n\n";
+    print $fh <<'_EOB_';
+The following functions have been flagged as part of the public API,
+but are currently undocumented. Use them at your own risk, as the
+interfaces are subject to change.
+
+If you use one of them, you may wish to consider creating and submitting
+documentation for it. If your patch is accepted, this will indicate that
+the interface is stable (unless it is explicitly marked otherwise).
+
+=over
+
+_EOB_
+    for my $missing (sort @$missing) {
+        print $fh "=item $missing\nX<$missing>\n\n";
+    }
+    print $fh "=back\n\n";
+}
+
+print $fh $footer, <<'_EOF_';
+=cut
+
+ ex: set ro:
+_EOF_
+
+    close $fh or die "Can't close $filename: $!";
+}
+
+if (@ARGV) {
+    my $workdir = shift;
+    chdir $workdir
+        or die "Couldn't chdir to '$workdir': $!";
+}
+
+open IN, "embed.fnc" or die $!;
+
+while (<IN>) {
+    chomp;
+    next if /^:/;
+    while (s|\\\s*$||) {
+	$_ .= <IN>;
+	chomp;
+    }
+    s/\s+$//;
+    next if /^\s*(#|$)/;
+
+    my ($flags, $retval, $func, @args) = split /\s*\|\s*/, $_;
+
+    next unless $func;
+
+    s/\b(NN|NULLOK)\b\s+//g for @args;
+    $func =~ s/\t//g; # clean up fields from embed.pl
+    $retval =~ s/\t//;
+
+    $funcflags{$func} = {
+			 flags => $flags,
+			 retval => $retval,
+			 args => \@args,
+			};
 }
 
 my $file;
@@ -159,43 +311,25 @@ for $file (($MANIFEST =~ /^(\S+\.c)\t/gm), ($MANIFEST =~ /^(\S+\.h)\t/gm)) {
     close F or die "Error closing $file: $!\n";
 }
 
-safer_unlink "pod/perlapi.pod";
-open (DOC, ">pod/perlapi.pod") or
-	die "Can't create pod/perlapi.pod: $!\n";
-binmode DOC;
-
-walk_table {	# load documented functions into approriate hash
-    if (@_ > 1) {
-	my($flags, $retval, $func, @args) = @_;
-	return "" unless $flags =~ /d/;
-	$func =~ s/\t//g; $flags =~ s/p//; # clean up fields from embed.pl
-	$retval =~ s/\t//;
-	my $docref = delete $docfuncs{$func};
-	if ($docref and @$docref) {
-	    if ($flags =~ /A/) {
-		$docref->[0].="x" if $flags =~ /M/;
-		$apidocs{$docref->[4]}{$func} = 
-		    [$docref->[0] . 'A', $docref->[1], $retval,
-		    				$docref->[3], @args];
-	    } else {
-		$gutsdocs{$docref->[4]}{$func} = 
-		    [$docref->[0], $docref->[1], $retval, $docref->[3], @args];
-	    }
-	}
-	else {
-	    warn "no docs for $func\n" unless $docref and @$docref;
-	}
-    }
-    return "";
-} \*DOC;
-
-for (sort keys %docfuncs) {
-    # Have you used a full for apidoc or just a func name?
-    # Have you used Ap instead of Am in the for apidoc?
-    warn "Unable to place $_!\n";
+for (sort keys %funcflags) {
+    next unless $funcflags{$_}{flags} =~ /d/;
+    warn "no docs for $_\n"
 }
 
-print DOC <<'_EOB_';
+foreach (sort keys %missing) {
+    next if $macro{$_};
+    # Heuristics for known not-a-function macros:
+    next if /^[A-Z]/;
+    next if /^dj?[A-Z]/;
+
+    warn "Function '$_', documented in $missing{$_}, not listed in embed.fnc";
+}
+
+# walk table providing an array of components in each line to
+# subroutine, printing the result
+
+my @missing_api = grep $funcflags{$_}{flags} =~ /A/ && !$docs{api}{$_}, keys %funcflags;
+output('perlapi', <<'_EOB_', $docs{api}, \@missing_api, <<'_EOE_');
 =head1 NAME
 
 perlapi - autogenerated documentation for the perl public API
@@ -205,32 +339,43 @@ X<Perl API> X<API> X<api>
 
 This file contains the documentation of the perl public API generated by
 embed.pl, specifically a listing of functions, macros, flags, and variables
-that may be used by extension writers.  The interfaces of any functions that
-are not listed here are subject to change without notice.  For this reason,
-blindly using functions listed in proto.h is to be avoided when writing
-extensions.
+that may be used by extension writers.  L<At the end|/Undocumented functions>
+is a list of functions which have yet to be documented.  The interfaces of
+those are subject to change without notice.  Any functions not listed here are
+not part of the public API, and should not be used by extension writers at
+all.  For these reasons, blindly using functions listed in proto.h is to be
+avoided when writing extensions.
 
 Note that all Perl API global variables must be referenced with the C<PL_>
 prefix.  Some macros are provided for compatibility with the older,
 unadorned names, but this support may be disabled in a future release.
 
-The listing is alphabetical, case insensitive.
+Perl was originally written to handle US-ASCII only (that is characters
+whose ordinal numbers are in the range 0 - 127).
+And documentation and comments may still use the term ASCII, when
+sometimes in fact the entire range from 0 - 255 is meant.
+
+Note that Perl can be compiled and run under EBCDIC (See L<perlebcdic>)
+or ASCII.  Most of the documentation (and even comments in the code)
+ignore the EBCDIC possibility.  
+For almost all purposes the differences are transparent.
+As an example, under EBCDIC,
+instead of UTF-8, UTF-EBCDIC is used to encode Unicode strings, and so
+whenever this documentation refers to C<utf8>
+(and variants of that name, including in function names),
+it also (essentially transparently) means C<UTF-EBCDIC>.
+But the ordinals of characters differ between ASCII, EBCDIC, and
+the UTF- encodings, and a string encoded in UTF-EBCDIC may occupy more bytes
+than in UTF-8.
+
+Also, on some EBCDIC machines, functions that are documented as operating on
+US-ASCII (or Basic Latin in Unicode terminology) may in fact operate on all
+256 characters in the EBCDIC range, not just the subset corresponding to
+US-ASCII.
+
+The listing below is alphabetical, case insensitive.
 
 _EOB_
-
-my $key;
-# case insensitive sort, with fallback for determinacy
-for $key (sort { uc($a) cmp uc($b) || $a cmp $b } keys %apidocs) {
-    my $section = $apidocs{$key}; 
-    print DOC "\n=head1 $key\n\n=over 8\n\n";
-    # Again, fallback for determinacy
-    for my $key (sort { uc($a) cmp uc($b) || $a cmp $b } keys %$section) {
-        docout(\*DOC, $key, $section->{$key});
-    }
-    print DOC "\n=back\n";
-}
-
-print DOC <<'_EOE_';
 
 =head1 AUTHORS
 
@@ -248,18 +393,13 @@ Updated to be autogenerated from comments in the source by Benjamin Stuhl.
 
 =head1 SEE ALSO
 
-perlguts(1), perlxs(1), perlxstut(1), perlintern(1)
+L<perlguts>, L<perlxs>, L<perlxstut>, L<perlintern>
 
 _EOE_
 
+my @missing_guts = grep $funcflags{$_}{flags} !~ /A/ && !$docs{guts}{$_}, keys %funcflags;
 
-close(DOC) or die "Error closing pod/perlapi.pod: $!";
-
-safer_unlink "pod/perlintern.pod";
-open(GUTS, ">pod/perlintern.pod") or
-		die "Unable to create pod/perlintern.pod: $!\n";
-binmode GUTS;
-print GUTS <<'END';
+output('perlintern', <<'END', $docs{guts}, \@missing_guts, <<'END');
 =head1 NAME
 
 perlintern - autogenerated documentation of purely B<internal>
@@ -275,17 +415,6 @@ B<they are not for use in extensions>!
 
 END
 
-for $key (sort { uc($a) cmp uc($b); } keys %gutsdocs) {
-    my $section = $gutsdocs{$key}; 
-    print GUTS "\n=head1 $key\n\n=over 8\n\n";
-    for my $key (sort { uc($a) cmp uc($b); } keys %$section) {
-        docout(\*GUTS, $key, $section->{$key});
-    }
-    print GUTS "\n=back\n";
-}
-
-print GUTS <<'END';
-
 =head1 AUTHORS
 
 The autodocumentation system was originally added to the Perl core by
@@ -294,8 +423,6 @@ document their functions.
 
 =head1 SEE ALSO
 
-perlguts(1), perlapi(1)
+L<perlguts>, L<perlapi>
 
 END
-
-close GUTS or die "Error closing pod/perlintern.pod: $!";

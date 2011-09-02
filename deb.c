@@ -1,7 +1,7 @@
 /*    deb.c
  *
- *    Copyright (C) 1991, 1992, 1993, 1994, 1995, 1996, 1998, 1999,
- *    2000, 2001, 2002, 2003, 2004, 2005, by Larry Wall and others
+ *    Copyright (C) 1991, 1992, 1993, 1994, 1995, 1996, 1998, 1999, 2000, 2001,
+ *    2002, 2003, 2004, 2005, 2006, 2007, 2008 by Larry Wall and others
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
@@ -9,8 +9,10 @@
  */
 
 /*
- * "Didst thou think that the eyes of the White Tower were blind?  Nay, I
- * have seen more than thou knowest, Gray Fool."  --Denethor
+ * 'Didst thou think that the eyes of the White Tower were blind?  Nay,
+ *  I have seen more than thou knowest, Grey Fool.'        --Denethor
+ *
+ *     [p.853 of _The Lord of the Rings_, V/vii: "The Pyre of Denethor"]
  */
 
 /*
@@ -29,9 +31,12 @@ Perl_deb_nocontext(const char *pat, ...)
 #ifdef DEBUGGING
     dTHX;
     va_list args;
+    PERL_ARGS_ASSERT_DEB_NOCONTEXT;
     va_start(args, pat);
     vdeb(pat, &args);
     va_end(args);
+#else
+    PERL_UNUSED_ARG(pat);
 #endif /* DEBUGGING */
 }
 #endif
@@ -39,30 +44,38 @@ Perl_deb_nocontext(const char *pat, ...)
 void
 Perl_deb(pTHX_ const char *pat, ...)
 {
-#ifdef DEBUGGING
     va_list args;
+    PERL_ARGS_ASSERT_DEB;
     va_start(args, pat);
+#ifdef DEBUGGING
     vdeb(pat, &args);
-    va_end(args);
+#else
+    PERL_UNUSED_CONTEXT;
 #endif /* DEBUGGING */
+    va_end(args);
 }
 
 void
 Perl_vdeb(pTHX_ const char *pat, va_list *args)
 {
 #ifdef DEBUGGING
-    char* file = OutCopFILE(PL_curcop);
+    dVAR;
+    const char* const file = PL_curcop ? OutCopFILE(PL_curcop) : "<null>";
+    const char* const display_file = file ? file : "<free>";
+    const long line = PL_curcop ? (long)CopLINE(PL_curcop) : 0;
 
-#ifdef USE_5005THREADS
-    PerlIO_printf(Perl_debug_log, "0x%"UVxf" (%s:%ld)\t",
-		  PTR2UV(thr),
-		  (file ? file : "<free>"),
-		  (long)CopLINE(PL_curcop));
-#else
-    PerlIO_printf(Perl_debug_log, "(%s:%ld)\t", (file ? file : "<free>"),
-		  (long)CopLINE(PL_curcop));
-#endif /* USE_5005THREADS */
+    PERL_ARGS_ASSERT_VDEB;
+
+    if (DEBUG_v_TEST)
+	PerlIO_printf(Perl_debug_log, "(%ld:%s:%ld)\t",
+		      (long)PerlProc_getpid(), display_file, line);
+    else
+	PerlIO_printf(Perl_debug_log, "(%s:%ld)\t", display_file, line);
     (void) PerlIO_vprintf(Perl_debug_log, pat, *args);
+#else
+    PERL_UNUSED_CONTEXT;
+    PERL_UNUSED_ARG(pat);
+    PERL_UNUSED_ARG(args);
 #endif /* DEBUGGING */
 }
 
@@ -70,6 +83,7 @@ I32
 Perl_debstackptrs(pTHX)
 {
 #ifdef DEBUGGING
+    dVAR;
     PerlIO_printf(Perl_debug_log,
 		  "%8"UVxf" %8"UVxf" %8"IVdf" %8"IVdf" %8"IVdf"\n",
 		  PTR2UV(PL_curstack), PTR2UV(PL_stack_base),
@@ -99,8 +113,12 @@ S_deb_stack_n(pTHX_ SV** stack_base, I32 stack_min, I32 stack_max,
 	I32 mark_min, I32 mark_max)
 {
 #ifdef DEBUGGING
+    dVAR;
     register I32 i = stack_max - 30;
     const I32 *markscan = PL_markstack + mark_min;
+
+    PERL_ARGS_ASSERT_DEB_STACK_N;
+
     if (i < stack_min)
 	i = stack_min;
     
@@ -129,6 +147,13 @@ S_deb_stack_n(pTHX_ SV** stack_base, I32 stack_min, I32 stack_max,
     }
     while (1);
     PerlIO_printf(Perl_debug_log, "\n");
+#else
+    PERL_UNUSED_CONTEXT;
+    PERL_UNUSED_ARG(stack_base);
+    PERL_UNUSED_ARG(stack_min);
+    PERL_UNUSED_ARG(stack_max);
+    PERL_UNUSED_ARG(mark_min);
+    PERL_UNUSED_ARG(mark_max);
 #endif /* DEBUGGING */
 }
 
@@ -139,6 +164,7 @@ I32
 Perl_debstack(pTHX)
 {
 #ifndef SKIP_DEBUGGING
+    dVAR;
     if (CopSTASH_eq(PL_curcop, PL_debstash) && !DEBUG_J_TEST_)
 	return 0;
 
@@ -156,7 +182,7 @@ Perl_debstack(pTHX)
 
 
 #ifdef DEBUGGING
-static const char * si_names[] = {
+static const char * const si_names[] = {
     "UNKNOWN",
     "UNDEF",
     "MAIN",
@@ -178,8 +204,9 @@ void
 Perl_deb_stack_all(pTHX)
 {
 #ifdef DEBUGGING
-    I32		 ix, si_ix;
-    PERL_SI	 *si;
+    dVAR;
+    I32 si_ix;
+    const PERL_SI *si;
 
     /* rewind to start of chain */
     si = PL_curstackinfo;
@@ -189,14 +216,15 @@ Perl_deb_stack_all(pTHX)
     si_ix=0;
     for (;;)
     {
-        const int si_name_ix = si->si_type+1; /* -1 is a valid index */
-        const char *si_name = (si_name_ix>= sizeof(si_names)) ? "????" : si_names[si_name_ix];
+        const size_t si_name_ix = si->si_type+1; /* -1 is a valid index */
+        const char * const si_name = (si_name_ix >= sizeof(si_names)) ? "????" : si_names[si_name_ix];
+	I32 ix;
 	PerlIO_printf(Perl_debug_log, "STACK %"IVdf": %s\n",
 						(IV)si_ix, si_name);
 
 	for (ix=0; ix<=si->si_cxix; ix++) {
 
-	    const PERL_CONTEXT *cx = &(si->si_cxstack[ix]);
+	    const PERL_CONTEXT * const cx = &(si->si_cxstack[ix]);
 	    PerlIO_printf(Perl_debug_log,
 		    "  CX %"IVdf": %-6s => ",
 		    (IV)ix, PL_block_type[CxTYPE(cx)]
@@ -206,18 +234,15 @@ Perl_deb_stack_all(pTHX)
 		PerlIO_printf(Perl_debug_log, "\n");
 	    else {
 
-		/* Find the current context's stack range by searching
+		/* Find the the current context's stack range by searching
 		 * forward for any higher contexts using this stack; failing
 		 * that, it will be equal to the size of the stack for old
 		 * stacks, or PL_stack_sp for the current stack
 		 */
 
 		I32 i, stack_min, stack_max, mark_min, mark_max;
-		I32 ret_min, ret_max;
-		PERL_CONTEXT *cx_n;
-		PERL_SI      *si_n;
-
-		cx_n = Null(PERL_CONTEXT*);
+		const PERL_CONTEXT *cx_n = NULL;
+		const PERL_SI *si_n;
 
 		/* there's a separate stack per SI, so only search
 		 * this one */
@@ -246,7 +271,7 @@ Perl_deb_stack_all(pTHX)
 
 		si_n = si;
 		i = ix;
-		cx_n = Null(PERL_CONTEXT*);
+		cx_n = NULL;
 		for (;;) {
 		    i++;
 		    if (i > si_n->si_cxix) {
@@ -264,27 +289,25 @@ Perl_deb_stack_all(pTHX)
 		}
 
 		mark_min  = cx->blk_oldmarksp;
-		ret_min   = cx->blk_oldretsp;
 		if (cx_n) {
 		    mark_max  = cx_n->blk_oldmarksp;
-		    ret_max   = cx_n->blk_oldretsp;
 		}
 		else {
 		    mark_max = PL_markstack_ptr - PL_markstack;
-		    ret_max  = PL_retstack_ix;
 		}
 
 		deb_stack_n(AvARRAY(si->si_stack),
 			stack_min, stack_max, mark_min, mark_max);
 
-		if (ret_max > ret_min) {
+		if (CxTYPE(cx) == CXt_EVAL || CxTYPE(cx) == CXt_SUB
+			|| CxTYPE(cx) == CXt_FORMAT)
+		{
+		    const OP * const retop = cx->blk_sub.retop;
+
 		    PerlIO_printf(Perl_debug_log, "  retop=%s\n",
-			    PL_retstack[ret_min]
-				? OP_NAME(PL_retstack[ret_min])
-				: "(null)"
+			    retop ? OP_NAME(retop) : "(null)"
 		    );
 		}
-
 	    }
 	} /* next context */
 
@@ -298,6 +321,8 @@ Perl_deb_stack_all(pTHX)
     } /* next stackinfo */
 
     PerlIO_printf(Perl_debug_log, "\n");
+#else
+    PERL_UNUSED_CONTEXT;
 #endif /* DEBUGGING */
 }
 

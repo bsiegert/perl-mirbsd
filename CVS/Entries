@@ -1,226 +1,266 @@
-/AUTHORS/1.1.1.2/Fri Jun 30 22:34:17 2006//
+/AUTHORS/1.1.1.2/Result of merge//
 /Artistic/1.1.1.1/Sat Feb  5 17:22:15 2005//
-/Changes/1.1.1.2/Fri Jun 30 22:34:17 2006//
-/Changes5.000/1.1.1.1/Sat Feb  5 17:22:15 2005//
-/Changes5.001/1.1.1.1/Sat Feb  5 17:22:15 2005//
-/Changes5.002/1.1.1.1/Sat Feb  5 17:22:15 2005//
-/Changes5.003/1.1.1.1/Sat Feb  5 17:22:15 2005//
-/Changes5.004/1.1.1.1/Sat Feb  5 17:22:15 2005//
-/Changes5.005/1.1.1.1/Sat Feb  5 17:22:15 2005//
-/Changes5.6/1.1.1.1/Sat Feb  5 17:22:16 2005//
-/Changes5.8/1.1.1.2/Fri Jun 30 22:34:42 2006//
-/Changes5.8.1/1.1.1.2/Fri Jun 30 22:35:13 2006//
-/Changes5.8.2/1.1.1.1/Sat Feb  5 17:22:23 2005//
-/Changes5.8.3/1.1.1.1/Sat Feb  5 17:22:23 2005//
-/Changes5.8.4/1.1.1.1/Sat Feb  5 17:22:23 2005//
-/Changes5.8.5/1.1.1.1/Sat Feb  5 17:22:23 2005//
-/Changes5.8.6/1.1.1.1/Fri Jun 30 22:35:20 2006//
-/Changes5.8.7/1.1.1.1/Fri Jun 30 22:35:20 2006//
-/Configure/1.6/Sat Dec 13 23:24:50 2008//
+/Changes/1.1.1.2/Result of merge//
+/Changes5.000/-1.1.1.1///
+/Changes5.001/-1.1.1.1///
+/Changes5.002/-1.1.1.1///
+/Changes5.003/-1.1.1.1///
+/Changes5.004/-1.1.1.1///
+/Changes5.005/-1.1.1.1///
+/Changes5.6/-1.1.1.1///
+/Changes5.8/-1.1.1.2///
+/Changes5.8.1/-1.1.1.2///
+/Changes5.8.2/-1.1.1.1///
+/Changes5.8.3/-1.1.1.1///
+/Changes5.8.4/-1.1.1.1///
+/Changes5.8.5/-1.1.1.1///
+/Changes5.8.6/-1.1.1.1///
+/Changes5.8.7/-1.1.1.1///
+/Configure/1.6/Result of merge//
 /Copying/1.1.1.1/Sat Feb  5 17:22:23 2005//
-/EXTERN.h/1.1.1.1/Sat Feb  5 17:22:23 2005//
-/INSTALL/1.1.1.2/Fri Jun 30 22:35:25 2006//
-/INTERN.h/1.1.1.1/Sat Feb  5 17:22:23 2005//
-/MANIFEST/1.1.1.3/Sat Dec 13 22:18:23 2008//
-/META.yml/1.1.1.2/Fri Jun 30 22:35:28 2006//
-/Makefile.SH/1.3/Fri Jun 30 23:15:04 2006//
-/Makefile.bsd-wrapper/1.32/Sun Mar 29 13:04:19 2009//
+/EXTERN.h/1.1.1.1/Result of merge//
+/INSTALL/1.1.1.2/Result of merge//
+/INTERN.h/1.1.1.1/Result of merge//
+/MANIFEST/1.1.1.3/Result of merge+Fri Sep  2 20:29:17 2011//
+/META.yml/1.1.1.2/Result of merge//
+/Makefile.SH/1.3/Result of merge+Fri Sep  2 20:29:17 2011//
+/Makefile.bsd-wrapper/-1.32///
 /Makefile.bsd-wrapper1/1.3/Sat Dec 13 23:47:31 2008//
-/Makefile.micro/1.1.1.1/Sat Feb  5 17:22:23 2005//
-/Policy_sh.SH/1.1.1.1/Sat Feb  5 17:22:23 2005//
-/README/1.1.1.2/Fri Jun 30 22:35:29 2006//
-/README.Y2K/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.aix/1.1.1.2/Fri Jun 30 22:35:30 2006//
-/README.amiga/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.apollo/1.1.1.1/Sat Feb  5 17:22:24 2005//
+/Makefile.micro/1.1.1.1/Result of merge//
+/Policy_sh.SH/1.1.1.1/Result of merge//
+/README/1.1.1.2/Result of merge//
+/README.Y2K/-1.1.1.1///
+/README.aix/1.1.1.2/Result of merge//
+/README.amiga/1.1.1.1/Result of merge//
+/README.apollo/-1.1.1.1///
 /README.beos/1.1.1.2/Fri Jun 30 22:35:30 2006//
-/README.bs2000/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.ce/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.cn/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.cygwin/1.1.1.2/Fri Jun 30 22:35:31 2006//
-/README.dgux/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.dos/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.epoc/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.freebsd/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.hpux/1.1.1.2/Fri Jun 30 22:35:32 2006//
+/README.bs2000/1.1.1.1/Result of merge//
+/README.ce/1.1.1.1/Result of merge//
+/README.cn/1.1.1.1/Result of merge//
+/README.cygwin/1.1.1.2/Result of merge//
+/README.dgux/1.1.1.1/Result of merge//
+/README.dos/1.1.1.1/Result of merge//
+/README.epoc/1.1.1.1/Result of merge//
+/README.freebsd/1.1.1.1/Result of merge//
+/README.haiku/1.1.131.1/Fri Sep  2 20:17:29 2011//
+/README.hpux/1.1.1.2/Result of merge//
 /README.hurd/1.1.1.2/Fri Jun 30 22:35:32 2006//
-/README.irix/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.jp/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.ko/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.linux/1.1.1.1/Fri Jun 30 22:35:33 2006//
-/README.machten/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.macos/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.macosx/1.1.1.2/Fri Jun 30 22:35:33 2006//
-/README.micro/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.mint/1.1.1.2/Fri Jun 30 22:35:34 2006//
-/README.mpeix/1.1.1.2/Fri Jun 30 22:35:34 2006//
-/README.netware/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.openbsd/1.1.1.1/Fri Jun 30 22:35:34 2006//
-/README.os2/1.1.1.2/Fri Jun 30 22:35:35 2006//
-/README.os390/1.1.1.2/Fri Jun 30 22:35:35 2006//
-/README.os400/1.1.1.1/Sat Feb  5 17:22:24 2005//
+/README.irix/1.1.1.1/Result of merge//
+/README.jp/1.1.1.1/Result of merge//
+/README.ko/1.1.1.1/Result of merge//
+/README.linux/1.1.1.1/Result of merge//
+/README.machten/-1.1.1.1///
+/README.macos/1.1.1.1/Result of merge//
+/README.macosx/1.1.1.2/Result of merge//
+/README.micro/1.1.1.1/Result of merge//
+/README.mint/-1.1.1.2///
+/README.mpeix/1.1.1.2/Result of merge//
+/README.netware/1.1.1.1/Result of merge//
+/README.openbsd/1.1.1.1/Result of merge//
+/README.os2/1.1.1.2/Result of merge//
+/README.os390/1.1.1.2/Result of merge//
+/README.os400/1.1.1.1/Result of merge//
 /README.plan9/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.qnx/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.solaris/1.1.1.2/Fri Jun 30 22:35:36 2006//
-/README.tru64/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.tw/1.1.1.1/Sat Feb  5 17:22:24 2005//
+/README.qnx/1.1.1.1/Result of merge//
+/README.riscos/1.1.131.1/Fri Sep  2 20:17:29 2011//
+/README.solaris/1.1.1.2/Result of merge//
+/README.symbian/1.1.131.1/Fri Sep  2 20:17:29 2011//
+/README.tru64/1.1.1.1/Result of merge//
+/README.tw/1.1.1.1/Result of merge//
 /README.uts/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.vmesa/1.1.1.2/Fri Jun 30 22:35:37 2006//
-/README.vms/1.1.1.2/Fri Jun 30 22:35:37 2006//
-/README.vos/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/README.win32/1.1.1.2/Fri Jun 30 22:35:38 2006//
-/Todo.micro/1.1.1.1/Sat Feb  5 17:22:24 2005//
-/XSUB.h/1.1.1.3/Sun Apr 29 20:07:32 2007//
-/autodoc.pl/1.1.1.2/Fri Jun 30 22:35:39 2006//
-/av.c/1.1.1.2/Fri Jun 30 22:35:39 2006//
-/av.h/1.1.1.1/Sat Feb  5 17:22:27 2005//
-/bytecode.pl/1.1.1.2/Fri Jun 30 22:35:40 2006//
-/cc_runtime.h/1.1.1.1/Sat Feb  5 17:22:27 2005//
-/cflags.SH/1.1.1.2/Fri Jun 30 22:35:40 2006//
-/config.over/1.4/Thu Sep 21 23:22:40 2006//
-/config_h.SH/1.1.1.2/Fri Jun 30 22:35:41 2006//
-/configpm/1.1.1.2/Fri Jun 30 22:35:43 2006//
-/configure.com/1.1.1.2/Fri Jun 30 22:35:43 2006//
-/configure.gnu/1.1.1.1/Sat Feb  5 17:22:28 2005//
-/cop.h/1.1.1.2/Fri Jun 30 22:35:45 2006//
-/cv.h/1.1.1.2/Fri Jun 30 22:35:45 2006//
-/deb.c/1.1.1.2/Fri Jun 30 22:35:46 2006//
-/doio.c/1.1.1.2/Fri Jun 30 22:35:46 2006//
-/doop.c/1.1.1.2/Fri Jun 30 22:35:47 2006//
-/dosish.h/1.1.1.1/Sat Feb  5 17:22:28 2005//
-/dump.c/1.1.1.2/Fri Jun 30 22:35:47 2006//
-/embed.fnc/1.1.1.2/Fri Jun 30 22:35:48 2006//
-/embed.h/1.1.1.2/Fri Jun 30 22:35:49 2006//
-/embed.pl/1.1.1.2/Fri Jun 30 22:35:51 2006//
-/embedvar.h/1.1.1.2/Fri Jun 30 22:35:51 2006//
-/fakesdio.h/1.1.1.1/Sat Feb  5 17:22:28 2005//
-/fakethr.h/1.1.1.1/Sat Feb  5 17:22:28 2005//
+/README.vmesa/1.1.1.2/Result of merge//
+/README.vms/1.1.1.2/Result of merge//
+/README.vos/1.1.1.1/Result of merge//
+/README.win32/1.1.1.2/Result of merge//
+/TestInit.pm/1.1.131.1/Fri Sep  2 20:17:29 2011//
+/Todo.micro/-1.1.1.1///
+/XSUB.h/1.1.1.3/Result of merge//
+/autodoc.pl/1.1.1.2/Result of merge//
+/av.c/1.1.1.2/Result of merge//
+/av.h/1.1.1.1/Result of merge//
+/bytecode.pl/-1.1.1.2///
+/cc_runtime.h/-1.1.1.1///
+/cflags.SH/1.1.1.2/Result of merge//
+/config.over/-1.4///
+/config_h.SH/1.1.1.2/Result of merge//
+/configpm/1.1.1.2/Result of merge//
+/configure.com/1.1.1.2/Result of merge//
+/configure.gnu/1.1.1.1/Result of merge//
+/cop.h/1.1.1.2/Result of merge//
+/cv.h/1.1.1.2/Result of merge//
+/deb.c/1.1.1.2/Result of merge//
+/doio.c/1.1.1.2/Result of merge//
+/doop.c/1.1.1.2/Result of merge//
+/dosish.h/1.1.1.1/Result of merge//
+/dquote_static.c/1.1.131.1/Fri Sep  2 20:17:29 2011//
+/dump.c/1.1.1.2/Result of merge//
+/embed.fnc/1.1.1.2/Result of merge//
+/embed.h/1.1.1.2/Result of merge//
+/embed.pl/-1.1.1.2///
+/embedvar.h/1.1.1.2/Result of merge//
+/fakesdio.h/1.1.1.1/Result of merge//
+/fakethr.h/1.1.1.1/Result of merge//
 /form.h/1.1.1.1/Sat Feb  5 17:22:28 2005//
-/genpacksizetables.pl/1.1.1.1/Fri Jun 30 22:35:52 2006//
-/global.sym/1.1.1.2/Fri Jun 30 22:34:16 2006//
-/globals.c/1.1.1.2/Fri Jun 30 22:35:52 2006//
-/globvar.sym/1.1.1.3/Fri Jun 30 22:35:52 2006//
-/gv.c/1.1.1.2/Fri Jun 30 22:35:53 2006//
-/gv.h/1.1.1.2/Fri Jun 30 22:35:53 2006//
-/handy.h/1.2/Sat Jun  9 18:31:31 2007//
-/hv.c/1.1.1.2/Fri Jun 30 22:35:54 2006//
-/hv.h/1.1.1.2/Fri Jun 30 22:35:55 2006//
-/installhtml/1.1.1.2/Fri Jun 30 22:35:55 2006//
-/installman/1.1.1.1/Sat Feb  5 17:22:28 2005//
-/installperl/1.1.1.2/Fri Jun 30 22:35:55 2006//
-/intrpvar.h/1.1.1.2/Fri Jun 30 22:35:56 2006//
-/iperlsys.h/1.1.1.2/Fri Jun 30 22:35:56 2006//
-/keywords.h/1.1.1.2/Fri Jun 30 22:35:57 2006//
-/keywords.pl/1.1.1.2/Fri Jun 30 22:35:57 2006//
-/locale.c/1.1.1.2/Fri Jun 30 22:35:57 2006//
-/makeaperl.SH/1.1.1.1/Sat Feb  5 17:22:28 2005//
-/makedef.pl/1.1.1.3/Fri Jun 30 22:35:58 2006//
-/makedepend.SH/1.1.1.1/Sat Feb  5 17:22:29 2005//
-/makedir.SH/1.1.1.1/Sat Feb  5 17:22:29 2005//
-/malloc.c/1.1.1.2/Fri Jun 30 22:35:59 2006//
-/malloc_ctl.h/1.1.1.1/Sat Feb  5 17:22:29 2005//
-/mg.c/1.1.1.3/Sun Apr 29 20:07:34 2007//
-/mg.h/1.1.1.2/Fri Jun 30 22:36:00 2006//
-/minimod.pl/1.1.1.2/Fri Jun 30 22:36:00 2006//
-/miniperlmain.c/1.1.1.2/Fri Jun 30 22:36:01 2006//
-/myconfig.SH/1.1.1.1/Sat Feb  5 17:22:29 2005//
-/nostdio.h/1.1.1.2/Fri Jun 30 22:36:01 2006//
-/numeric.c/1.1.1.2/Fri Jun 30 22:36:01 2006//
-/op.c/1.1.1.3/Fri Jun 30 22:36:02 2006//
-/op.h/1.1.1.2/Fri Jun 30 22:36:04 2006//
-/opcode.h/1.1.1.3/Fri Jun 30 22:36:04 2006//
-/opcode.pl/1.1.1.3/Fri Jun 30 22:36:05 2006//
-/opnames.h/1.1.1.2/Fri Jun 30 22:36:05 2006//
-/pad.c/1.1.1.2/Fri Jun 30 22:36:05 2006//
-/pad.h/1.1.1.2/Fri Jun 30 22:36:06 2006//
-/patchlevel.h/1.1.1.4/Fri Jun 30 22:36:06 2006//
-/perl.c/1.1.1.3/Fri Jun 30 22:36:07 2006//
-/perl.h/1.1.1.4/Sun Apr 29 20:07:35 2007//
-/perl_keyword.pl/1.1.1.1/Fri Jun 30 22:36:09 2006//
-/perlapi.c/1.1.1.2/Fri Jun 30 22:36:09 2006//
-/perlapi.h/1.1.1.2/Fri Jun 30 22:36:10 2006//
-/perlio.c/1.1.1.3/Fri Jun 30 22:36:10 2006//
-/perlio.h/1.1.1.2/Fri Jun 30 22:36:11 2006//
-/perlio.sym/1.1.1.1/Sat Feb  5 17:22:29 2005//
-/perliol.h/1.1.1.2/Fri Jun 30 22:36:12 2006//
-/perlsdio.h/1.1.1.1/Sat Feb  5 17:22:29 2005//
-/perlsfio.h/1.1.1.2/Fri Jun 30 22:36:12 2006//
+/generate_uudmap.c/1.1.131.1/Fri Sep  2 20:17:29 2011//
+/genpacksizetables.pl/1.1.1.1/Result of merge//
+/global.sym/1.1.1.2/Result of merge//
+/globals.c/1.1.1.2/Result of merge//
+/globvar.sym/1.1.1.3/Result of merge//
+/gv.c/1.1.1.2/Result of merge//
+/gv.h/1.1.1.2/Result of merge//
+/handy.h/1.2/Result of merge+Fri Sep  2 20:29:19 2011//
+/hv.c/1.1.1.2/Result of merge//
+/hv.h/1.1.1.2/Result of merge//
+/install_lib.pl/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/installhtml/1.1.1.2/Result of merge//
+/installman/1.1.1.1/Result of merge//
+/installperl/1.1.1.2/Result of merge//
+/intrpvar.h/1.1.1.2/Result of merge//
+/iperlsys.h/1.1.1.2/Result of merge//
+/keywords.c/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/keywords.h/1.1.1.2/Result of merge//
+/keywords.pl/-1.1.1.2///
+/l1_char_class_tab.h/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/locale.c/1.1.1.2/Result of merge//
+/madly.c/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/make_ext.pl/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/make_patchnum.pl/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/makeaperl.SH/-1.1.1.1///
+/makedef.pl/1.1.1.3/Result of merge//
+/makedepend.SH/1.1.1.1/Result of merge//
+/makedir.SH/-1.1.1.1///
+/malloc.c/1.1.1.2/Result of merge//
+/malloc_ctl.h/1.1.1.1/Result of merge//
+/mathoms.c/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/metaconfig.SH/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/metaconfig.h/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/mg.c/1.1.1.3/Result of merge//
+/mg.h/1.1.1.2/Result of merge//
+/minimod.pl/1.1.1.2/Result of merge//
+/miniperlmain.c/1.1.1.2/Result of merge//
+/mkppport/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/mkppport.lst/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/mro.c/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/myconfig.SH/1.1.1.1/Result of merge//
+/mydtrace.h/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/nostdio.h/1.1.1.2/Result of merge//
+/numeric.c/1.1.1.2/Result of merge//
+/op.c/1.1.1.3/Result of merge//
+/op.h/1.1.1.2/Result of merge//
+/op_reg_common.h/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/opcode.h/1.1.1.3/Result of merge//
+/opcode.pl/-1.1.1.3///
+/opnames.h/1.1.1.2/Result of merge//
+/overload.c/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/overload.h/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/pad.c/1.1.1.2/Result of merge//
+/pad.h/1.1.1.2/Result of merge//
+/parser.h/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/patchlevel.h/1.1.1.4/Result of merge//
+/perl.c/1.1.1.3/Result of merge//
+/perl.h/1.1.1.4/Result of merge//
+/perl_keyword.pl/-1.1.1.1///
+/perlapi.c/1.1.1.2/Result of merge//
+/perlapi.h/1.1.1.2/Result of merge//
+/perldtrace.d/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/perlio.c/1.1.1.3/Result of merge//
+/perlio.h/1.1.1.2/Result of merge//
+/perlio.sym/1.1.1.1/Result of merge//
+/perliol.h/1.1.1.2/Result of merge//
+/perlsdio.h/1.1.1.1/Result of merge//
+/perlsfio.h/1.1.1.2/Result of merge//
 /perlsh/1.1.1.1/Sat Feb  5 17:22:31 2005//
-/perlvars.h/1.1.1.2/Fri Jun 30 22:36:12 2006//
-/perly.c/1.4/Sat Dec 13 23:24:52 2008//
-/perly.fixer/1.1.1.1/Sat Feb  5 17:22:31 2005//
-/perly.h/1.1.1.1/Sat Feb  5 17:22:31 2005//
-/perly.y/1.1.1.2/Fri Jun 30 22:36:14 2006//
-/perly_c.diff/1.1.1.2/Fri Jun 30 22:36:14 2006//
-/perlyline.pl/1.1.1.1/Sat Feb  5 17:22:31 2005//
-/pod.lst/1.1.1.2/Fri Jun 30 22:36:15 2006//
-/pp.c/1.1.1.2/Fri Jun 30 22:36:15 2006//
-/pp.h/1.1.1.2/Fri Jun 30 22:36:16 2006//
-/pp.sym/1.1.1.2/Fri Jun 30 22:36:17 2006//
-/pp_ctl.c/1.1.1.2/Fri Jun 30 22:36:17 2006//
-/pp_hot.c/1.1.1.2/Fri Jun 30 22:36:18 2006//
-/pp_pack.c/1.1.1.2/Fri Jun 30 22:36:19 2006//
-/pp_proto.h/1.1.1.2/Fri Jun 30 22:36:20 2006//
-/pp_sort.c/1.1.1.2/Fri Jun 30 22:36:20 2006//
-/pp_sys.c/1.1.1.2/Fri Jun 30 22:36:21 2006//
-/proto.h/1.1.1.2/Fri Jun 30 22:36:22 2006//
-/reentr.c/1.1.1.2/Fri Jun 30 22:36:24 2006//
-/reentr.h/1.1.1.2/Fri Jun 30 22:36:24 2006//
-/reentr.inc/1.1.1.2/Fri Jun 30 22:36:24 2006//
-/reentr.pl/1.1.1.2/Fri Jun 30 22:36:26 2006//
-/regcomp.c/1.2/Tue Nov 20 20:52:11 2007//
-/regcomp.h/1.1.1.2/Fri Jun 30 22:36:28 2006//
-/regcomp.pl/1.1.1.2/Fri Jun 30 22:36:28 2006//
-/regcomp.sym/1.1.1.1/Sat Feb  5 17:22:32 2005//
-/regen.pl/1.1.1.2/Fri Jun 30 22:36:29 2006//
-/regen_lib.pl/1.1.1.1/Sat Feb  5 17:22:32 2005//
-/regexec.c/1.1.1.2/Fri Jun 30 22:36:29 2006//
-/regexp.h/1.1.1.1/Sat Feb  5 17:22:32 2005//
-/regnodes.h/1.1.1.2/Fri Jun 30 22:36:31 2006//
-/run.c/1.1.1.2/Fri Jun 30 22:36:31 2006//
-/scope.c/1.1.1.2/Fri Jun 30 22:36:31 2006//
-/scope.h/1.1.1.2/Fri Jun 30 22:36:31 2006//
-/shlib_version/1.5/Sat Dec 13 23:24:53 2008//
-/sv.c/1.2/Thu Sep 21 23:22:40 2006//
-/sv.h/1.1.1.2/Fri Jun 30 22:36:35 2006//
-/taint.c/1.1.1.2/Fri Jun 30 22:36:35 2006//
-/thrdvar.h/1.1.1.2/Fri Jun 30 22:36:36 2006//
-/thread.h/1.1.1.2/Fri Jun 30 22:36:36 2006//
-/toke.c/1.1.1.3/Fri Jun 30 22:36:37 2006//
-/uconfig.h/1.1.1.2/Fri Jun 30 22:36:40 2006//
-/uconfig.sh/1.1.1.2/Fri Jun 30 22:36:41 2006//
-/universal.c/1.1.1.2/Fri Jun 30 22:36:42 2006//
-/unixish.h/1.1.1.1/Sat Feb  5 17:22:33 2005//
-/utf8.c/1.1.1.2/Fri Jun 30 22:36:42 2006//
-/utf8.h/1.1.1.2/Fri Jun 30 22:36:43 2006//
-/utfebcdic.h/1.1.1.2/Fri Jun 30 22:36:43 2006//
-/util.c/1.1.1.2/Fri Jun 30 22:36:44 2006//
-/util.h/1.1.1.2/Fri Jun 30 22:36:45 2006//
-/utils.lst/1.1.1.1/Sat Feb  5 17:22:33 2005//
-/warnings.h/1.1.1.2/Fri Jun 30 22:36:45 2006//
-/warnings.pl/1.1.1.2/Fri Jun 30 22:36:45 2006//
-/writemain.SH/1.1.1.2/Fri Jun 30 22:36:46 2006//
-/xsutils.c/1.1.1.2/Fri Jun 30 22:36:46 2006//
+/perlvars.h/1.1.1.2/Result of merge//
+/perly.act/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/perly.c/1.4/Result of merge+Fri Sep  2 20:29:19 2011//
+/perly.fixer/-1.1.1.1///
+/perly.h/1.1.1.1/Result of merge//
+/perly.tab/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/perly.y/1.1.1.2/Result of merge//
+/perly_c.diff/-1.1.1.2///
+/perlyline.pl/-1.1.1.1///
+/pod.lst/1.1.1.2/Result of merge//
+/pp.c/1.1.1.2/Result of merge//
+/pp.h/1.1.1.2/Result of merge//
+/pp.sym/-1.1.1.2///
+/pp_ctl.c/1.1.1.2/Result of merge//
+/pp_hot.c/1.1.1.2/Result of merge//
+/pp_pack.c/1.1.1.2/Result of merge//
+/pp_proto.h/1.1.1.2/Result of merge//
+/pp_sort.c/1.1.1.2/Result of merge//
+/pp_sys.c/1.1.1.2/Result of merge//
+/proto.h/1.1.1.2/Result of merge//
+/reentr.c/1.1.1.2/Result of merge//
+/reentr.h/1.1.1.2/Result of merge//
+/reentr.inc/-1.1.1.2///
+/reentr.pl/-1.1.1.2///
+/regcharclass.h/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/regcomp.c/1.2/Result of merge+Fri Sep  2 20:29:20 2011//
+/regcomp.h/1.1.1.2/Result of merge//
+/regcomp.pl/-1.1.1.2///
+/regcomp.sym/1.1.1.1/Result of merge//
+/regen.pl/1.1.1.2/Result of merge//
+/regen_lib.pl/-1.1.1.1///
+/regen_perly.pl/1.1.131.1/Fri Sep  2 20:17:30 2011//
+/regexec.c/1.1.1.2/Result of merge//
+/regexp.h/1.1.1.1/Result of merge//
+/regnodes.h/1.1.1.2/Result of merge//
+/run.c/1.1.1.2/Result of merge//
+/runtests.SH/1.1.131.1/Fri Sep  2 20:17:31 2011//
+/scope.c/1.1.1.2/Result of merge//
+/scope.h/1.1.1.2/Result of merge//
+/shlib_version/-1.5///
+/sv.c/1.2/Result of merge+Fri Sep  2 20:29:20 2011//
+/sv.h/1.1.1.2/Result of merge//
+/taint.c/1.1.1.2/Result of merge//
+/thrdvar.h/-1.1.1.2///
+/thread.h/1.1.1.2/Result of merge//
+/time64.c/1.1.131.1/Fri Sep  2 20:17:31 2011//
+/time64.h/1.1.131.1/Fri Sep  2 20:17:31 2011//
+/time64_config.h/1.1.131.1/Fri Sep  2 20:17:31 2011//
+/toke.c/1.1.1.3/Result of merge//
+/uconfig.h/1.1.1.2/Result of merge//
+/uconfig.sh/1.1.1.2/Result of merge//
+/uconfig64.sh/1.1.131.1/Fri Sep  2 20:17:31 2011//
+/universal.c/1.1.1.2/Result of merge//
+/unixish.h/1.1.1.1/Result of merge//
+/utf8.c/1.1.1.2/Result of merge//
+/utf8.h/1.1.1.2/Result of merge//
+/utfebcdic.h/1.1.1.2/Result of merge//
+/util.c/1.1.1.2/Result of merge//
+/util.h/1.1.1.2/Result of merge//
+/utils.lst/1.1.1.1/Result of merge//
+/warnings.h/1.1.1.2/Result of merge//
+/warnings.pl/-1.1.1.2///
+/write_buildcustomize.pl/1.1.131.1/Fri Sep  2 20:17:31 2011//
+/writemain.SH/-1.1.1.2///
+/xsutils.c/-1.1.1.2///
 D/Cross////
 D/NetWare////
 D/Porting////
 D/apollo////
 D/beos////
+D/cpan////
 D/cygwin////
+D/dist////
 D/djgpp////
 D/emacs////
 D/epoc////
 D/ext////
 D/h2pl////
+D/haiku////
 D/hints////
 D/jpl////
 D/lib////
+D/mad////
 D/mint////
 D/mpeix////
 D/os2////
 D/plan9////
 D/pod////
 D/qnx////
+D/regen////
+D/symbian////
 D/t////
 D/utils////
 D/uts////

@@ -11,13 +11,21 @@ BEGIN {
 }
 
 use DirHandle;
-require './test.pl';
+use Test::More tests => 5;
 
-plan(5);
+# Fetching the list of files in two different ways and expecting them 
+# to be the same is a race condition when tests are running in parallel.
+# So go somewhere quieter.
+my $chdir;
+if ($ENV{PERL_CORE} && -d 'uni') {
+  chdir 'uni';
+  push @INC, '../../lib';
+  $chdir++;
+};
 
-$dot = new DirHandle ($^O eq 'MacOS' ? ':' : '.');
+$dot = DirHandle->new('.');
 
-ok(defined($dot));
+is(defined $dot, 1);
 
 @a = sort <*>;
 do { $first = $dot->read } while defined($first) && $first =~ /^\./;
@@ -28,8 +36,12 @@ ok(+(join("\0", @a) eq join("\0", @b)));
 
 $dot->rewind;
 @c = sort grep {/^[^.]/} $dot->read;
-cmp_ok(+(join("\0", @b), 'eq', join("\0", @c)));
+cmp_ok(join("\0", @b), 'eq', join("\0", @c));
 
 $dot->close;
 $dot->rewind;
-ok(!defined($dot->read));
+is(defined $dot->read, '');
+
+if ($chdir) {
+  chdir "..";
+}
