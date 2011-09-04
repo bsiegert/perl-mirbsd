@@ -1,38 +1,37 @@
-/ArabicShaping.txt/1.1.1.2/Result of merge//
-/BidiMirroring.txt/1.1.1.2/Result of merge//
-/Blocks.txt/1.1.1.2/Result of merge//
 /CJKRadicals.txt/1.1.131.1/Fri Sep  2 20:17:42 2011//
-/CaseFolding.txt/1.1.1.2/Result of merge//
-/CompositionExclusions.txt/1.1.1.2/Result of merge//
 /DAge.txt/1.1.131.1/Fri Sep  2 20:17:42 2011//
 /DCoreProperties.txt/1.1.131.1/Fri Sep  2 20:17:42 2011//
 /DNormalizationProps.txt/1.1.131.1/Fri Sep  2 20:17:42 2011//
-/EastAsianWidth.txt/1.1.1.2/Result of merge//
 /EmojiSources.txt/1.1.131.1/Fri Sep  2 20:17:42 2011//
-/HangulSyllableType.txt/1.1.1.2/Result of merge//
-/Index.txt/1.1.1.1/Result of merge//
 /IndicMatraCategory.txt/1.1.131.1/Fri Sep  2 20:17:42 2011//
 /IndicSyllabicCategory.txt/1.1.131.1/Fri Sep  2 20:17:42 2011//
-/Jamo.txt/1.1.1.2/Result of merge//
-/LineBreak.txt/1.1.1.2/Result of merge//
-/Makefile/1.1.1.1/Result of merge//
 /NameAliases.txt/1.1.131.1/Fri Sep  2 20:17:42 2011//
-/NamedSequences.txt/1.1.1.1/Result of merge//
 /NamedSqProv.txt/1.1.131.1/Fri Sep  2 20:17:42 2011//
-/NamesList.txt/1.1.1.2/Result of merge//
-/NormalizationCorrections.txt/1.1.1.2/Result of merge//
-/PropList.txt/1.1.1.2/Result of merge//
-/PropValueAliases.txt/1.1.1.2/Result of merge//
-/PropertyAliases.txt/1.1.1.2/Result of merge//
-/README.perl/1.1.1.2/Result of merge//
-/ReadMe.txt/1.1.1.2/Result of merge//
 /ScriptExtensions.txt/1.1.131.1/Fri Sep  2 20:17:42 2011//
-/Scripts.txt/1.1.1.2/Result of merge//
-/SpecialCasing.txt/1.1.1.2/Result of merge//
-/StandardizedVariants.txt/1.1.1.2/Result of merge//
-/UnicodeData.txt/1.1.1.2/Result of merge//
-/mktables/1.1.1.2/Result of merge//
-/mktables.lst/-1.1.1.1///
-/version/1.1.1.2/Result of merge//
 D/auxiliary////
 D/extracted////
+/ArabicShaping.txt/1.2/Fri Sep  2 20:29:38 2011//
+/BidiMirroring.txt/1.2/Fri Sep  2 20:29:38 2011//
+/Blocks.txt/1.2/Fri Sep  2 20:29:38 2011//
+/CaseFolding.txt/1.2/Fri Sep  2 20:29:38 2011//
+/CompositionExclusions.txt/1.2/Fri Sep  2 20:29:38 2011//
+/EastAsianWidth.txt/1.2/Fri Sep  2 20:29:38 2011//
+/HangulSyllableType.txt/1.2/Fri Sep  2 20:29:38 2011//
+/Index.txt/1.2/Fri Sep  2 20:29:38 2011//
+/Jamo.txt/1.2/Fri Sep  2 20:29:38 2011//
+/LineBreak.txt/1.2/Fri Sep  2 20:29:38 2011//
+/Makefile/1.2/Fri Sep  2 20:29:39 2011//
+/NamedSequences.txt/1.2/Fri Sep  2 20:29:39 2011//
+/NamesList.txt/1.2/Fri Sep  2 20:29:39 2011//
+/NormalizationCorrections.txt/1.2/Fri Sep  2 20:29:39 2011//
+/PropList.txt/1.2/Fri Sep  2 20:29:39 2011//
+/PropValueAliases.txt/1.2/Fri Sep  2 20:29:39 2011//
+/PropertyAliases.txt/1.2/Fri Sep  2 20:29:39 2011//
+/README.perl/1.2/Fri Sep  2 20:29:39 2011//
+/ReadMe.txt/1.2/Fri Sep  2 20:29:39 2011//
+/Scripts.txt/1.2/Fri Sep  2 20:29:39 2011//
+/SpecialCasing.txt/1.2/Fri Sep  2 20:29:39 2011//
+/StandardizedVariants.txt/1.2/Fri Sep  2 20:29:39 2011//
+/UnicodeData.txt/1.2/Fri Sep  2 20:29:39 2011//
+/mktables/1.2/Fri Sep  2 20:29:39 2011//
+/version/1.2/Fri Sep  2 20:29:39 2011//

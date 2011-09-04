@@ -1,18 +1,13 @@
-/Array.pm/1.1.1.1/Result of merge//
 /ExtraHash.t/1.1.131.1/Fri Sep  2 20:17:41 2011//
-/File.pm/-1.1.1.1///
-/Handle.pm/1.1.1.1/Result of merge//
-/Hash.pm/1.1.1.2/Result of merge//
 /Hash.t/1.1.131.1/Fri Sep  2 20:17:41 2011//
-/Memoize.pm/-1.1.1.1///
-/Memoize.t/-1.1.1.1///
-/RefHash.pm/-1.1.1.2///
-/RefHash.t/-1.1.1.2///
-/Scalar.pm/1.1.1.1/Result of merge//
-/Scalar.t/1.1.1.1/Result of merge//
 /StdHandle.pm/1.1.131.1/Fri Sep  2 20:17:41 2011//
 D/Array////
 D/File////
 D/Handle////
 /SubstrHash.pm/1.1.1.1/Fri Sep  2 20:29:38 2011//
 /SubstrHash.t/1.1.1.1/Fri Sep  2 20:29:38 2011//
+/Array.pm/1.2/Fri Sep  2 20:29:38 2011//
+/Handle.pm/1.2/Fri Sep  2 20:29:38 2011//
+/Hash.pm/1.2/Fri Sep  2 20:29:38 2011//
+/Scalar.pm/1.2/Fri Sep  2 20:29:38 2011//
+/Scalar.t/1.2/Fri Sep  2 20:29:38 2011//

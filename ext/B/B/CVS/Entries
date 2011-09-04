@@ -1,21 +1,5 @@
-/Asmdata.pm/-1.1.1.2///
-/Assembler.pm/-1.1.1.1///
-/Bblock.pm/-1.1.1.2///
-/Bytecode.pm/-1.1.1.2///
-/C.pm/-1.1.1.2///
-/CC.pm/-1.1.1.2///
-/Concise.pm/1.1.1.2/Result of merge//
-/Debug.pm/-1.1.1.2///
-/Deparse.pm/-1.1.1.2///
-/Disassembler.pm/-1.1.1.2///
-/Lint.pm/-1.1.1.1///
-/Showlex.pm/1.1.1.1/Result of merge//
-/Stackobj.pm/-1.1.1.1///
-/Stash.pm/-1.1.1.1///
-/Terse.pm/1.1.1.2/Result of merge//
-/Xref.pm/1.1.1.1/Result of merge//
-/assemble/-1.1.1.1///
-/cc_harness/-1.1.1.1///
-/disassemble/-1.1.1.1///
-/makeliblinks/-1.1.1.1///
+/Concise.pm/1.2/Fri Sep  2 20:29:29 2011//
+/Showlex.pm/1.2/Fri Sep  2 20:29:29 2011//
+/Terse.pm/1.2/Fri Sep  2 20:29:29 2011//
+/Xref.pm/1.2/Fri Sep  2 20:29:29 2011//
 D

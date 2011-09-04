@@ -29,7 +29,7 @@
 #endif
 #include <stdlib.h>
 #include <string.h>
-__RCSID("$MirOS: src/gnu/usr.bin/perl/perly.c,v 1.4 2008/12/13 23:24:52 tg Exp $");
+__RCSID("$MirOS: src/gnu/usr.bin/perl/perly.c,v 1.5 2011/09/04 15:14:59 bsiegert Exp $");
 #define YYBYACC 1
 
 #include "EXTERN.h"

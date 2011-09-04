@@ -41,7 +41,7 @@
 # include <stdint.h>
 #endif
 
-__RCSID("$MirOS: src/gnu/usr.bin/perl/sv.c,v 1.2 2006/09/21 23:22:40 tg Exp $");
+__RCSID("$MirOS: src/gnu/usr.bin/perl/sv.c,v 1.3 2011/09/04 15:14:59 bsiegert Exp $");
 
 #define FCALL *f
 

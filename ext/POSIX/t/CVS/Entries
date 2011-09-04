@@ -1,10 +1,10 @@
-/is.t/1.1.1.1/Result of merge//
 /math.t/1.1.131.1/Fri Sep  2 20:17:37 2011//
-/posix.t/1.1.1.1/Result of merge//
-/sigaction.t/1.1.1.1/Result of merge//
 /sysconf.t/1.1.131.1/Fri Sep  2 20:17:37 2011//
-/taint.t/1.1.1.1/Result of merge//
 /termios.t/1.1.131.1/Fri Sep  2 20:17:37 2011//
 /time.t/1.1.131.1/Fri Sep  2 20:17:37 2011//
-/waitpid.t/1.1.1.1/Result of merge//
+/is.t/1.2/Fri Sep  2 20:29:32 2011//
+/posix.t/1.2/Fri Sep  2 20:29:32 2011//
+/sigaction.t/1.2/Fri Sep  2 20:29:32 2011//
+/taint.t/1.2/Fri Sep  2 20:29:32 2011//
+/waitpid.t/1.2/Fri Sep  2 20:29:32 2011//
 D

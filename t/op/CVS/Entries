@@ -1,177 +1,54 @@
-/64bitint.t/1.1.1.1/Result of merge//
-/alarm.t/1.1.1.2/Result of merge//
-/anonsub.t/1.1.1.1/Result of merge//
-/append.t/1.1.1.1/Result of merge//
-/args.t/1.1.1.1/Result of merge//
-/array.t/1.1.1.2/Result of merge//
 /array_base.aux/1.1.131.1/Fri Sep  2 20:17:46 2011//
 /array_base.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/assignwarn.t/1.1.1.1/Result of merge//
 /attrhand.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/attrs.t/1.1.1.2/Result of merge//
-/auto.t/1.1.1.1/Result of merge//
-/avhv.t/1.1.1.1/Result of merge//
-/bless.t/1.1.1.2/Result of merge//
 /blocks.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/bop.t/1.1.1.2/Result of merge//
 /caller.pl/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/caller.t/1.1.1.2/Result of merge//
-/chdir.t/1.1.1.2/Result of merge//
-/chop.t/1.1.1.2/Result of merge//
-/chr.t/1.1.1.1/Result of merge//
-/closure.t/1.1.1.2/Result of merge//
-/cmp.t/1.1.1.1/Result of merge//
-/concat.t/1.1.1.2/Result of merge//
 /concat2.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/cond.t/1.1.1.1/Result of merge//
-/context.t/1.1.1.1/Result of merge//
-/cproto.t/1.1.1.2/Result of merge//
 /dbm.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/defins.t/1.1.1.1/Result of merge//
-/delete.t/1.1.1.1/Result of merge//
 /die_except.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/die_exit.t/1.1.1.1/Result of merge//
 /die_keeperr.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
 /die_unwind.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/do.t/1.1.1.1/Result of merge//
 /dor.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/each.t/1.1.1.2/Result of merge//
 /each_array.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/eval.t/1.1.1.1/Result of merge//
-/exec.t/1.1.1.1/Result of merge//
-/exists_sub.t/1.1.1.1/Result of merge//
 /filehandle.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/filetest.t/1.1.1.1/Result of merge//
 /filetest_stack_ok.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
 /filetest_t.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/flip.t/1.1.1.1/Result of merge//
-/fork.t/1.1.1.1/Result of merge//
-/getpid.t/1.1.1.1/Result of merge//
-/getppid.t/1.1.1.1/Result of merge//
-/glob.t/1.1.1.1/Result of merge//
-/gmagic.t/1.1.1.1/Result of merge//
-/goto.t/1.1.1.2/Result of merge//
-/goto_xs.t/1.1.1.2/Result of merge//
-/grep.t/1.1.1.1/Result of merge//
-/groups.t/1.1.1.2/Result of merge//
-/gv.t/1.1.1.2/Result of merge//
-/hash.t/1.1.1.1/Result of merge//
-/hashassign.t/1.1.1.1/Result of merge//
-/hashwarn.t/1.1.1.1/Result of merge//
-/inc.t/1.1.1.2/Result of merge//
 /inccode-tie.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/inccode.t/1.1.1.1/Result of merge//
 /incfilter.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/index.t/1.1.1.2/Result of merge//
 /index_thr.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/int.t/1.1.1.1/Result of merge//
 /kill0.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/lc.t/1.1.1.2/Result of merge//
-/lc_user.t/1.1.1.1/Result of merge//
 /leaky-magic.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/length.t/1.1.1.1/Result of merge//
 /lex.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/lex_assign.t/1.1.1.2/Result of merge//
-/lfs.t/1.1.1.2/Result of merge//
-/list.t/1.1.1.2/Result of merge//
-/local.t/1.1.1.2/Result of merge//
-/loopctl.t/1.1.1.2/Result of merge//
-/lop.t/1.1.1.1/Result of merge//
 /magic-27839.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/magic.t/1.1.1.2/Result of merge//
 /magic_phase.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/method.t/1.1.1.1/Result of merge//
-/mkdir.t/1.1.1.2/Result of merge//
-/my.t/1.1.1.2/Result of merge//
-/my_stash.t/1.1.1.1/Result of merge//
 /mydef.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
-/negate.t/1.1.1.1/Result of merge//
-/nothr5005.t/-1.1.1.1///
-/numconvert.t/1.1.1.1/Result of merge//
-/oct.t/1.1.1.1/Result of merge//
-/ord.t/1.1.1.1/Result of merge//
 /overload_integer.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/override.t/1.1.1.1/Result of merge//
-/pack.t/1.1.1.2/Result of merge//
 /packagev.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/pat.t/-1.1.1.2///
-/pos.t/1.1.1.1/Result of merge//
-/pow.t/1.1.1.1/Result of merge//
 /print.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /protowarn.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/push.t/1.1.1.1/Result of merge//
-/pwent.t/1.1.1.1/Result of merge//
-/qq.t/1.1.1.1/Result of merge//
 /qr.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/rand.t/1.1.1.2/Result of merge//
-/range.t/1.1.1.2/Result of merge//
-/re_tests/-1.1.1.2///
-/read.t/1.1.1.2/Result of merge//
-/readdir.t/1.1.1.2/Result of merge//
-/readline.t/1.1.1.1/Result of merge//
-/recurse.t/1.1.1.1/Result of merge//
-/ref.t/1.1.1.2/Result of merge//
-/regexp.t/-1.1.1.1///
-/regexp_noamp.t/-1.1.1.1///
-/regmesg.t/-1.1.1.1///
 /require_errors.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /reset.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/reverse.t/1.1.1.1/Result of merge//
-/runlevel.t/1.1.1.1/Result of merge//
 /setpgrpstack.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /sigdispatch.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /smartkve.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /smartmatch.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/sort.t/1.1.1.2/Result of merge//
-/splice.t/1.1.1.1/Result of merge//
-/split.t/1.1.1.2/Result of merge//
 /split_unicode.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/sprintf.t/1.1.1.3/Result of merge//
-/sprintf2.t/1.1.1.2/Result of merge//
-/srand.t/1.1.1.1/Result of merge//
-/sselect.t/1.1.1.1/Result of merge//
-/stash.t/1.1.1.1/Result of merge//
-/stat.t/1.1.1.2/Result of merge//
 /state.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/study.t/1.1.1.1/Result of merge//
 /studytied.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/sub.t/1.1.1.1/Result of merge//
-/sub_lval.t/1.1.1.2/Result of merge//
-/subst.t/-1.1.1.2///
-/subst_amp.t/-1.1.1.1///
-/subst_wamp.t/-1.1.1.1///
-/substr.t/-1.1.1.2///
 /svleak.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /switch.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /symbolcache.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/sysio.t/1.1.1.1/Result of merge//
-/taint.t/1.1.1.2/Result of merge//
 /threads-dirh.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/threads.t/1.1.1.1/Result of merge//
 /threads_create.pl/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/tie.t/1.1.1.2/Result of merge//
 /tie_fetch_count.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/tiearray.t/1.1.1.1/Result of merge//
-/tiehandle.t/1.1.1.1/Result of merge//
-/time.t/1.1.1.2/Result of merge//
 /time_loop.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/tr.t/1.1.1.2/Result of merge//
 /turkish.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/undef.t/1.1.1.1/Result of merge//
-/universal.t/1.1.1.2/Result of merge//
-/unshift.t/1.1.1.1/Result of merge//
 /upgrade.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /utf8cache.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/utf8decode.t/1.1.1.1/Result of merge//
 /utf8magic.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/utfhash.t/1.1.1.1/Result of merge//
-/utftaint.t/1.1.1.1/Result of merge//
-/vec.t/1.1.1.2/Result of merge//
-/ver.t/1.1.1.1/Result of merge//
-/wantarray.t/1.1.1.1/Result of merge//
 /warn.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /while_readdir.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/write.t/1.1.1.1/Result of merge//
 /yadayada.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /arith.t/1.1.1.2/Fri Sep  2 20:29:43 2011//
 /chars.t/1.1.1.1/Fri Sep  2 20:29:43 2011//
@@ -187,4 +64,117 @@
 /quotemeta.t/1.1.1.1/Fri Sep  2 20:29:43 2011//
 /repeat.t/1.1.1.2/Fri Sep  2 20:29:43 2011//
 /sleep.t/1.1.1.2/Fri Sep  2 20:29:43 2011//
+/64bitint.t/1.2/Fri Sep  2 20:29:43 2011//
+/alarm.t/1.2/Fri Sep  2 20:29:43 2011//
+/anonsub.t/1.2/Fri Sep  2 20:29:43 2011//
+/append.t/1.2/Fri Sep  2 20:29:43 2011//
+/args.t/1.2/Fri Sep  2 20:29:43 2011//
+/array.t/1.2/Fri Sep  2 20:29:43 2011//
+/assignwarn.t/1.2/Fri Sep  2 20:29:43 2011//
+/attrs.t/1.2/Fri Sep  2 20:29:43 2011//
+/auto.t/1.2/Fri Sep  2 20:29:43 2011//
+/avhv.t/1.2/Fri Sep  2 20:29:43 2011//
+/bless.t/1.2/Fri Sep  2 20:29:43 2011//
+/bop.t/1.2/Fri Sep  2 20:29:43 2011//
+/caller.t/1.2/Fri Sep  2 20:29:43 2011//
+/chdir.t/1.2/Fri Sep  2 20:29:43 2011//
+/chop.t/1.2/Fri Sep  2 20:29:43 2011//
+/chr.t/1.2/Fri Sep  2 20:29:43 2011//
+/closure.t/1.2/Fri Sep  2 20:29:43 2011//
+/cmp.t/1.2/Fri Sep  2 20:29:43 2011//
+/concat.t/1.2/Fri Sep  2 20:29:43 2011//
+/cond.t/1.2/Fri Sep  2 20:29:43 2011//
+/context.t/1.2/Fri Sep  2 20:29:43 2011//
+/cproto.t/1.2/Fri Sep  2 20:29:43 2011//
+/defins.t/1.2/Fri Sep  2 20:29:43 2011//
+/delete.t/1.2/Fri Sep  2 20:29:43 2011//
+/die_exit.t/1.2/Fri Sep  2 20:29:43 2011//
+/do.t/1.2/Fri Sep  2 20:29:43 2011//
+/each.t/1.2/Fri Sep  2 20:29:43 2011//
+/eval.t/1.2/Fri Sep  2 20:29:43 2011//
+/exec.t/1.2/Fri Sep  2 20:29:43 2011//
+/exists_sub.t/1.2/Fri Sep  2 20:29:43 2011//
+/filetest.t/1.2/Fri Sep  2 20:29:43 2011//
+/flip.t/1.2/Fri Sep  2 20:29:43 2011//
+/fork.t/1.2/Fri Sep  2 20:29:43 2011//
+/getpid.t/1.2/Fri Sep  2 20:29:43 2011//
+/getppid.t/1.2/Fri Sep  2 20:29:43 2011//
+/glob.t/1.2/Fri Sep  2 20:29:43 2011//
+/gmagic.t/1.2/Fri Sep  2 20:29:43 2011//
+/goto.t/1.2/Fri Sep  2 20:29:43 2011//
+/goto_xs.t/1.2/Fri Sep  2 20:29:43 2011//
+/grep.t/1.2/Fri Sep  2 20:29:43 2011//
+/groups.t/1.2/Fri Sep  2 20:29:43 2011//
+/gv.t/1.2/Fri Sep  2 20:29:43 2011//
+/hash.t/1.2/Fri Sep  2 20:29:43 2011//
+/hashassign.t/1.2/Fri Sep  2 20:29:43 2011//
+/hashwarn.t/1.2/Fri Sep  2 20:29:43 2011//
+/inc.t/1.2/Fri Sep  2 20:29:43 2011//
+/inccode.t/1.2/Fri Sep  2 20:29:43 2011//
+/index.t/1.2/Fri Sep  2 20:29:43 2011//
+/int.t/1.2/Fri Sep  2 20:29:43 2011//
+/lc.t/1.2/Fri Sep  2 20:29:43 2011//
+/lc_user.t/1.2/Fri Sep  2 20:29:43 2011//
+/length.t/1.2/Fri Sep  2 20:29:43 2011//
+/lex_assign.t/1.2/Fri Sep  2 20:29:43 2011//
+/lfs.t/1.2/Fri Sep  2 20:29:43 2011//
+/list.t/1.2/Fri Sep  2 20:29:43 2011//
+/local.t/1.2/Fri Sep  2 20:29:43 2011//
+/loopctl.t/1.2/Fri Sep  2 20:29:43 2011//
+/lop.t/1.2/Fri Sep  2 20:29:43 2011//
+/magic.t/1.2/Fri Sep  2 20:29:43 2011//
+/method.t/1.2/Fri Sep  2 20:29:43 2011//
+/mkdir.t/1.2/Fri Sep  2 20:29:43 2011//
+/my.t/1.2/Fri Sep  2 20:29:43 2011//
+/my_stash.t/1.2/Fri Sep  2 20:29:43 2011//
+/negate.t/1.2/Fri Sep  2 20:29:43 2011//
+/numconvert.t/1.2/Fri Sep  2 20:29:43 2011//
+/oct.t/1.2/Fri Sep  2 20:29:43 2011//
+/ord.t/1.2/Fri Sep  2 20:29:43 2011//
+/override.t/1.2/Fri Sep  2 20:29:43 2011//
+/pack.t/1.2/Fri Sep  2 20:29:43 2011//
+/pos.t/1.2/Fri Sep  2 20:29:43 2011//
+/pow.t/1.2/Fri Sep  2 20:29:43 2011//
+/push.t/1.2/Fri Sep  2 20:29:43 2011//
+/pwent.t/1.2/Fri Sep  2 20:29:43 2011//
+/qq.t/1.2/Fri Sep  2 20:29:43 2011//
+/rand.t/1.2/Fri Sep  2 20:29:43 2011//
+/range.t/1.2/Fri Sep  2 20:29:43 2011//
+/read.t/1.2/Fri Sep  2 20:29:43 2011//
+/readdir.t/1.2/Fri Sep  2 20:29:43 2011//
+/readline.t/1.2/Fri Sep  2 20:29:43 2011//
+/recurse.t/1.2/Fri Sep  2 20:29:43 2011//
+/ref.t/1.2/Fri Sep  2 20:29:43 2011//
+/reverse.t/1.2/Fri Sep  2 20:29:43 2011//
+/runlevel.t/1.2/Fri Sep  2 20:29:43 2011//
+/sort.t/1.2/Fri Sep  2 20:29:43 2011//
+/splice.t/1.2/Fri Sep  2 20:29:43 2011//
+/split.t/1.2/Fri Sep  2 20:29:43 2011//
+/sprintf.t/1.2/Fri Sep  2 20:29:43 2011//
+/sprintf2.t/1.2/Fri Sep  2 20:29:43 2011//
+/srand.t/1.2/Fri Sep  2 20:29:43 2011//
+/sselect.t/1.2/Fri Sep  2 20:29:43 2011//
+/stash.t/1.2/Fri Sep  2 20:29:43 2011//
+/stat.t/1.2/Fri Sep  2 20:29:43 2011//
+/study.t/1.2/Fri Sep  2 20:29:43 2011//
+/sub.t/1.2/Fri Sep  2 20:29:43 2011//
+/sub_lval.t/1.2/Fri Sep  2 20:29:43 2011//
+/sysio.t/1.2/Fri Sep  2 20:29:43 2011//
+/taint.t/1.2/Fri Sep  2 20:29:44 2011//
+/threads.t/1.2/Fri Sep  2 20:29:44 2011//
+/tie.t/1.2/Fri Sep  2 20:29:44 2011//
+/tiearray.t/1.2/Fri Sep  2 20:29:44 2011//
+/tiehandle.t/1.2/Fri Sep  2 20:29:44 2011//
+/time.t/1.2/Fri Sep  2 20:29:44 2011//
+/tr.t/1.2/Fri Sep  2 20:29:44 2011//
+/undef.t/1.2/Fri Sep  2 20:29:44 2011//
+/universal.t/1.2/Fri Sep  2 20:29:44 2011//
+/unshift.t/1.2/Fri Sep  2 20:29:44 2011//
+/utf8decode.t/1.2/Fri Sep  2 20:29:44 2011//
+/utfhash.t/1.2/Fri Sep  2 20:29:44 2011//
+/utftaint.t/1.2/Fri Sep  2 20:29:44 2011//
+/vec.t/1.2/Fri Sep  2 20:29:44 2011//
+/ver.t/1.2/Fri Sep  2 20:29:44 2011//
+/wantarray.t/1.2/Fri Sep  2 20:29:44 2011//
+/write.t/1.2/Fri Sep  2 20:29:44 2011//
 D

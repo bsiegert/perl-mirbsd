@@ -1,19 +1,9 @@
-/1_compile.t/1.1.1.2/Result of merge//
 /Cname.pm/1.1.131.1/Fri Sep  2 20:17:45 2011//
-/NoExporter.pm/-1.1.1.1///
 /Sans_mypragma.pm/1.1.131.1/Fri Sep  2 20:17:45 2011//
-/TieIn.pm/-1.1.1.1///
-/TieOut.pm/-1.1.1.2///
 /common.pl/1.1.131.1/Fri Sep  2 20:17:45 2011//
-/commonsense.t/1.1.1.1/Result of merge//
-/contains_pod.xr/-1.1.1.1///
 /croak.t/1.1.131.1/Fri Sep  2 20:17:45 2011//
-/cygwin.t/1.1.1.1/Result of merge//
 /dbmt_common.pl/1.1.131.1/Fri Sep  2 20:17:45 2011//
 /deprecate.t/1.1.131.1/Fri Sep  2 20:17:45 2011//
-/filter-util.pl/-1.1.1.1///
-/h2ph.h/1.1.1.2/Result of merge//
-/h2ph.pht/1.1.1.2/Result of merge//
 /mypragma.pm/1.1.131.1/Fri Sep  2 20:17:45 2011//
 /mypragma.t/1.1.131.1/Fri Sep  2 20:17:45 2011//
 /no_load.t/1.1.131.1/Fri Sep  2 20:17:45 2011//
@@ -38,3 +28,8 @@ D/strict////
 D/subs////
 D/warnings////
 /compmod.pl/1.1.1.1/Fri Sep  2 20:29:42 2011//
+/1_compile.t/1.2/Fri Sep  2 20:29:42 2011//
+/commonsense.t/1.2/Fri Sep  2 20:29:42 2011//
+/cygwin.t/1.2/Fri Sep  2 20:29:42 2011//
+/h2ph.h/1.2/Fri Sep  2 20:29:42 2011//
+/h2ph.pht/1.2/Fri Sep  2 20:29:42 2011//

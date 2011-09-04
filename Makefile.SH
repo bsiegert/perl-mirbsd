@@ -1,5 +1,5 @@
 #! /bin/sh
-# $MirOS: src/gnu/usr.bin/perl/Makefile.SH,v 1.3 2006/06/30 23:15:04 tg Exp $
+# $MirOS: src/gnu/usr.bin/perl/Makefile.SH,v 1.4 2011/09/04 15:14:49 bsiegert Exp $
 #
 case $PERL_CONFIG_SH in
 '')

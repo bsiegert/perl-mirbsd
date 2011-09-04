@@ -1,29 +1,7 @@
-/InputObjects.t/1.1.1.2/Result of merge//
-/Usage.t/1.1.1.1/Result of merge//
-/basic.cap/-1.1.1.1///
-/basic.clr/-1.1.1.1///
-/basic.man/-1.1.1.1///
-/basic.ovr/-1.1.1.1///
-/basic.pod/-1.1.1.1///
-/basic.t/-1.1.1.1///
-/basic.txt/-1.1.1.1///
-/contains_pod.t/-1.1.1.1///
-/htmlescp.pod/-1.1.1.1///
-/htmlescp.t/-1.1.1.2///
-/htmllink.pod/-1.1.1.1///
-/htmllink.t/-1.1.1.1///
-/htmlview.pod/-1.1.1.1///
-/htmlview.t/-1.1.1.2///
-/man.t/-1.1.1.1///
-/parselink.t/-1.1.1.1///
-/pod2html-lib.pl/-1.1.1.1///
-/pod2latex.t/-1.1.1.2///
-/text-errors.t/-1.1.1.1///
-/text-options.t/-1.1.1.1///
-/text.t/-1.1.1.1///
-/user.t/-1.1.1.1///
-/utils.t/1.1.1.1/Result of merge//
 /Functions.t/1.1.1.1/Fri Sep  2 20:29:37 2011//
 /Select.t/1.1.1.1/Fri Sep  2 20:29:37 2011//
 /eol.t/1.1.1.1/Fri Sep  2 20:29:37 2011//
+/InputObjects.t/1.2/Fri Sep  2 20:29:37 2011//
+/Usage.t/1.2/Fri Sep  2 20:29:37 2011//
+/utils.t/1.2/Fri Sep  2 20:29:37 2011//
 D

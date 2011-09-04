@@ -1,146 +1,16 @@
-/AnyDBM_File.t/1.1.1.1/Result of merge//
-/AutoLoader.pm/-1.1.1.2///
-/AutoLoader.t/-1.1.1.2///
-/AutoSplit.pm/-1.1.1.1///
-/AutoSplit.t/-1.1.1.2///
-/Benchmark.pm/1.1.1.2/Result of merge//
-/Benchmark.t/1.1.1.2/Result of merge//
-/CGI.pm/-1.1.1.2///
 /CORE.pod/1.1.131.1/Fri Sep  2 20:17:39 2011//
-/CPAN.pm/-1.1.1.2///
-/Carp.pm/1.1.1.2/Result of merge//
-/Carp.t/1.1.1.2/Result of merge//
-/Config.t/1.1.1.2/Result of merge//
-/Cwd.pm/-1.1.1.2///
-/DB.pm/1.1.1.2/Result of merge//
-/DB.t/1.1.1.1/Result of merge//
-/DBM_Filter.pm/1.1.1.1/Result of merge//
-/Digest.pm/-1.1.1.2///
-/DirHandle.pm/1.1.1.1/Result of merge//
-/DirHandle.t/1.1.1.1/Result of merge//
-/Dumpvalue.pm/-1.1.1.2///
-/Dumpvalue.t/-1.1.1.1///
-/English.pm/1.1.1.2/Result of merge//
-/English.t/1.1.1.1/Result of merge//
-/Env.pm/-1.1.1.1///
-/Exporter.pm/1.1.1.1/Result of merge//
-/Exporter.t/1.1.1.1/Result of merge//
-/Fatal.pm/-1.1.1.1///
-/Fatal.t/-1.1.1.1///
-/FileCache.pm/-1.1.1.2///
-/FileHandle.pm/1.1.1.1/Result of merge//
-/FindBin.pm/1.1.1.2/Result of merge//
-/FindBin.t/1.1.1.1/Result of merge//
-/Internals.t/1.1.1.1/Result of merge//
-/Memoize.pm/-1.1.1.1///
-/NEXT.pm/-1.1.1.1///
-/PerlIO.pm/1.1.1.2/Result of merge//
-/SelectSaver.pm/1.1.1.2/Result of merge//
-/SelfLoader.pm/-1.1.1.1///
-/SelfLoader.t/-1.1.1.1///
-/Shell.pm/-1.1.1.1///
-/Shell.t/-1.1.1.1///
-/Switch.pm/-1.1.1.2///
-/Symbol.pm/1.1.1.2/Result of merge//
-/Test.pm/-1.1.1.1///
-/Thread.pm/1.1.1.1/Result of merge//
 /Thread.t/1.1.131.1/Fri Sep  2 20:17:39 2011//
-/UNIVERSAL.pm/1.1.1.1/Result of merge//
-/abbrev.pl/1.1.1.1/Result of merge//
-/assert.pl/1.1.1.1/Result of merge//
-/attributes.pm/-1.1.1.1///
-/autouse.pm/-1.1.1.2///
-/autouse.t/-1.1.1.1///
-/base.pm/-1.1.1.2///
-/bigfloat.pl/1.1.1.1/Result of merge//
-/bigfloatpl.t/1.1.1.1/Result of merge//
-/bigint.pl/1.1.1.1/Result of merge//
-/bigint.pm/-1.1.1.2///
-/bigintpl.t/1.1.1.1/Result of merge//
-/bignum.pm/-1.1.1.2///
-/bigrat.pl/1.1.1.1/Result of merge//
-/bigrat.pm/-1.1.1.2///
-/blib.pm/1.1.1.2/Result of merge//
-/blib.t/1.1.1.1/Result of merge//
-/bytes.pm/1.1.1.2/Result of merge//
-/bytes.t/1.1.1.2/Result of merge//
-/bytes_heavy.pl/1.1.1.1/Result of merge//
-/cacheout.pl/1.1.1.1/Result of merge//
-/charnames.pm/1.1.1.2/Result of merge//
-/charnames.t/1.1.1.1/Result of merge//
-/complete.pl/1.1.1.1/Result of merge//
-/constant.pm/-1.1.1.2///
-/constant.t/-1.1.1.2///
-/ctime.pl/1.1.1.1/Result of merge//
 /deprecate.pm/1.1.131.1/Fri Sep  2 20:17:40 2011//
-/diagnostics.pm/1.1.1.2/Result of merge//
-/diagnostics.t/1.1.1.1/Result of merge//
-/dotsh.pl/1.1.1.1/Result of merge//
-/dumpvar.pl/1.1.1.2/Result of merge//
-/exceptions.pl/1.1.1.1/Result of merge//
-/fastcwd.pl/1.1.1.1/Result of merge//
 /feature.pm/1.1.131.1/Fri Sep  2 20:17:40 2011//
 /feature.t/1.1.131.1/Fri Sep  2 20:17:40 2011//
-/fields.pm/-1.1.1.1///
-/filetest.pm/1.1.1.1/Result of merge//
-/find.pl/1.1.1.1/Result of merge//
-/finddepth.pl/1.1.1.1/Result of merge//
-/flush.pl/1.1.1.1/Result of merge//
-/getcwd.pl/1.1.1.1/Result of merge//
-/getopt.pl/1.1.1.1/Result of merge//
-/getopts.pl/1.1.1.2/Result of merge//
-/h2ph.t/1.1.1.1/Result of merge//
-/h2xs.t/1.1.1.2/Result of merge//
-/hostname.pl/1.1.1.1/Result of merge//
-/if.pm/-1.1.1.2///
-/if.t/-1.1.1.2///
-/importenv.pl/1.1.1.1/Result of merge//
-/integer.t/1.1.1.1/Result of merge//
-/less.pm/1.1.1.1/Result of merge//
-/less.t/1.1.1.1/Result of merge//
-/lib.t/-1.1.1.1///
-/lib_pm.PL/-1.1.1.1///
-/locale.t/1.1.1.2/Result of merge//
-/look.pl/1.1.1.1/Result of merge//
-/newgetopt.pl/1.1.1.1/Result of merge//
-/open.pm/1.1.1.2/Result of merge//
-/open.t/1.1.1.1/Result of merge//
-/open2.pl/1.1.1.1/Result of merge//
-/open3.pl/1.1.1.1/Result of merge//
-/overload.pm/1.1.1.2/Result of merge//
-/overload.t/1.1.1.2/Result of merge//
 /overload64.t/1.1.131.1/Fri Sep  2 20:17:40 2011//
 /overloading.pm/1.1.131.1/Fri Sep  2 20:17:40 2011//
 /overloading.t/1.1.131.1/Fri Sep  2 20:17:40 2011//
-/perl5db.pl/1.1.1.2/Result of merge//
 /perl5db.t/1.1.131.1/Fri Sep  2 20:17:40 2011//
-/ph.t/-1.1.1.1///
-/pwd.pl/1.1.1.1/Result of merge//
-/shellwords.pl/1.1.1.2/Result of merge//
-/sigtrap.pm/1.1.1.1/Result of merge//
-/sigtrap.t/1.1.1.1/Result of merge//
-/sort.pm/1.1.1.1/Result of merge//
-/sort.t/1.1.1.1/Result of merge//
-/stat.pl/1.1.1.1/Result of merge//
-/strict.pm/1.1.1.1/Result of merge//
-/strict.t/1.1.1.1/Result of merge//
-/subs.t/1.1.1.1/Result of merge//
-/syslog.pl/1.1.1.1/Result of merge//
-/tainted.pl/1.1.1.1/Result of merge//
-/termcap.pl/1.1.1.1/Result of merge//
-/timelocal.pl/1.1.1.1/Result of merge//
-/utf8.pm/1.1.1.2/Result of merge//
-/utf8.t/1.1.1.2/Result of merge//
-/utf8_heavy.pl/1.1.1.1/Result of merge//
-/validate.pl/1.1.1.1/Result of merge//
-/vars.pm/1.1.1.1/Result of merge//
 /vars_carp.t/1.1.131.1/Fri Sep  2 20:17:40 2011//
 /version.pm/1.1.131.1/Fri Sep  2 20:17:40 2011//
 /version.pod/1.1.131.1/Fri Sep  2 20:17:40 2011//
 /version.t/1.1.131.1/Fri Sep  2 20:17:40 2011//
-/vmsish.t/1.1.1.1/Result of merge//
-/warnings.pm/1.1.1.2/Result of merge//
-/warnings.t/1.1.1.2/Result of merge//
 D/Attribute////
 D/CGI////
 D/CPAN////
@@ -197,3 +67,96 @@ D/warnings////
 /subs.pm/1.1.1.1/Fri Sep  2 20:29:35 2011//
 /vars.t/1.1.1.1/Fri Sep  2 20:29:35 2011//
 /vmsish.pm/1.1.1.2/Fri Sep  2 20:29:35 2011//
+/AnyDBM_File.t/1.2/Fri Sep  2 20:29:34 2011//
+/Benchmark.pm/1.2/Fri Sep  2 20:29:35 2011//
+/Benchmark.t/1.2/Fri Sep  2 20:29:35 2011//
+/Carp.pm/1.2/Fri Sep  2 20:29:35 2011//
+/Carp.t/1.2/Fri Sep  2 20:29:35 2011//
+/Config.t/1.2/Fri Sep  2 20:29:35 2011//
+/DB.pm/1.2/Fri Sep  2 20:29:35 2011//
+/DB.t/1.2/Fri Sep  2 20:29:35 2011//
+/DBM_Filter.pm/1.2/Fri Sep  2 20:29:35 2011//
+/DirHandle.pm/1.2/Fri Sep  2 20:29:35 2011//
+/DirHandle.t/1.2/Fri Sep  2 20:29:35 2011//
+/English.pm/1.2/Fri Sep  2 20:29:35 2011//
+/English.t/1.2/Fri Sep  2 20:29:35 2011//
+/Exporter.pm/1.2/Fri Sep  2 20:29:35 2011//
+/Exporter.t/1.2/Fri Sep  2 20:29:35 2011//
+/FileHandle.pm/1.2/Fri Sep  2 20:29:35 2011//
+/FindBin.pm/1.2/Fri Sep  2 20:29:35 2011//
+/FindBin.t/1.2/Fri Sep  2 20:29:35 2011//
+/Internals.t/1.2/Fri Sep  2 20:29:35 2011//
+/PerlIO.pm/1.2/Fri Sep  2 20:29:35 2011//
+/SelectSaver.pm/1.2/Fri Sep  2 20:29:35 2011//
+/Symbol.pm/1.2/Fri Sep  2 20:29:35 2011//
+/Thread.pm/1.2/Fri Sep  2 20:29:35 2011//
+/UNIVERSAL.pm/1.2/Fri Sep  2 20:29:35 2011//
+/abbrev.pl/1.2/Fri Sep  2 20:29:35 2011//
+/assert.pl/1.2/Fri Sep  2 20:29:35 2011//
+/bigfloat.pl/1.2/Fri Sep  2 20:29:35 2011//
+/bigfloatpl.t/1.2/Fri Sep  2 20:29:35 2011//
+/bigint.pl/1.2/Fri Sep  2 20:29:35 2011//
+/bigintpl.t/1.2/Fri Sep  2 20:29:35 2011//
+/bigrat.pl/1.2/Fri Sep  2 20:29:35 2011//
+/blib.pm/1.2/Fri Sep  2 20:29:35 2011//
+/blib.t/1.2/Fri Sep  2 20:29:35 2011//
+/bytes.pm/1.2/Fri Sep  2 20:29:35 2011//
+/bytes.t/1.2/Fri Sep  2 20:29:35 2011//
+/bytes_heavy.pl/1.2/Fri Sep  2 20:29:35 2011//
+/cacheout.pl/1.2/Fri Sep  2 20:29:35 2011//
+/charnames.pm/1.2/Fri Sep  2 20:29:35 2011//
+/charnames.t/1.2/Fri Sep  2 20:29:35 2011//
+/complete.pl/1.2/Fri Sep  2 20:29:35 2011//
+/ctime.pl/1.2/Fri Sep  2 20:29:35 2011//
+/diagnostics.pm/1.2/Fri Sep  2 20:29:35 2011//
+/diagnostics.t/1.2/Fri Sep  2 20:29:35 2011//
+/dotsh.pl/1.2/Fri Sep  2 20:29:35 2011//
+/dumpvar.pl/1.2/Fri Sep  2 20:29:35 2011//
+/exceptions.pl/1.2/Fri Sep  2 20:29:35 2011//
+/fastcwd.pl/1.2/Fri Sep  2 20:29:35 2011//
+/filetest.pm/1.2/Fri Sep  2 20:29:35 2011//
+/find.pl/1.2/Fri Sep  2 20:29:35 2011//
+/finddepth.pl/1.2/Fri Sep  2 20:29:35 2011//
+/flush.pl/1.2/Fri Sep  2 20:29:35 2011//
+/getcwd.pl/1.2/Fri Sep  2 20:29:35 2011//
+/getopt.pl/1.2/Fri Sep  2 20:29:35 2011//
+/getopts.pl/1.2/Fri Sep  2 20:29:35 2011//
+/h2ph.t/1.2/Fri Sep  2 20:29:35 2011//
+/h2xs.t/1.2/Fri Sep  2 20:29:35 2011//
+/hostname.pl/1.2/Fri Sep  2 20:29:35 2011//
+/importenv.pl/1.2/Fri Sep  2 20:29:35 2011//
+/integer.t/1.2/Fri Sep  2 20:29:35 2011//
+/less.pm/1.2/Fri Sep  2 20:29:35 2011//
+/less.t/1.2/Fri Sep  2 20:29:35 2011//
+/locale.t/1.2/Fri Sep  2 20:29:35 2011//
+/look.pl/1.2/Fri Sep  2 20:29:35 2011//
+/newgetopt.pl/1.2/Fri Sep  2 20:29:35 2011//
+/open.pm/1.2/Fri Sep  2 20:29:35 2011//
+/open.t/1.2/Fri Sep  2 20:29:35 2011//
+/open2.pl/1.2/Fri Sep  2 20:29:35 2011//
+/open3.pl/1.2/Fri Sep  2 20:29:35 2011//
+/overload.pm/1.2/Fri Sep  2 20:29:35 2011//
+/overload.t/1.2/Fri Sep  2 20:29:35 2011//
+/perl5db.pl/1.2/Fri Sep  2 20:29:35 2011//
+/pwd.pl/1.2/Fri Sep  2 20:29:35 2011//
+/shellwords.pl/1.2/Fri Sep  2 20:29:35 2011//
+/sigtrap.pm/1.2/Fri Sep  2 20:29:35 2011//
+/sigtrap.t/1.2/Fri Sep  2 20:29:35 2011//
+/sort.pm/1.2/Fri Sep  2 20:29:35 2011//
+/sort.t/1.2/Fri Sep  2 20:29:35 2011//
+/stat.pl/1.2/Fri Sep  2 20:29:35 2011//
+/strict.pm/1.2/Fri Sep  2 20:29:35 2011//
+/strict.t/1.2/Fri Sep  2 20:29:35 2011//
+/subs.t/1.2/Fri Sep  2 20:29:35 2011//
+/syslog.pl/1.2/Fri Sep  2 20:29:35 2011//
+/tainted.pl/1.2/Fri Sep  2 20:29:35 2011//
+/termcap.pl/1.2/Fri Sep  2 20:29:35 2011//
+/timelocal.pl/1.2/Fri Sep  2 20:29:35 2011//
+/utf8.pm/1.2/Fri Sep  2 20:29:35 2011//
+/utf8.t/1.2/Fri Sep  2 20:29:35 2011//
+/utf8_heavy.pl/1.2/Fri Sep  2 20:29:35 2011//
+/validate.pl/1.2/Fri Sep  2 20:29:35 2011//
+/vars.pm/1.2/Fri Sep  2 20:29:35 2011//
+/vmsish.t/1.2/Fri Sep  2 20:29:35 2011//
+/warnings.pm/1.2/Fri Sep  2 20:29:35 2011//
+/warnings.t/1.2/Fri Sep  2 20:29:35 2011//

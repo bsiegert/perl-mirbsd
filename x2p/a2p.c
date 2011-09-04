@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 __SCCSID("@(#)yaccpar	1.9 (Berkeley) 02/21/93");
-__RCSID("$MirOS: src/gnu/usr.bin/perl/x2p/a2p.c,v 1.2 2008/07/08 19:37:43 tg Exp $");
+__RCSID("$MirOS: src/gnu/usr.bin/perl/x2p/a2p.c,v 1.3 2011/09/04 15:26:51 bsiegert Exp $");
 __RCSID("$miros: src/usr.bin/yacc/skeleton.c,v 1.6 2008/07/08 19:24:30 tg Exp $");
 #define YYBYACC 1
 #define YYMAJOR 1

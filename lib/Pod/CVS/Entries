@@ -1,19 +1,4 @@
-/Checker.pm/-1.1.1.2///
-/Find.pm/-1.1.1.2///
-/Functions.pm/1.1.1.2/Result of merge//
-/Html.pm/-1.1.1.2///
-/InputObjects.pm/-1.1.1.2///
-/LaTeX.pm/-1.1.1.2///
-/Man.pm/-1.1.1.2///
-/ParseLink.pm/-1.1.1.1///
-/ParseUtils.pm/-1.1.1.2///
-/Parser.pm/-1.1.1.2///
-/Perldoc.pm/-1.1.1.2///
-/PlainText.pm/-1.1.1.2///
-/Plainer.pm/-1.1.1.1///
-/Select.pm/-1.1.1.2///
-/Text.pm/-1.1.1.2///
-/Usage.pm/-1.1.1.2///
 D/Perldoc////
 D/Text////
 D/t////
+/Functions.pm/1.2/Fri Sep  2 20:29:37 2011//

@@ -1,9 +1,4 @@
-/Changes/1.1.1.1/Result of merge//
-/Makefile.SHs/1.1.1.2/Result of merge//
-/os2.c/1.1.1.2/Result of merge//
 /os2_pipe.t/1.1.131.1/Fri Sep  2 20:17:43 2011//
-/os2ish.h/1.1.1.1/Result of merge//
-/perlrexx.c/1.1.1.1/Result of merge//
 D/OS2////
 /diff.configure/1.1.1.1/Fri Sep  2 20:29:39 2011//
 /dl_os2.c/1.1.1.1/Fri Sep  2 20:29:39 2011//
@@ -14,3 +9,8 @@ D/OS2////
 /os2thread.h/1.1.1.1/Fri Sep  2 20:29:40 2011//
 /perl2cmd.pl/1.1.1.1/Fri Sep  2 20:29:40 2011//
 /perlrexx.cmd/1.1.1.1/Fri Sep  2 20:29:40 2011//
+/Changes/1.2/Fri Sep  2 20:29:39 2011//
+/Makefile.SHs/1.2/Fri Sep  2 20:29:39 2011//
+/os2.c/1.2/Fri Sep  2 20:29:39 2011//
+/os2ish.h/1.2/Fri Sep  2 20:29:40 2011//
+/perlrexx.c/1.2/Fri Sep  2 20:29:40 2011//

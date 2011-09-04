@@ -1,17 +1,3 @@
-/Makefile/1.1.1.2/Result of merge//
-/NWUtil.c/1.1.1.1/Result of merge//
-/Nwmain.c/1.1.1.1/Result of merge//
-/config.wc/1.1.1.2/Result of merge//
-/config_H.wc/1.1.1.2/Result of merge//
-/nw5.c/1.1.1.2/Result of merge//
-/nw5thread.c/1.1.1.1/Result of merge//
-/nw5thread.h/1.1.1.1/Result of merge//
-/nwperlhost.h/1.1.1.1/Result of merge//
-/nwperlsys.h/1.1.1.1/Result of merge//
-/nwplglob.c/1.1.1.1/Result of merge//
-/nwstdio.h/1.1.1.1/Result of merge//
-/nwvmem.h/1.1.1.1/Result of merge//
-/sv_nw.c/1.1.1.1/Result of merge//
 D/bat////
 D/t////
 D/testnlm////
@@ -46,3 +32,17 @@ D/testnlm////
 /perllib.cpp/1.1.1.1/Fri Sep  2 20:29:21 2011//
 /splittree.pl/1.1.1.1/Fri Sep  2 20:29:21 2011//
 /win32ish.h/1.1.1.1/Fri Sep  2 20:29:21 2011//
+/Makefile/1.2/Fri Sep  2 20:29:21 2011//
+/NWUtil.c/1.2/Fri Sep  2 20:29:21 2011//
+/Nwmain.c/1.2/Fri Sep  2 20:29:21 2011//
+/config.wc/1.2/Fri Sep  2 20:29:21 2011//
+/config_H.wc/1.2/Fri Sep  2 20:29:21 2011//
+/nw5.c/1.2/Fri Sep  2 20:29:21 2011//
+/nw5thread.c/1.2/Fri Sep  2 20:29:21 2011//
+/nw5thread.h/1.2/Fri Sep  2 20:29:21 2011//
+/nwperlhost.h/1.2/Fri Sep  2 20:29:21 2011//
+/nwperlsys.h/1.2/Fri Sep  2 20:29:21 2011//
+/nwplglob.c/1.2/Fri Sep  2 20:29:21 2011//
+/nwstdio.h/1.2/Fri Sep  2 20:29:21 2011//
+/nwvmem.h/1.2/Fri Sep  2 20:29:21 2011//
+/sv_nw.c/1.2/Fri Sep  2 20:29:21 2011//

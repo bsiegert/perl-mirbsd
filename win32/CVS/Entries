@@ -1,51 +1,18 @@
-/FindExt.pm/1.1.1.2/Result of merge//
-/Makefile/1.1.1.2/Result of merge//
 /Makefile.ce/1.1.131.1/Fri Sep  2 20:17:48 2011//
-/buildext.pl/-1.1.1.2///
-/config.bc/1.1.1.2/Result of merge//
 /config.ce/1.1.131.1/Fri Sep  2 20:17:48 2011//
-/config.gc/1.1.1.2/Result of merge//
 /config.gc64/1.1.131.1/Fri Sep  2 20:17:48 2011//
 /config.gc64nox/1.1.131.1/Fri Sep  2 20:17:48 2011//
-/config.vc/1.1.1.2/Result of merge//
-/config.vc64/1.1.1.2/Result of merge//
-/config_H.bc/1.1.1.2/Result of merge//
 /config_H.ce/1.1.131.1/Fri Sep  2 20:17:48 2011//
-/config_H.gc/1.1.1.2/Result of merge//
 /config_H.gc64/1.1.131.1/Fri Sep  2 20:17:48 2011//
 /config_H.gc64nox/1.1.131.1/Fri Sep  2 20:17:48 2011//
-/config_H.vc/1.1.1.2/Result of merge//
-/config_H.vc64/1.1.1.2/Result of merge//
-/config_h.PL/1.1.1.1/Result of merge//
-/config_sh.PL/1.1.1.2/Result of merge//
 /create_perllibst_h.pl/1.1.131.1/Fri Sep  2 20:17:48 2011//
-/dl_win32.xs/-1.1.1.2///
-/fcrypt.c/1.1.1.2/Result of merge//
 /list_static_libs.pl/1.1.131.1/Fri Sep  2 20:17:48 2011//
-/makefile.mk/1.1.1.2/Result of merge//
-/makeico.pl/-1.1.1.1///
 /perl.rc/1.1.131.1/Fri Sep  2 20:17:49 2011//
 /perlexe.ico/1.1.131.1/Fri Sep  2 20:17:49 2011/-kb/
 /perlexe.manifest/1.1.131.1/Fri Sep  2 20:17:49 2011//
-/perlexe.rc/1.1.1.1/Result of merge//
-/perlhost.h/1.1.1.2/Result of merge//
-/perllib.c/1.1.1.2/Result of merge//
 /perlmaince.c/1.1.131.1/Fri Sep  2 20:17:49 2011//
-/pod.mak/1.1.1.2/Result of merge//
-/runperl.c/1.1.1.1/Result of merge//
-/splittree.pl/-1.1.1.1///
-/sync_ext.pl/1.1.1.1/Result of merge//
-/vdir.h/1.1.1.1/Result of merge//
-/vmem.h/1.1.1.1/Result of merge//
-/win32.c/1.1.1.2/Result of merge//
-/win32.h/1.1.1.2/Result of merge//
 /win32ceio.c/1.1.131.1/Fri Sep  2 20:17:49 2011//
-/win32io.c/1.1.1.2/Result of merge//
 /win32iop-o.h/1.1.131.1/Fri Sep  2 20:17:49 2011//
-/win32iop.h/1.1.1.2/Result of merge//
-/win32sck.c/1.1.1.2/Result of merge//
-/win32thread.c/1.1.1.1/Result of merge//
-/win32thread.h/1.1.1.1/Result of merge//
 /wince.c/1.1.131.1/Fri Sep  2 20:17:49 2011//
 /wince.h/1.1.131.1/Fri Sep  2 20:17:49 2011//
 /wincesck.c/1.1.131.1/Fri Sep  2 20:17:49 2011//
@@ -57,3 +24,32 @@ D/include////
 /genmk95.pl/1.1.1.1/Fri Sep  2 20:29:45 2011//
 /mdelete.bat/1.1.1.1/Fri Sep  2 20:29:45 2011//
 /perlglob.c/1.1.1.1/Fri Sep  2 20:29:45 2011//
+/FindExt.pm/1.2/Fri Sep  2 20:29:45 2011//
+/Makefile/1.2/Fri Sep  2 20:29:45 2011//
+/config.bc/1.2/Fri Sep  2 20:29:45 2011//
+/config.gc/1.2/Fri Sep  2 20:29:45 2011//
+/config.vc/1.2/Fri Sep  2 20:29:45 2011//
+/config.vc64/1.2/Fri Sep  2 20:29:45 2011//
+/config_H.bc/1.2/Fri Sep  2 20:29:45 2011//
+/config_H.gc/1.2/Fri Sep  2 20:29:45 2011//
+/config_H.vc/1.2/Fri Sep  2 20:29:45 2011//
+/config_H.vc64/1.2/Fri Sep  2 20:29:45 2011//
+/config_h.PL/1.2/Fri Sep  2 20:29:45 2011//
+/config_sh.PL/1.2/Fri Sep  2 20:29:45 2011//
+/fcrypt.c/1.2/Fri Sep  2 20:29:45 2011//
+/makefile.mk/1.2/Fri Sep  2 20:29:45 2011//
+/perlexe.rc/1.2/Fri Sep  2 20:29:45 2011//
+/perlhost.h/1.2/Fri Sep  2 20:29:45 2011//
+/perllib.c/1.2/Fri Sep  2 20:29:45 2011//
+/pod.mak/1.2/Fri Sep  2 20:29:45 2011//
+/runperl.c/1.2/Fri Sep  2 20:29:45 2011//
+/sync_ext.pl/1.2/Fri Sep  2 20:29:45 2011//
+/vdir.h/1.2/Fri Sep  2 20:29:45 2011//
+/vmem.h/1.2/Fri Sep  2 20:29:45 2011//
+/win32.c/1.2/Fri Sep  2 20:29:45 2011//
+/win32.h/1.2/Fri Sep  2 20:29:45 2011//
+/win32io.c/1.2/Fri Sep  2 20:29:45 2011//
+/win32iop.h/1.2/Fri Sep  2 20:29:45 2011//
+/win32sck.c/1.2/Fri Sep  2 20:29:45 2011//
+/win32thread.c/1.2/Fri Sep  2 20:29:45 2011//
+/win32thread.h/1.2/Fri Sep  2 20:29:45 2011//

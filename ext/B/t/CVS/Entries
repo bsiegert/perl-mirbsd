@@ -1,31 +1,23 @@
-/OptreeCheck.pm/1.1.1.2/Result of merge//
-/asmdata.t/-1.1.1.2///
-/assembler.t/-1.1.1.1///
-/b.t/1.1.1.2/Result of merge//
-/bblock.t/-1.1.1.2///
-/bytecode.t/-1.1.1.2///
-/concise-xs.t/1.1.1.1/Result of merge//
-/concise.t/1.1.1.2/Result of merge//
-/debug.t/-1.1.1.2///
-/deparse.t/-1.1.1.2///
-/f_map.t/1.1.1.2/Result of merge//
-/f_sort.t/1.1.1.2/Result of merge//
-/lint.t/-1.1.1.2///
-/o.t/1.1.1.2/Result of merge//
-/optree_check.t/1.1.1.2/Result of merge//
-/optree_concise.t/1.1.1.2/Result of merge//
 /optree_constants.t/1.1.131.1/Fri Sep  2 20:17:36 2011//
 /optree_misc.t/1.1.131.1/Fri Sep  2 20:17:36 2011//
-/optree_samples.t/1.1.1.2/Result of merge//
-/optree_sort.t/1.1.1.2/Result of merge//
-/optree_specials.t/1.1.1.2/Result of merge//
-/optree_varinit.t/1.1.1.2/Result of merge//
 /pragma.t/1.1.131.1/Fri Sep  2 20:17:36 2011//
-/showlex.t/1.1.1.2/Result of merge//
-/stash.t/-1.1.1.2///
-/terse.t/1.1.1.2/Result of merge//
 /walkoptree.t/1.1.131.1/Fri Sep  2 20:17:36 2011//
-/xref.t/1.1.1.2/Result of merge//
 /f_map/1.1.1.1/Fri Sep  2 20:29:29 2011//
 /f_sort/1.1.1.1/Fri Sep  2 20:29:29 2011//
+/OptreeCheck.pm/1.2/Fri Sep  2 20:29:29 2011//
+/b.t/1.2/Fri Sep  2 20:29:29 2011//
+/concise-xs.t/1.2/Fri Sep  2 20:29:29 2011//
+/concise.t/1.2/Fri Sep  2 20:29:29 2011//
+/f_map.t/1.2/Fri Sep  2 20:29:29 2011//
+/f_sort.t/1.2/Fri Sep  2 20:29:29 2011//
+/o.t/1.2/Fri Sep  2 20:29:29 2011//
+/optree_check.t/1.2/Fri Sep  2 20:29:29 2011//
+/optree_concise.t/1.2/Fri Sep  2 20:29:29 2011//
+/optree_samples.t/1.2/Fri Sep  2 20:29:29 2011//
+/optree_sort.t/1.2/Fri Sep  2 20:29:29 2011//
+/optree_specials.t/1.2/Fri Sep  2 20:29:29 2011//
+/optree_varinit.t/1.2/Fri Sep  2 20:29:29 2011//
+/showlex.t/1.2/Fri Sep  2 20:29:29 2011//
+/terse.t/1.2/Fri Sep  2 20:29:30 2011//
+/xref.t/1.2/Fri Sep  2 20:29:30 2011//
 D
