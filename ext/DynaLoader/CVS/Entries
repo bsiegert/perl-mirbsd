@@ -1,6 +1,5 @@
 /DynaLoader_pm.PL/1.1.1.1/Result of merge//
 /Makefile.PL/1.1.1.1/Result of merge//
-/README/1.1.1.1/Sat Feb  5 17:22:44 2005//
 /XSLoader_pm.PL/-1.1.1.2///
 /dl_aix.xs/1.1.1.2/Result of merge//
 /dl_beos.xs/1.1.1.1/Result of merge//
@@ -12,7 +11,6 @@
 /dl_mac.xs/-1.1.1.1///
 /dl_mpeix.xs/1.1.1.1/Result of merge//
 /dl_next.xs/1.1.1.2/Result of merge//
-/dl_none.xs/1.1.1.1/Sat Feb  5 17:22:44 2005//
 /dl_symbian.xs/1.1.131.1/Fri Sep  2 20:17:36 2011//
 /dl_vmesa.xs/1.1.1.1/Result of merge//
 /dl_vms.xs/1.1.1.2/Result of merge//
@@ -20,3 +18,5 @@
 /dlutils.c/1.1.1.2/Result of merge//
 D/hints////
 D/t////
+/README/1.1.1.1/Fri Sep  2 20:29:30 2011//
+/dl_none.xs/1.1.1.1/Fri Sep  2 20:29:30 2011//

@@ -1,13 +1,3 @@
-<<<<<<< perly.c
-#ifndef lint
-/* static char yysccsid[] = "@(#)yaccpar 1.8 (Berkeley) 01/20/91"; */
-#endif
-#include <stdlib.h>
-#include <string.h>
-__RCSID("$MirOS: src/gnu/usr.bin/perl/perly.c,v 1.4 2008/12/13 23:24:52 tg Exp $");
-#define YYBYACC 1
-#line 25 "perly.y"
-=======
 /*    perly.c
  *
  *    Copyright (c) 2004, 2005, 2006, 2007, 2008 by Larry Wall and others
@@ -34,7 +24,14 @@ __RCSID("$MirOS: src/gnu/usr.bin/perl/perly.c,v 1.4 2008/12/13 23:24:52 tg Exp $
  * This is controlled by the PERL_IN_MADLY_C define.
  */
 
->>>>>>> 1.1.131.1
+#ifndef lint
+/* static char yysccsid[] = "@(#)yaccpar 1.8 (Berkeley) 01/20/91"; */
+#endif
+#include <stdlib.h>
+#include <string.h>
+__RCSID("$MirOS: src/gnu/usr.bin/perl/perly.c,v 1.4 2008/12/13 23:24:52 tg Exp $");
+#define YYBYACC 1
+
 #include "EXTERN.h"
 #define PERL_IN_PERLY_C
 #include "perl.h"
@@ -612,42 +609,6 @@ Perl_yyparse (pTHX_ int gramtype)
     if (!parser->yyerrstatus) {
 	yyerror ("syntax error");
     }
-<<<<<<< perly.c
-yyreduce:
-#if YYDEBUG
-    if (yydebug)
-        PerlIO_printf(Perl_debug_log, "yydebug: state %d, reducing by rule %d (%s)\n",
-                yystate, yyn, yyrule[yyn]);
-#endif
-    yym = yylen[yyn];
-    if (yym)
-	yyval = yyvsp[1-yym];
-    else
-	memset(&yyval, 0, sizeof(yyval));
-    switch (yyn)
-    {
-case 1:
-#line 140 "perly.y"
-{ yyval.ival = yyvsp[-1].ival; newPROG(block_end(yyvsp[-1].ival,yyvsp[0].opval)); }
-break;
-case 2:
-#line 145 "perly.y"
-{ if (PL_copline > (line_t)yyvsp[-3].ival)
-			      PL_copline = (line_t)yyvsp[-3].ival;
-			  yyval.opval = block_end(yyvsp[-2].ival, yyvsp[-1].opval); }
-break;
-case 3:
-#line 151 "perly.y"
-{ yyval.ival = block_start(TRUE); }
-break;
-case 4:
-#line 155 "perly.y"
-{
-#if defined(YYDEBUG) && defined(DEBUGGING)
-		    yydebug = (DEBUG_p_TEST);
-#endif
-		    PL_expect = XSTATE; yyval.ival = block_start(TRUE);
-=======
 
 
     if (parser->yyerrstatus == 3) {
@@ -673,7 +634,6 @@ case 4:
 		    }
 		    ps->val.opval->op_latefree  = 0;
 		    op_free(ps->val.opval);
->>>>>>> 1.1.131.1
 		}
 		SvREFCNT_dec(ps->compcv);
 		YYPOPSTACK;

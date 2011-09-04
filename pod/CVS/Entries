@@ -36,11 +36,6 @@
 /perl572delta.pod/1.1.1.1/Result of merge//
 /perl573delta.pod/1.1.1.2/Result of merge//
 /perl581delta.pod/1.1.1.1/Result of merge//
-/perl582delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
-/perl583delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
-/perl584delta.pod/1.1.1.1/Sat Feb  5 17:23:49 2005//
-/perl585delta.pod/1.1.1.2/Fri Jun 30 22:44:38 2006//
-/perl586delta.pod/1.1.1.2/Fri Jun 30 22:44:38 2006//
 /perl587delta.pod/1.1.1.1/Result of merge//
 /perl588delta.pod/1.1.1.1/Result of merge//
 /perl589delta.pod/1.1.131.1/Fri Sep  2 20:17:43 2011//
@@ -110,7 +105,6 @@
 /perlmodstyle.pod/1.1.1.1/Result of merge//
 /perlmroapi.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
 /perlnewmod.pod/1.1.1.1/Result of merge//
-/perlnumber.pod/1.1.1.1/Sat Feb  5 17:23:54 2005//
 /perlobj.pod/1.1.1.2/Result of merge//
 /perlop.pod/1.1.1.2/Result of merge//
 /perlopentut.pod/1.1.1.2/Result of merge//
@@ -136,14 +130,12 @@
 /perlrun.pod/1.1.1.2/Result of merge//
 /perlsec.pod/1.1.1.2/Result of merge//
 /perlsource.pod/1.1.131.1/Fri Sep  2 20:17:44 2011//
-/perlstyle.pod/1.1.1.2/Fri Jun 30 22:45:12 2006//
 /perlsub.pod/1.1.1.2/Result of merge//
 /perlsyn.pod/1.1.1.2/Result of merge//
 /perlthrtut.pod/1.1.1.2/Result of merge//
 /perltie.pod/1.1.1.2/Result of merge//
 /perltoc.pod/-1.1.1.2///
 /perltodo.pod/1.1.1.2/Result of merge//
-/perltooc.pod/1.1.1.2/Fri Jun 30 22:45:18 2006//
 /perltoot.pod/1.1.1.1/Result of merge//
 /perltrap.pod/1.1.1.2/Result of merge//
 /perlunicode.pod/1.1.1.2/Result of merge//
@@ -163,7 +155,15 @@
 /podchecker.PL/-1.1.1.1///
 /podselect.PL/-1.1.1.1///
 /roffitall/1.1.1.1/Result of merge//
-/rofftoc/1.1.1.1/Sat Feb  5 17:23:49 2005//
-/splitman/1.1.1.1/Sat Feb  5 17:23:57 2005//
 /splitpod/1.1.1.1/Result of merge//
+/perl582delta.pod/1.1.1.1/Fri Sep  2 20:29:40 2011//
+/perl583delta.pod/1.1.1.1/Fri Sep  2 20:29:40 2011//
+/perl584delta.pod/1.1.1.1/Fri Sep  2 20:29:40 2011//
+/perl585delta.pod/1.1.1.2/Fri Sep  2 20:29:40 2011//
+/perl586delta.pod/1.1.1.2/Fri Sep  2 20:29:40 2011//
+/perlnumber.pod/1.1.1.1/Fri Sep  2 20:29:41 2011//
+/perlstyle.pod/1.1.1.2/Fri Sep  2 20:29:41 2011//
+/perltooc.pod/1.1.1.2/Fri Sep  2 20:29:41 2011//
+/rofftoc/1.1.1.1/Fri Sep  2 20:29:42 2011//
+/splitman/1.1.1.1/Fri Sep  2 20:29:42 2011//
 D

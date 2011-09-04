@@ -32,10 +32,6 @@
 #include "perl.h"
 #include "regcomp.h"
 
-<<<<<<< sv.c
-__RCSID("$MirOS: src/gnu/usr.bin/perl/sv.c,v 1.2 2006/09/21 23:22:40 tg Exp $");
-
-=======
 #ifndef HAS_C99
 # if __STDC_VERSION__ >= 199901L && !defined(VMS)
 #  define HAS_C99 1
@@ -45,7 +41,8 @@ __RCSID("$MirOS: src/gnu/usr.bin/perl/sv.c,v 1.2 2006/09/21 23:22:40 tg Exp $");
 # include <stdint.h>
 #endif
 
->>>>>>> 1.1.131.1
+__RCSID("$MirOS: src/gnu/usr.bin/perl/sv.c,v 1.2 2006/09/21 23:22:40 tg Exp $");
+
 #define FCALL *f
 
 #ifdef __Lynx__
@@ -6077,25 +6074,6 @@ Perl_sv_clear(pTHX_ SV *const orig_sv)
 	if (SvOBJECT(sv)) {
 	    if (!curse(sv, 1)) goto get_next_sv;
 	}
-<<<<<<< sv.c
-    }
-    if (SvTYPE(sv) >= SVt_PVMG) {
-    	if (SvMAGIC(sv))
-	    mg_free(sv);
-	if (SvTYPE(sv) == SVt_PVMG && SvFLAGS(sv) & SVpad_TYPED)
-	    SvREFCNT_dec(SvSTASH(sv));
-    }
-    stash = NULL;
-    switch (SvTYPE(sv)) {
-    case SVt_PVIO:
-	if (IoIFP(sv) &&
-	    IoIFP(sv) != PerlIO_stdin() &&
-	    IoIFP(sv) != PerlIO_stdout() &&
-	    IoIFP(sv) != PerlIO_stderr())
-	{
-	    /* XXX io_close says we must not ignore the result */
-	    bool dummy = io_close((IO*)sv, FALSE);
-=======
 	if (type >= SVt_PVMG) {
 	    /* Free back-references before magic, in case the magic calls
 	     * Perl code that has weak references to sv. */
@@ -6120,7 +6098,8 @@ Perl_sv_clear(pTHX_ SV *const orig_sv)
 		IoIFP(sv) != PerlIO_stderr() &&
 		!(IoFLAGS(sv) & IOf_FAKE_DIRP))
 	    {
-		io_close(MUTABLE_IO(sv), FALSE);
+	        /* XXX io_close says we must not ignore the result */
+	        bool dummy = io_close(MUTABLE_IO(sv), FALSE);
 	    }
 	    if (IoDIRP(sv) && !(IoFLAGS(sv) & IOf_FAKE_DIRP))
 		PerlDir_close(IoDIRP(sv));
@@ -6251,7 +6230,6 @@ Perl_sv_clear(pTHX_ SV *const orig_sv)
 	    break;
 	case SVt_NV:
 	    break;
->>>>>>> 1.1.131.1
 	}
 
       free_body:

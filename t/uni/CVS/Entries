@@ -9,7 +9,6 @@
 /lex_utf8.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /lower.t/1.1.1.2/Result of merge//
 /overload.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/sprintf.t/1.1.1.2/Fri Jun 30 22:47:10 2006//
 /tie.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /title.t/1.1.1.2/Result of merge//
 /tr_7jis.t/1.1.1.2/Result of merge//
@@ -18,4 +17,5 @@
 /tr_utf8.t/1.1.1.2/Result of merge//
 /upper.t/1.1.1.2/Result of merge//
 /write.t/1.1.1.1/Result of merge//
+/sprintf.t/1.1.1.2/Fri Sep  2 20:29:44 2011//
 D

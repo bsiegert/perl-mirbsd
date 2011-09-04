@@ -1,9 +1,6 @@
-<<<<<<< Makefile.SH
 #! /bin/sh
 # $MirOS: src/gnu/usr.bin/perl/Makefile.SH,v 1.3 2006/06/30 23:15:04 tg Exp $
 #
-=======
->>>>>>> 1.1.131.1
 case $PERL_CONFIG_SH in
 '')
 	if test -f config.sh
@@ -73,11 +70,7 @@ true)
 	sunos*)
 		linklibperl="-lperl"
 		;;
-<<<<<<< Makefile.SH
-	mirbsd*|netbsd*|freebsd[234]*|openbsd*)
-=======
-	netbsd*|freebsd[234]*|openbsd*|dragonfly*)
->>>>>>> 1.1.131.1
+	mirbsd*|netbsd*|freebsd[234]*|openbsd*|dragonfly*)
 		linklibperl="-L. -lperl"
 		;;
 	interix*)

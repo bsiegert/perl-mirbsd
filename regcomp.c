@@ -127,10 +127,6 @@ typedef struct RExC_state_t {
     I32		extralen;
     I32		seen_zerolen;
     I32		seen_evals;
-<<<<<<< regcomp.c
-    I32		utf8;
-    I32		orig_utf8;
-=======
     regnode	**open_parens;		/* pointers to open parens */
     regnode	**close_parens;		/* pointers to close parens */
     regnode	*opend;			/* END node in program */
@@ -148,7 +144,6 @@ typedef struct RExC_state_t {
     I32		in_lookbehind;
     I32		contains_locale;
     I32		override_recoding;
->>>>>>> 1.1.131.1
 #if ADD_TO_REGEXEC
     char 	*starttry;		/* -Dr: where regtry was called. */
 #define RExC_starttry	(pRExC_state->starttry)
@@ -188,9 +183,6 @@ typedef struct RExC_state_t {
 #define RExC_seen_zerolen	(pRExC_state->seen_zerolen)
 #define RExC_seen_evals	(pRExC_state->seen_evals)
 #define RExC_utf8	(pRExC_state->utf8)
-<<<<<<< regcomp.c
-#define RExC_orig_utf8 (pRExC_state->orig_utf8)
-=======
 #define RExC_uni_semantics	(pRExC_state->uni_semantics)
 #define RExC_orig_utf8	(pRExC_state->orig_utf8)
 #define RExC_open_parens	(pRExC_state->open_parens)
@@ -203,7 +195,6 @@ typedef struct RExC_state_t {
 #define RExC_contains_locale	(pRExC_state->contains_locale)
 #define RExC_override_recoding	(pRExC_state->override_recoding)
 
->>>>>>> 1.1.131.1
 
 #define	ISMULT1(c)	((c) == '*' || (c) == '+' || (c) == '?')
 #define	ISMULT2(s)	((*s) == '*' || (*s) == '+' || (*s) == '?' || \
@@ -4623,9 +4614,6 @@ Perl_re_compile(pTHX_ SV * const pattern, U32 orig_pm_flags)
 
     pm_flags = orig_pm_flags;
 
-<<<<<<< regcomp.c
-    RExC_orig_utf8 = RExC_utf8 = pm->op_pmdynflags & PMdf_CMP_UTF8;
-=======
     if (initial_charset == REGEX_LOCALE_CHARSET) {
 	RExC_contains_locale = 1;
     }
@@ -4635,23 +4623,9 @@ Perl_re_compile(pTHX_ SV * const pattern, U32 orig_pm_flags)
 	 * 'depends' charset specified, as it means unicode when utf8  */
 	set_regex_charset(&pm_flags, REGEX_UNICODE_CHARSET);
     }
->>>>>>> 1.1.131.1
 
-<<<<<<< regcomp.c
-    DEBUG_r({
-	 if (!PL_colorset) reginitcolors();
-	 PerlIO_printf(Perl_debug_log, "%sCompiling REx%s `%s%*s%s'\n",
-		       PL_colors[4],PL_colors[5],PL_colors[0],
-		       (int)(xend - exp), exp, PL_colors[1]);
-    });
-
-redo_first_pass:
-    RExC_precomp = exp;
-    RExC_flags = pm->op_pmflags;
-=======
     RExC_precomp = exp;
     RExC_flags = pm_flags;
->>>>>>> 1.1.131.1
     RExC_sawback = 0;
 
     RExC_seen = 0;
@@ -4690,20 +4664,6 @@ redo_first_pass:
 	RExC_precomp = NULL;
 	return(NULL);
     }
-<<<<<<< regcomp.c
-    if (RExC_utf8 && !RExC_orig_utf8) {
-    	STRLEN len = xend-exp;
-    	DEBUG_r(PerlIO_printf(Perl_debug_log,
-	   "UTF8 mismatch! Converting to utf8 for resizing and compile\n"));
-	exp = (char*)Perl_bytes_to_utf8(aTHX_ (U8*)exp, &len);
-	xend = exp + len;
-	RExC_orig_utf8 = RExC_utf8;
-	SAVEFREEPV(exp);
-	goto redo_first_pass;
-    }
-
-    DEBUG_r(PerlIO_printf(Perl_debug_log, "size %"IVdf" ", (IV)RExC_size));
-=======
 
     /* Here, finished first pass.  Get rid of any added setjmp */
     if (used_setjump) {
@@ -4725,7 +4685,6 @@ redo_first_pass:
     {
 	set_regex_charset(&pm_flags, REGEX_UNICODE_CHARSET);
     }
->>>>>>> 1.1.131.1
 
     /* Small enough for pointer-storage convention?
        If extralen==0, this means that we will not need long jumps. */

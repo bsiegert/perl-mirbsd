@@ -2,23 +2,15 @@
 /2use/1.1.1.2/Result of merge//
 /3both/1.1.1.1/Result of merge//
 /4lint/1.1.1.1/Result of merge//
-/5nolint/1.1.1.1/Sat Feb  5 17:24:00 2005//
-/6default/1.1.1.1/Sat Feb  5 17:24:00 2005//
 /7fatal/1.1.1.1/Result of merge//
-/8signal/1.1.1.1/Sat Feb  5 17:24:00 2005//
 /9enabled/1.1.1.1/Result of merge//
 /9uninit/1.1.131.1/Fri Sep  2 20:17:46 2011//
 /av/1.1.1.1/Result of merge//
 /doio/1.1.1.1/Result of merge//
-/doop/1.1.1.1/Sat Feb  5 17:24:00 2005//
 /gv/1.1.1.1/Result of merge//
-/hv/1.1.1.1/Sat Feb  5 17:24:00 2005//
-/malloc/1.1.1.1/Sat Feb  5 17:24:00 2005//
 /mg/1.1.1.1/Result of merge//
 /op/1.1.1.1/Result of merge//
 /pad/1.1.1.1/Result of merge//
-/perl/1.1.1.1/Sat Feb  5 17:24:00 2005//
-/perlio/1.1.1.2/Fri Jun 30 22:46:36 2006//
 /perly/1.1.1.1/Result of merge//
 /pp/1.1.1.1/Result of merge//
 /pp_ctl/1.1.1.1/Result of merge//
@@ -26,12 +18,20 @@
 /pp_pack/1.1.1.1/Result of merge//
 /pp_sys/1.1.1.2/Result of merge//
 /regcomp/1.1.1.1/Result of merge//
-/regexec/1.1.1.1/Sat Feb  5 17:24:00 2005//
-/run/1.1.1.1/Sat Feb  5 17:24:00 2005//
 /sv/1.1.1.2/Result of merge//
 /taint/1.1.1.1/Result of merge//
 /toke/1.1.1.1/Result of merge//
 /universal/1.1.1.1/Result of merge//
 /utf8/1.1.1.1/Result of merge//
 /util/1.1.1.1/Result of merge//
+/5nolint/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/6default/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/8signal/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/doop/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/hv/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/malloc/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/perl/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/perlio/1.1.1.2/Fri Sep  2 20:29:43 2011//
+/regexec/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/run/1.1.1.1/Fri Sep  2 20:29:43 2011//
 D

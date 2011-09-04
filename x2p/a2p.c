@@ -19,11 +19,7 @@ yyparse();
 #endif
 #define YYPREFIX "yy"
 #line 2 "a2p.y"
-<<<<<<< a2p.c
-/* $RCSfile: a2p.y,v $$Revision: 1.8 $$Date: 2006/03/28 19:23:15 $
-=======
 /* $RCSfile: a2p.y,v $$Revision: 4.1 $$Date: 92/08/07 18:29:12 $
->>>>>>> 1.1.131.1
  *
  *    Copyright (C) 1991, 1992, 1993, 1994, 1996, 1997, 1999, 2000,
  *    by Larry Wall and others
@@ -31,17 +27,7 @@ yyparse();
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
-<<<<<<< a2p.c
- * $Log: a2p.y,v $
- * Revision 1.8  2006/03/28 19:23:15  millert
- * merge in perl 5.8.8
- *
- * Revision 1.7  2003/12/03 03:02:53  millert
- * Resolve conflicts for perl 5.8.2, remove old files, and add OpenBSD-specific scaffolding
- *
-=======
  * $Log:	a2p.y,v $
->>>>>>> 1.1.131.1
  */
 
 #include "INTERN.h"
@@ -2050,16 +2036,12 @@ short yycheck[] =
 #endif
 #define YYMAXTOKEN 306
 #if YYDEBUG
-<<<<<<< a2p.c
 #if defined(__cplusplus) || defined(__STDC__)
 const char * const yyname[] =
 #else
 char *yyname[] =
 #endif
 	{
-=======
-const char *yyname[] = {
->>>>>>> 1.1.131.1
 "end-of-file",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,"'%'",0,0,"'('","')'","'*'","'+'","','","'-'",0,"'/'",0,0,0,0,0,0,0,0,0,0,
 "':'","';'","'<'",0,"'>'","'?'",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -2074,17 +2056,12 @@ const char *yyname[] = {
 "DELETE","ASGNOP","OROR","ANDAND","NUMBER","VAR","SUBSTR","INDEX","MATCHOP",
 "RELOP","OR","STRING","UMINUS","NOT","INCR","DECR","FIELD","VFIELD","SVFIELD",
 };
-<<<<<<< a2p.c
 #if defined(__cplusplus) || defined(__STDC__)
 const char * const yyrule[] =
 #else
 char *yyrule[] =
 #endif
 	{"$accept : program",
-=======
-const char *yyrule[] = {
-"$accept : program",
->>>>>>> 1.1.131.1
 "program : junk hunks",
 "begin : BEGIN '{' maybe states '}' junk",
 "end : END '{' maybe states '}'",
@@ -2337,15 +2314,11 @@ yyparse()
 {
     int yym, yyn, yystate;
 #if YYDEBUG
-<<<<<<< a2p.c
 #if defined(__cplusplus) || defined(__STDC__)
     const char *yys;
 #else /* !(defined(__cplusplus) || defined(__STDC__)) */
     char *yys;
 #endif /* !(defined(__cplusplus) || defined(__STDC__)) */
-=======
-    register const char *yys;
->>>>>>> 1.1.131.1
 
     if (((yys = getenv("YYDEBUG"))))
     {

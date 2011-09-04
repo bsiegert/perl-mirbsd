@@ -1048,12 +1048,8 @@ PoisonWith(0xEF) for catching access to freed memory.
 }))
 #else
 #define MEM_WRAP_CHECK_1(n,t,a) \
-<<<<<<< handy.h
-	(void)(sizeof(t) > 1 && (n) > ((MEM_SIZE)~0)/sizeof(t) && (Perl_croak_nocontext(a),0))
-#endif
-=======
 	(void)(sizeof(t) > 1 && ((MEM_SIZE)(n)+0.0) > MEM_SIZE_MAX/sizeof(t) && (Perl_croak_nocontext("%s",(a)),0))
->>>>>>> 1.1.131.1
+#endif
 #define MEM_WRAP_CHECK_(n,t) MEM_WRAP_CHECK(n,t),
 
 #define PERL_STRLEN_ROUNDUP(n) ((void)(((n) > MEM_SIZE_MAX - 2 * PERL_STRLEN_ROUNDUP_QUANTUM) ? (Perl_croak_nocontext("%s",PL_memory_wrap),0):0),((n-1+PERL_STRLEN_ROUNDUP_QUANTUM)&~((MEM_SIZE)PERL_STRLEN_ROUNDUP_QUANTUM-1)))

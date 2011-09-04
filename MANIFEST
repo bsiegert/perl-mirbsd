@@ -3911,17 +3911,6 @@ lib/FileHandle.pm		Backward-compatible front end to IO extension
 lib/FileHandle.t		See if FileHandle works
 lib/File/stat.pm		By-name interface to Perl's builtin stat
 lib/File/stat.t			See if File::stat works
-<<<<<<< MANIFEST
-lib/File/Temp.pm		create safe temporary files and file handles
-lib/File/Temp/t/cmp.t		See if File::Temp works
-lib/File/Temp/t/mktemp.t	See if File::Temp works
-lib/File/Temp/t/object.t	See if File::Temp works
-lib/File/Temp/t/posix.t		See if File::Temp works
-lib/File/Temp/t/security.t	See if File::Temp works
-lib/File/Temp/t/seekable.t	See if File::Temp works
-lib/File/Temp/t/tempfile.t	See if File::Temp works
-=======
->>>>>>> 1.1.131.1
 lib/filetest.pm			For "use filetest"
 lib/filetest.t			See if filetest works
 lib/FindBin.pm			Find name of currently executing program

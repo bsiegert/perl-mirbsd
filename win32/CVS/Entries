@@ -19,19 +19,15 @@
 /config_h.PL/1.1.1.1/Result of merge//
 /config_sh.PL/1.1.1.2/Result of merge//
 /create_perllibst_h.pl/1.1.131.1/Fri Sep  2 20:17:48 2011//
-/distclean.bat/1.1.1.1/Sat Feb  5 17:24:13 2005//
 /dl_win32.xs/-1.1.1.2///
 /fcrypt.c/1.1.1.2/Result of merge//
-/genmk95.pl/1.1.1.1/Sat Feb  5 17:24:13 2005//
 /list_static_libs.pl/1.1.131.1/Fri Sep  2 20:17:48 2011//
 /makefile.mk/1.1.1.2/Result of merge//
 /makeico.pl/-1.1.1.1///
-/mdelete.bat/1.1.1.1/Sat Feb  5 17:24:13 2005//
 /perl.rc/1.1.131.1/Fri Sep  2 20:17:49 2011//
 /perlexe.ico/1.1.131.1/Fri Sep  2 20:17:49 2011/-kb/
 /perlexe.manifest/1.1.131.1/Fri Sep  2 20:17:49 2011//
 /perlexe.rc/1.1.1.1/Result of merge//
-/perlglob.c/1.1.1.1/Sat Feb  5 17:24:13 2005//
 /perlhost.h/1.1.1.2/Result of merge//
 /perllib.c/1.1.1.2/Result of merge//
 /perlmaince.c/1.1.131.1/Fri Sep  2 20:17:49 2011//
@@ -57,3 +53,7 @@ D/bin////
 D/ce-helpers////
 D/ext////
 D/include////
+/distclean.bat/1.1.1.1/Fri Sep  2 20:29:45 2011//
+/genmk95.pl/1.1.1.1/Fri Sep  2 20:29:45 2011//
+/mdelete.bat/1.1.1.1/Fri Sep  2 20:29:45 2011//
+/perlglob.c/1.1.1.1/Fri Sep  2 20:29:45 2011//

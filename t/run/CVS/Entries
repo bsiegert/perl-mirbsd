@@ -2,24 +2,24 @@
 /exit.t/1.1.1.1/Result of merge//
 /fresh_perl.t/1.1.1.2/Result of merge//
 /locale.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/noswitch.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
 /runenv.t/1.1.1.2/Result of merge//
 /script.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/switch0.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
 /switchC.t/1.1.1.1/Result of merge//
-/switchF.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
 /switchF1.t/1.1.1.1/Result of merge//
 /switchI.t/1.1.1.1/Result of merge//
 /switchPx.aux/-1.1.1.1///
 /switchPx.t/-1.1.1.1///
-/switcha.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
 /switchd-78586.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /switchd.t/1.1.1.1/Result of merge//
 /switches.t/1.1.1.1/Result of merge//
-/switchn.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
-/switchp.t/1.1.1.1/Sat Feb  5 17:24:06 2005//
 /switcht.t/1.1.1.1/Result of merge//
 /switchx.aux/1.1.1.1/Result of merge//
 /switchx.t/1.1.1.1/Result of merge//
 /switchx2.aux/1.1.131.1/Fri Sep  2 20:17:47 2011//
+/noswitch.t/1.1.1.1/Fri Sep  2 20:29:44 2011//
+/switch0.t/1.1.1.1/Fri Sep  2 20:29:44 2011//
+/switchF.t/1.1.1.1/Fri Sep  2 20:29:44 2011//
+/switcha.t/1.1.1.1/Fri Sep  2 20:29:44 2011//
+/switchn.t/1.1.1.1/Fri Sep  2 20:29:44 2011//
+/switchp.t/1.1.1.1/Fri Sep  2 20:29:44 2011//
 D

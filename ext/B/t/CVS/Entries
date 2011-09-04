@@ -8,9 +8,7 @@
 /concise.t/1.1.1.2/Result of merge//
 /debug.t/-1.1.1.2///
 /deparse.t/-1.1.1.2///
-/f_map/1.1.1.1/Sat Feb  5 17:22:37 2005//
 /f_map.t/1.1.1.2/Result of merge//
-/f_sort/1.1.1.1/Sat Feb  5 17:22:37 2005//
 /f_sort.t/1.1.1.2/Result of merge//
 /lint.t/-1.1.1.2///
 /o.t/1.1.1.2/Result of merge//
@@ -28,4 +26,6 @@
 /terse.t/1.1.1.2/Result of merge//
 /walkoptree.t/1.1.131.1/Fri Sep  2 20:17:36 2011//
 /xref.t/1.1.1.2/Result of merge//
+/f_map/1.1.1.1/Fri Sep  2 20:29:29 2011//
+/f_sort/1.1.1.1/Fri Sep  2 20:29:29 2011//
 D

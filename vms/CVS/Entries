@@ -1,20 +1,20 @@
 /descrip_mms.template/1.1.1.2/Result of merge//
 /gen_shrfls.pl/1.1.1.2/Result of merge//
 /genconfig.pl/-1.1.1.2///
-/genopt.com/1.1.1.1/Sat Feb  5 17:24:07 2005//
-/make_command.com/1.1.1.1/Sat Feb  5 17:24:07 2005//
-/mms2make.pl/1.1.1.1/Sat Feb  5 17:24:07 2005//
 /munchconfig.c/1.1.1.1/Result of merge//
 /myconfig.com/1.1.1.1/Result of merge//
 /perlvms.pod/-1.1.1.2///
 /perly_c.vms/-1.1.1.2///
 /perly_h.vms/-1.1.1.1///
-/sockadapt.c/1.1.1.1/Sat Feb  5 17:24:07 2005//
-/sockadapt.h/1.1.1.1/Sat Feb  5 17:24:08 2005//
 /test.com/1.1.1.2/Result of merge//
 /vms.c/1.1.1.2/Result of merge//
 /vms_yfix.pl/-1.1.1.1///
 /vmsish.h/1.1.1.2/Result of merge//
-/vmspipe.com/1.1.1.1/Sat Feb  5 17:24:08 2005//
 /writemain.pl/-1.1.1.1///
 D/ext////
+/genopt.com/1.1.1.1/Fri Sep  2 20:29:44 2011//
+/make_command.com/1.1.1.1/Fri Sep  2 20:29:44 2011//
+/mms2make.pl/1.1.1.1/Fri Sep  2 20:29:44 2011//
+/sockadapt.c/1.1.1.1/Fri Sep  2 20:29:44 2011//
+/sockadapt.h/1.1.1.1/Fri Sep  2 20:29:44 2011//
+/vmspipe.com/1.1.1.1/Fri Sep  2 20:29:44 2011//

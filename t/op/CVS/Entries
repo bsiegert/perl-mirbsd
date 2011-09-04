@@ -3,7 +3,6 @@
 /anonsub.t/1.1.1.1/Result of merge//
 /append.t/1.1.1.1/Result of merge//
 /args.t/1.1.1.1/Result of merge//
-/arith.t/1.1.1.2/Fri Jun 30 22:46:39 2006//
 /array.t/1.1.1.2/Result of merge//
 /array_base.aux/1.1.131.1/Fri Sep  2 20:17:46 2011//
 /array_base.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
@@ -17,7 +16,6 @@
 /bop.t/1.1.1.2/Result of merge//
 /caller.pl/1.1.131.1/Fri Sep  2 20:17:46 2011//
 /caller.t/1.1.1.2/Result of merge//
-/chars.t/1.1.1.1/Sat Feb  5 17:24:01 2005//
 /chdir.t/1.1.1.2/Result of merge//
 /chop.t/1.1.1.2/Result of merge//
 /chr.t/1.1.1.1/Result of merge//
@@ -28,11 +26,9 @@
 /cond.t/1.1.1.1/Result of merge//
 /context.t/1.1.1.1/Result of merge//
 /cproto.t/1.1.1.2/Result of merge//
-/crypt.t/1.1.1.1/Sat Feb  5 17:24:01 2005//
 /dbm.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
 /defins.t/1.1.1.1/Result of merge//
 /delete.t/1.1.1.1/Result of merge//
-/die.t/1.1.1.2/Fri Jun 30 22:46:44 2006//
 /die_except.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
 /die_exit.t/1.1.1.1/Result of merge//
 /die_keeperr.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
@@ -44,8 +40,6 @@
 /eval.t/1.1.1.1/Result of merge//
 /exec.t/1.1.1.1/Result of merge//
 /exists_sub.t/1.1.1.1/Result of merge//
-/exp.t/1.1.1.2/Fri Jun 30 22:46:45 2006//
-/fh.t/1.1.1.1/Sat Feb  5 17:24:01 2005//
 /filehandle.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
 /filetest.t/1.1.1.1/Result of merge//
 /filetest_stack_ok.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
@@ -58,7 +52,6 @@
 /gmagic.t/1.1.1.1/Result of merge//
 /goto.t/1.1.1.2/Result of merge//
 /goto_xs.t/1.1.1.2/Result of merge//
-/grent.t/1.1.1.1/Sat Feb  5 17:24:01 2005//
 /grep.t/1.1.1.1/Result of merge//
 /groups.t/1.1.1.2/Result of merge//
 /gv.t/1.1.1.2/Result of merge//
@@ -72,7 +65,6 @@
 /index.t/1.1.1.2/Result of merge//
 /index_thr.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
 /int.t/1.1.1.1/Result of merge//
-/join.t/1.1.1.2/Fri Jun 30 22:46:48 2006//
 /kill0.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
 /lc.t/1.1.1.2/Result of merge//
 /lc_user.t/1.1.1.1/Result of merge//
@@ -83,7 +75,6 @@
 /lfs.t/1.1.1.2/Result of merge//
 /list.t/1.1.1.2/Result of merge//
 /local.t/1.1.1.2/Result of merge//
-/localref.t/1.1.1.1/Sat Feb  5 17:24:01 2005//
 /loopctl.t/1.1.1.2/Result of merge//
 /lop.t/1.1.1.1/Result of merge//
 /magic-27839.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
@@ -95,11 +86,9 @@
 /my_stash.t/1.1.1.1/Result of merge//
 /mydef.t/1.1.131.1/Fri Sep  2 20:17:46 2011//
 /negate.t/1.1.1.1/Result of merge//
-/not.t/1.1.1.1/Fri Jun 30 22:46:51 2006//
 /nothr5005.t/-1.1.1.1///
 /numconvert.t/1.1.1.1/Result of merge//
 /oct.t/1.1.1.1/Result of merge//
-/or.t/1.1.1.1/Sat Feb  5 17:24:01 2005//
 /ord.t/1.1.1.1/Result of merge//
 /overload_integer.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /override.t/1.1.1.1/Result of merge//
@@ -114,7 +103,6 @@
 /pwent.t/1.1.1.1/Result of merge//
 /qq.t/1.1.1.1/Result of merge//
 /qr.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/quotemeta.t/1.1.1.1/Sat Feb  5 17:24:01 2005//
 /rand.t/1.1.1.2/Result of merge//
 /range.t/1.1.1.2/Result of merge//
 /re_tests/-1.1.1.2///
@@ -126,14 +114,12 @@
 /regexp.t/-1.1.1.1///
 /regexp_noamp.t/-1.1.1.1///
 /regmesg.t/-1.1.1.1///
-/repeat.t/1.1.1.2/Fri Jun 30 22:46:55 2006//
 /require_errors.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /reset.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /reverse.t/1.1.1.1/Result of merge//
 /runlevel.t/1.1.1.1/Result of merge//
 /setpgrpstack.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /sigdispatch.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
-/sleep.t/1.1.1.2/Fri Jun 30 22:46:56 2006//
 /smartkve.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /smartmatch.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /sort.t/1.1.1.2/Result of merge//
@@ -187,4 +173,18 @@
 /while_readdir.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
 /write.t/1.1.1.1/Result of merge//
 /yadayada.t/1.1.131.1/Fri Sep  2 20:17:47 2011//
+/arith.t/1.1.1.2/Fri Sep  2 20:29:43 2011//
+/chars.t/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/crypt.t/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/die.t/1.1.1.2/Fri Sep  2 20:29:43 2011//
+/exp.t/1.1.1.2/Fri Sep  2 20:29:43 2011//
+/fh.t/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/grent.t/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/join.t/1.1.1.2/Fri Sep  2 20:29:43 2011//
+/localref.t/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/not.t/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/or.t/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/quotemeta.t/1.1.1.1/Fri Sep  2 20:29:43 2011//
+/repeat.t/1.1.1.2/Fri Sep  2 20:29:43 2011//
+/sleep.t/1.1.1.2/Fri Sep  2 20:29:43 2011//
 D
